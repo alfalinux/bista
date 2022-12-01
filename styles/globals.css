@@ -23,6 +23,16 @@ a {
 .radio3 {
   margin-left: -200%;
 }
+
+input:invalid {
+  background-color: rgb(255, 200, 200);
+}
+
+input:read-only {
+  background-color: #eaeaea;
+  cursor: not-allowed;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -31,4 +41,26 @@ a {
     color: white;
     background: black;
   }
+}
+
+.container-resi {
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 10mm;
+}
+
+.container-label {
+  width: 80mm;
+  height: 100mm;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 10mm;
 }

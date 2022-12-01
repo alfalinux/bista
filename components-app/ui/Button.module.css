@@ -1,0 +1,82 @@
+.btn {
+  padding: 5px 10px;
+  border: none;
+  outline-style: none;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.full {
+  width: 100%;
+}
+
+.btn h4 {
+  padding: 0;
+  margin: 0;
+  margin-right: 5px;
+}
+
+.btn svg {
+  width: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.btn:hover,
+.btn:focus {
+  cursor: pointer;
+}
+
+.red {
+  background-color: red;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.red:hover,
+.btn:focus {
+  background-color: #000;
+}
+
+.red:active {
+  background-color: transparent;
+  border: 2px solid red;
+  color: red;
+}
+
+.blue {
+  background-color: blue;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.blue:hover,
+.btn:focus {
+  background-color: #000;
+}
+
+.blue:active {
+  background-color: transparent;
+  border: 2px solid blue;
+  color: blue;
+}
+
+.orange {
+  background-color: darkorange;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.orange:hover,
+.btn:focus {
+  background-color: #000;
+}
+
+.orange:active {
+  background-color: transparent;
+  border: 2px solid darkorange;
+  color: darkorange;
+}
