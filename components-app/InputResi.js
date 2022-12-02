@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import generateNoResi from "../helpers/generateNoResi";
 import styles from "./InputResi.module.css";
 import ModalPrintResi from "./ui/ModalPrintResi";
-import PrintoutResi from "./ui/PrintoutResi";
 
 const validText = new RegExp("^[a-zA-Z0-9!@&()_+-=,. ]+$");
 const validOnlyText = new RegExp("[a-zA-Z]+");
