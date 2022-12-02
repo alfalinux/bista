@@ -163,7 +163,7 @@ const InputResi = (props) => {
   ]);
 
   useEffect(() => {
-    if (inputValue.cabangAsal !== "" || inputValue.tujuan !== "") {
+    if (inputValue.cabangAsal !== "" && inputValue.tujuan !== "") {
       fetch("/api/ongkir/" + inputValue.cabangAsal.toLowerCase() + "/" + inputValue.tujuan.id)
         .then((response) => {
           if (response.ok) {
@@ -177,7 +177,7 @@ const InputResi = (props) => {
         .catch((error) => console.log(error));
     }
   }, [inputValue.cabangAsal, inputValue.tujuan]);
-  console.log(dataOngkir);
+
   useEffect(() => {
     const noResi = generateNoResi("BKU", "CSO1");
     const tgl = new Date().toLocaleString("en-UK", {
