@@ -5,6 +5,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  position: relative;
 }
 
 .user-icon {
@@ -33,4 +34,22 @@
   height: 40px;
   margin-right: 10px;
   color: #555;
+}
+
+.hamburger-icon {
+  display: none;
+}
+
+@media screen and (max-width: 760px) {
+  .hamburger-icon {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 101;
+  }
+
+  .hamburger-icon:hover {
+    cursor: pointer;
+  }
 }

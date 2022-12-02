@@ -8,10 +8,10 @@ import TruckIcon from "../public/icons/TruckIcon";
 import RocketIcon from "../public/icons/RocketIcon";
 import ReportIcon from "../public/icons/ReportIcon";
 
-const Sidemenu = () => {
+const Sidemenu = (props) => {
   const [outgoingSubmenu, setOutgoingSubmenu] = useState(false);
   const [showReprintMenu, setShowReprintMenu] = useState(false);
-
+  const showMobileMenu = props.style;
   const router = useRouter();
 
   const outgoingMenuHandler = () => {
@@ -26,7 +26,7 @@ const Sidemenu = () => {
   const reprintSubmenuIsValid = showReprintMenu || router.pathname.startsWith("/app/reprint");
 
   return (
-    <nav className={styles["container"]}>
+    <nav className={showMobileMenu ? styles["mobile-side-menu"] : styles["container"]}>
       <Link href="/">
         <img src="/images/bista-logo-300.png" alt="bista cargo logo" className={styles["container-logo"]} />
       </Link>

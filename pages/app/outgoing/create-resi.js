@@ -6,6 +6,7 @@ const CreateResiPage = () => {
   return (
     <div>
       <Layouts>
+        <h2 className="main-content-title">Form Input Order</h2>
         <InputResi />
       </Layouts>
     </div>

@@ -64,3 +64,11 @@ input:read-only {
   justify-content: flex-start;
   row-gap: 10mm;
 }
+
+.main-content-title {
+  width: 100%;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: red;
+  color: #fff;
+}
