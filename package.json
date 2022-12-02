@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "now-build": "cp /canvas_lib64/*so.1 node_modules/canvas/build/Release/"
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
