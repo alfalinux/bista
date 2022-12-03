@@ -10,6 +10,7 @@ import Button from "../../../components-app/ui/Button";
 import Printer from "../../../public/icons/printer";
 import LoadingSpinner from "../../../public/icons/loading-spinner";
 import Search from "../../../public/icons/search";
+
 import styles from "../../../styles/reprint-resi.module.css";
 
 const ReprintResiPage = () => {

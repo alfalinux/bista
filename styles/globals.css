@@ -14,7 +14,7 @@ a {
   box-sizing: border-box;
 }
 
-.radio1 {
+/* .radio1 {
   margin-left: 0;
 }
 .radio2 {
@@ -31,7 +31,7 @@ input:invalid {
 input:read-only {
   background-color: #eaeaea;
   cursor: not-allowed;
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   html {
@@ -71,4 +71,21 @@ input:read-only {
   padding: 10px;
   background-color: red;
   color: #fff;
+}
+
+input[data-touched="true"]:invalid,
+select[data-touched="true"]:invalid {
+  background-color: #ffc4c4;
+}
+
+.form-reqs {
+  visibility: hidden;
+}
+
+input[data-touched="true"]:invalid ~ .form-reqs,
+select[data-touched="true"]:invalid ~ .form-reqs {
+  font-size: 10px;
+  color: red;
+  visibility: visible;
+  margin-top: 5px;
 }
