@@ -3,7 +3,14 @@ import styles from "./MainMenu.module.css";
 import Search from "../public/icons/search";
 import Home from "../public/icons/home";
 import Money from "../public/icons/money";
+import { useRouter } from "next/router";
 const MainMenu = () => {
+  const router = useRouter();
+
+  const ongkirHandler = () => {
+    router.push("/cek-tarif");
+  };
+
   return (
     <section className={styles["container"]}>
       <div className={`${styles["card"]} ${styles["black"]}`}>
@@ -15,7 +22,7 @@ const MainMenu = () => {
           <p>Lihat status paket terkini</p>
         </div>
       </div>
-      <div className={`${styles["card"]} ${styles["red"]}`}>
+      <div className={`${styles["card"]} ${styles["red"]}`} onClick={ongkirHandler}>
         <div className={styles["icon"]}>
           <Money />
         </div>

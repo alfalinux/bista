@@ -36,12 +36,12 @@
   border: 2px solid transparent;
 }
 
-.red:hover,
-.btn:focus {
+.red:hover {
   background-color: #000;
 }
 
-.red:active {
+.red:active,
+.red:focus {
   background-color: transparent;
   border: 2px solid red;
   color: red;
@@ -53,12 +53,11 @@
   border: 2px solid transparent;
 }
 
-.blue:hover,
-.btn:focus {
+.blue:hover {
   background-color: #000;
 }
 
-.blue:active {
+.blue:active.blue:focus {
   background-color: transparent;
   border: 2px solid blue;
   color: blue;
@@ -70,12 +69,12 @@
   border: 2px solid transparent;
 }
 
-.orange:hover,
-.btn:focus {
+.orange:hover {
   background-color: #000;
 }
 
-.orange:active {
+.orange:active,
+.orange:focus {
   background-color: transparent;
   border: 2px solid darkorange;
   color: darkorange;

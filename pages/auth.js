@@ -21,8 +21,8 @@ const UserLoginPage = () => {
   return (
     <>
       {isLoading ? <LoadingPage /> : null}
-      {status === "unathenticated" ? <MainNav /> : null}
-      {status === "unathenticated" ? <LoginPage /> : null}
+      {status !== "authenticated" ? <MainNav /> : null}
+      {status !== "authenticated" ? <LoginPage /> : null}
     </>
   );
 };
