@@ -14,6 +14,18 @@ a {
   box-sizing: border-box;
 }
 
+.error-txt {
+  width: 100%;
+  color: red;
+  text-align: center;
+}
+
+.success-txt {
+  width: 100%;
+  color: lime;
+  text-align: center;
+}
+
 /* .radio1 {
   margin-left: 0;
 }

@@ -24,11 +24,29 @@ export default NextAuth({
         if (!isValid) {
           throw new Error("Password tidak sesuai!");
         }
-
-        return { nama: user.nama, posisi: user.posisi, cabang: user.cabanag, email: user.email };
-
         client.close();
+        return user;
       },
     }),
   ],
+  callbacks: {
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.nama = user.nama;
+        token.posisi = user.posisi;
+        token.cabang = user.cabang;
+        token.email = user.email;
+      }
+      return token;
+    },
+    session: ({ session, token }) => {
+      if (token) {
+        session.nama = token.nama;
+        session.posisi = token.posisi;
+        session.cabang = token.cabang;
+        session.email = token.email;
+      }
+      return session;
+    },
+  },
 });

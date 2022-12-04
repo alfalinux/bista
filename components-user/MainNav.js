@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { signOut, useSession } from "next-auth/react";
+
 import Link from "next/link";
 import styles from "./MainNav.module.css";
 import Bars from "../public/icons/bars";
@@ -8,9 +10,26 @@ import MenuModal from "./MenuModal";
 
 const MainNav = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+  const { data, status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [status]);
+
+  const logoutHandler = (e) => {
+    e.preventDefault();
+    signOut();
+  };
+
   const showMenuHandler = () => {
     setShowMenu(showMenu ? false : true);
   };
+
   return (
     <>
       <nav className={styles["container"]}>
@@ -34,7 +53,7 @@ const MainNav = () => {
             <Link href="/#kontak">Kontak</Link>
           </li>
           <li className={styles["list-item"]}>
-            <Link href="/auth">Login</Link>
+            {status === "authenticated" ? <div onClick={logoutHandler}>Logout</div> : <Link href="/auth">Login</Link>}
           </li>
         </ul>
         <div className={styles["ham-menu-icon"]} onClick={showMenuHandler}>

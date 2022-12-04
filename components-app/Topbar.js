@@ -11,8 +11,10 @@ const Topbar = (props) => {
       </div>
       <UserIcon />
       <div className={styles["user-detail"]}>
-        <h5 className={styles["user-id"]}>Alfahmi BM BKU</h5>
-        <p className={styles["user-email"]}>alfahmi@gmial.com</p>
+        <h5 className={styles["user-id"]}>{props.user.nama}</h5>
+        <p className={styles["user-email"]}>
+          {props.user.cabang} - {props.user.posisi}
+        </p>
       </div>
     </div>
   );
