@@ -6,6 +6,7 @@ import { connectDatabase } from "../../../helpers/mongodbConnect";
 export default NextAuth({
   session: {
     jwt: true,
+    strategy: "jwt",
   },
   providers: [
     CredentialsProvider({

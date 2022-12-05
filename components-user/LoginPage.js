@@ -35,7 +35,7 @@ const LoginPage = () => {
         <div className={styles["field"]}>
           <label htmlFor="username">Username:</label>
           <input
-            type="text"
+            type="email"
             id="username"
             name="username"
             ref={emailRef}
