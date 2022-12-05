@@ -50,4 +50,5 @@ export default NextAuth({
       return session;
     },
   },
+  secret: "q3t6w9z$C&F)asdfasdfasfasdfasdfasd1sdfasf",
 });
