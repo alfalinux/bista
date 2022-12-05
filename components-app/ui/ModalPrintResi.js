@@ -1,12 +1,22 @@
 import PrintoutResi from "./PrintoutResi";
+import PrintoutStruk from "./PrintoutStruk";
 import PrintAction from "./PrintAction";
 import LoadingSaveResi from "./LoadingSaveResi";
 import styles from "./ModalPrintResi.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ModalPrintResi = ({ onEdit, onPrint, data }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadDone, setUploadDone] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth <= 760) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, []);
   const uploadDataHandler = () => {
     setIsLoading(true);
     fetch("/api/data-resi/post", {
@@ -42,11 +52,9 @@ const ModalPrintResi = ({ onEdit, onPrint, data }) => {
       )}
 
       <div className={styles["display"]}>
-        {!isLoading && !uploadDone ? <PrintoutResi data={data} /> : null}
+        {!isLoading && !uploadDone ? isMobile ? <PrintoutStruk data={data} /> : <PrintoutResi data={data} /> : null}
         {isLoading && !uploadDone ? <LoadingSaveResi /> : null}
         {uploadDone ? <PrintAction data={data} onClose={onEdit} onReset={onPrint} /> : null}
-        {/* <PrintoutLabel data={data} /> */}
-        {/* <PrintoutStruk data={data} /> */}
       </div>
     </div>
   );

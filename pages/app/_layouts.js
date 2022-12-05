@@ -3,7 +3,7 @@ import styles from "../../styles/Layouts.module.css";
 import Sidemenu from "../../components-app/Sidemenu";
 import Topbar from "../../components-app/Topbar";
 import { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import LoadingPage from "../../components-app/ui/LoadingPage";
 

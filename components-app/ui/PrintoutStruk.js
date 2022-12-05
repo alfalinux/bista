@@ -3,7 +3,7 @@ import qrCode from "../../helpers/qrCode";
 import styles from "./PrintoutStruk.module.css";
 
 const PrintoutStruk = ({ data }) => {
-  const barcodeLink = "https://bistacargo.com/cek/paket/" + data.noResi;
+  const barcodeLink = "https://bistacargo.com/cek-paket/";
 
   return (
     <div id="struk" className={styles["container"]}>
@@ -11,7 +11,7 @@ const PrintoutStruk = ({ data }) => {
         <img src="/images/bista-header.png" alt="logo bista" />
         <div className={styles["barcode-resi"]}>
           <p>Scan Barcode untuk tracking posisi paket</p>
-          <span>{qrCode(barcodeLink)}</span>
+          <img src={qrCode(barcodeLink)} />
         </div>
       </div>
 
@@ -38,7 +38,7 @@ const PrintoutStruk = ({ data }) => {
           <tr>
             <td>Nomor Resi</td>
             <td>:</td>
-            <td>{data.noResi}</td>
+            <td>Status Transaksi Belum Deal</td>
           </tr>
           <tr>
             <td>Tgl Transaksi</td>

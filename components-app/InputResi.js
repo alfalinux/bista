@@ -1,12 +1,8 @@
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import generateNoResi from "../helpers/generateNoResi";
 import styles from "./InputResi.module.css";
 import ModalPrintResi from "./ui/ModalPrintResi";
-
-const validText = new RegExp("^[a-zA-Z0-9!@&()_+-=,. ]+$");
-const validOnlyText = new RegExp("[a-zA-Z]+");
-const validPhone = new RegExp("^[0-9]+$");
-const validNumber = new RegExp("^[0-9]+$|(?=^.{1,}$)^[0-9]+.[0-9]+$");
 
 const toRupiah = (val) => {
   const convert = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" });
@@ -25,6 +21,7 @@ const initState = {
   layanan: "",
   cabangAsal: "",
   tujuan: "",
+  dataOngkir: "",
   cabangTujuan: "",
   pembayaran: "",
   jumlahBarang: "",
@@ -41,8 +38,10 @@ const initState = {
 };
 
 const InputResi = (props) => {
+  const { data, status } = useSession();
   const [inputValue, setInputValue] = useState(initState);
   const [inputKecamatan, setInputKecamatan] = useState("");
+  const [beratIsValid, setBeratIsValid] = useState(false);
   const [getData, setGetData] = useState([]);
   const [filteredKecamatan, setFilteredKecamatan] = useState();
   const [dataOngkir, setDataOngkir] = useState();
@@ -50,6 +49,7 @@ const InputResi = (props) => {
 
   const [touchedField, setTouchedField] = useState({});
   const [notBlank, setNotBlank] = useState({});
+
   const blurFields = (e) => {
     setTouchedField((touchedField) => ({ ...touchedField, [e.target.name]: true }));
     if (e.target.value === "") {
@@ -72,7 +72,7 @@ const InputResi = (props) => {
     cabangTujuan: notBlank.cabangTujuan || !touchedField.cabangTujuan,
     pembayaran: notBlank.pembayaran || !touchedField.pembayaran,
     jumlahBarang: notBlank.jumlahBarang || !touchedField.jumlahBarang,
-    beratBarang: notBlank.beratBarang || !touchedField.beratBarang,
+    beratBarang: (notBlank.beratBarang || !touchedField.beratBarang) && !beratIsValid,
     keteranganBarang:
       (notBlank.keteranganBarang && inputValue.keteranganBarang.length < 81) || !touchedField.keteranganBarang,
     ongkirPerkilo: notBlank.ongkirPerkilo || !touchedField.ongkirPerkilo,
@@ -104,6 +104,7 @@ const InputResi = (props) => {
       layanan: e.target.value,
       cabangAsal: "",
       tujuan: "",
+      dataOngkir: "",
       cabangTujuan: "",
       pembayaran: "",
       jumlahBarang: "",
@@ -122,6 +123,16 @@ const InputResi = (props) => {
     setInputKecamatan("");
   };
 
+  useEffect(() => {
+    if (inputValue.layanan !== "") {
+      const minimumCharges = "min" + inputValue.layanan[0].toUpperCase() + inputValue.layanan.substring(1);
+      if (Number(inputValue.beratBarang) < Number(inputValue.dataOngkir[minimumCharges])) {
+        setBeratIsValid(true);
+      } else {
+        setBeratIsValid(false);
+      }
+    }
+  }, [inputValue.beratBarang]);
   useEffect(() => {
     fetch("/api/kecamatan")
       .then((response) => response.json())
@@ -166,20 +177,22 @@ const InputResi = (props) => {
     if (inputValue.cabangAsal !== "" && inputValue.tujuan !== "") {
       fetch("/api/ongkir/" + inputValue.cabangAsal.toLowerCase() + "/" + inputValue.tujuan.id)
         .then((response) => {
-          if (response.ok) {
-            return response.json();
+          if (response.status == 204) {
+            setInputValue((prevInputValue) => ({ ...prevInputValue, dataOngkir: "" }));
+            throw new Error("Data tidak ditemukan");
           }
-          throw new Error("Data tidak ditemukan");
+          return response.json();
         })
         .then((data) => {
           setDataOngkir(data.ongkir);
+          setInputValue((prevInputValue) => ({ ...prevInputValue, dataOngkir: data.ongkir }));
         })
         .catch((error) => console.log(error));
     }
   }, [inputValue.cabangAsal, inputValue.tujuan]);
 
   useEffect(() => {
-    const noResi = generateNoResi("BKU", "CSO1");
+    const noResi = generateNoResi(data.cabang, data.posisi);
     const tgl = new Date().toLocaleString("en-UK", {
       day: "numeric",
       month: "short",
@@ -225,6 +238,7 @@ const InputResi = (props) => {
   const hideModalHandler = () => {
     setShowModal(false);
   };
+
   return (
     <>
       <form className={styles["container"]} onSubmit={submitHandler}>
@@ -412,6 +426,12 @@ const InputResi = (props) => {
             <p className={styles["error-note"]}>Wajib diisi, tidak boleh kosong</p>
           )}
           <span></span>
+          {touchedField.tujuan && inputValue.dataOngkir[inputValue.layanan] === "" ? (
+            <p className={styles["error-note"]}>Kecamatan tersebut belum tercover</p>
+          ) : (
+            <span></span>
+          )}
+          <span></span>
           <span className={styles["dropdown-container"]}>
             {inputKecamatan === "" ? null : (
               <div className={styles["dropdown-list"]}>
@@ -432,7 +452,7 @@ const InputResi = (props) => {
             name="cabangTujuan"
             onBlur={blurFields}
             onChange={onChange}
-            value={dataOngkir ? dataOngkir.ibukota : ""}
+            value={dataOngkir && inputValue.dataOngkir[inputValue.layanan] ? dataOngkir.ibukota : ""}
             readOnly
           />
           <span></span>
@@ -492,7 +512,13 @@ const InputResi = (props) => {
           {inputIsValid.beratBarang ? (
             <span></span>
           ) : (
-            <p className={styles["error-note"]}>Wajib diisi, tidak boleh kosong</p>
+            <p className={styles["error-note"]}>
+              Wajib diisi, minimal berat{" "}
+              {inputValue.layanan
+                ? inputValue.dataOngkir["min" + inputValue.layanan[0].toUpperCase() + inputValue.layanan.substring(1)]
+                : "~"}{" "}
+              Kg
+            </p>
           )}
 
           <label htmlFor="keteranganBarang">Keterangan Barang</label>
