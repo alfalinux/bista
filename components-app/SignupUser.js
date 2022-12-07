@@ -74,7 +74,7 @@ const SignupUser = () => {
           <option value="spr">Sprinter</option>
           <option value="spv">Supervisor</option>
           <option value="mgr">Manager</option>
-          <option value="superuser">Super User</option>
+          <option value="dir">Direktur</option>
         </select>
         <div className="form-reqs">Wajib dipilih salah satu</div>
       </div>
@@ -82,12 +82,10 @@ const SignupUser = () => {
         <label htmlFor="cabang">Cabang Penempatan:</label>
         <select name="cabang" id="cabang" onBlur={blurHandler} data-touched={touchedField.cabang} required>
           <option value="">--Pilih cabang penempatan--</option>
-          <option value="bku">Bengkulu</option>
-          <option value="jkt">Jakarta</option>
-          <option value="intim">Indonesia Timur</option>
-          <option value="inbar">Indonesia Barat</option>
-          <option value="inteng">Indonesia Tengah</option>
-          <option value="general">General</option>
+          <option value="BKU">Bengkulu</option>
+          <option value="JKT">Jakarta</option>
+          <option value="SBY">Surabaya</option>
+          <option value="GEN">General</option>
         </select>
         <div className="form-reqs">Wajib dipilih salah satu</div>
       </div>

@@ -1,5 +1,4 @@
 import styles from "./Button.module.css";
-import Search from "../../public/icons/search";
 
 const Button = (props) => {
   return (
@@ -7,6 +6,7 @@ const Button = (props) => {
       type={props.type}
       onClick={props.clickHandler}
       className={`${styles["btn"]} ${styles[props.width]} ${styles[props.color]}`}
+      disabled={props.disabled}
     >
       {props.icon}
       <h4>{props.label}</h4>

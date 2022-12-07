@@ -5,8 +5,14 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-a {
-  color: inherit;
+a,
+input,
+textarea,
+label,
+select,
+option,
+button {
+  font-family: inherit;
   text-decoration: none;
 }
 
@@ -26,24 +32,45 @@ a {
   text-align: center;
 }
 
-/* .radio1 {
-  margin-left: 0;
-}
-.radio2 {
-  margin-left: -100%;
-}
-.radio3 {
-  margin-left: -200%;
+.center-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-input:invalid {
-  background-color: rgb(255, 200, 200);
+.table-container {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #fff;
+  border: 1px solid #000;
 }
 
-input:read-only {
-  background-color: #eaeaea;
-  cursor: not-allowed;
-} */
+.table-head {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+}
+
+.table-head * {
+  padding: 10px;
+}
+
+.table-head tr td {
+  font-size: 14px;
+}
+
+.table-body tr td {
+  font-size: 14px;
+}
+
+.table-body * {
+  padding: 5px;
+}
+
+.table-body tr:nth-child(even) {
+  background-color: #dddddd;
+}
 
 @media (prefers-color-scheme: dark) {
   html {

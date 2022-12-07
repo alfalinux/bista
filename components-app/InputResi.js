@@ -35,6 +35,7 @@ const initState = {
   biayaSurat: "",
   biayaAsuransi: "",
   grandTotal: "",
+  petugasInput: "",
 };
 
 const InputResi = (props) => {
@@ -46,6 +47,7 @@ const InputResi = (props) => {
   const [filteredKecamatan, setFilteredKecamatan] = useState();
   const [dataOngkir, setDataOngkir] = useState();
   const [showModal, setShowModal] = useState(false);
+  const [listCabangAsal, setListCabangAsal] = useState([]);
 
   const [touchedField, setTouchedField] = useState({});
   const [notBlank, setNotBlank] = useState({});
@@ -118,10 +120,17 @@ const InputResi = (props) => {
       biayaSurat: "",
       biayaAsuransi: "",
       grandTotal: "",
+      petugasInput: "",
     }));
     setDataOngkir("");
     setInputKecamatan("");
   };
+
+  useEffect(() => {
+    fetch("/api/cabang")
+      .then((response) => response.json())
+      .then((data) => setListCabangAsal(data));
+  }, []);
 
   useEffect(() => {
     if (inputValue.layanan !== "") {
@@ -192,6 +201,9 @@ const InputResi = (props) => {
   }, [inputValue.cabangAsal, inputValue.tujuan]);
 
   useEffect(() => {
+    if (status !== "authenticated") {
+      return;
+    }
     const noResi = generateNoResi(data.cabang, data.posisi);
     const tgl = new Date().toLocaleString("en-UK", {
       day: "numeric",
@@ -208,6 +220,7 @@ const InputResi = (props) => {
         ongkirPerkilo: dataOngkir[`${inputValue.layanan}`].toString(),
         noResi: noResi,
         tglTransaksi: tgl,
+        petugasInput: data.nama,
       }));
     }
   }, [inputValue.beratBarang]);
@@ -397,9 +410,21 @@ const InputResi = (props) => {
             placeholder="Pilih cabang asal"
           >
             <option value=""></option>
-            <option value="bengkulu">BENGKULU</option>
-            <option value="surabaya">SURABAYA</option>
-            <option value="jakarta">JAKARTA</option>
+            {status === "authenticated"
+              ? data.posisi === "GEN"
+                ? listCabangAsal.map((d, i) => (
+                    <option value={d.cab} key={i}>
+                      {d.cab.toUpperCase()}
+                    </option>
+                  ))
+                : listCabangAsal
+                    .filter((d) => d.tlc === data.cabang)
+                    .map((d, i) => (
+                      <option value={d.cab} key={i}>
+                        {d.cab.toUpperCase()}
+                      </option>
+                    ))
+              : null}
           </select>
           <span></span>
           {inputIsValid.cabangAsal ? (

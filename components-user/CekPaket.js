@@ -4,22 +4,28 @@ import MainNav from "./MainNav";
 import Button from "../components-app/ui/Button";
 import Search from "../public/icons/search";
 import LoadingSpinner from "../public/icons/loading-spinner";
+import Check from "../public/icons/check";
 
 import styles from "./CekPaket.module.css";
 
 const CekPaket = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fetchSuccess, setFetchSuccess] = useState(false);
+  const [dataResi, setDataResi] = useState({});
   const noResiRef = useRef();
 
   const submitHandler = (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     fetch("/api/data-resi/" + noResiRef.current.value.toUpperCase())
       .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        setFetchSuccess(true);
+        setDataResi(data);
+        setIsLoading(false);
+      });
   };
-  //   console.log(noResiRef.current.value);
+  console.log(dataResi);
   return (
     <div>
       <MainNav />
@@ -40,13 +46,20 @@ const CekPaket = () => {
         </div>
         <div className={styles["card-2"]}>
           <h2 className={styles["title"]}>Detail Posisi Paket</h2>
-          <div>
-            <div>ICON</div>
-            <div>
-              <div>Posisi Paket</div>
-              <div>Tanggal</div>
+
+          {fetchSuccess ? (
+            <div className={styles["content"]}>
+              <div className={styles["content__icon"]}>
+                <Check />
+              </div>
+              <div className={styles["content__detail"]}>
+                <div className={styles["content__title"]}>
+                  Transaksi Pengiriman [{dataResi.cabangAsal.toUpperCase()}]
+                </div>
+                <div className={styles["content__date"]}>{dataResi.tglTransaksi}</div>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>
