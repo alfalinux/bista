@@ -57,10 +57,12 @@ const Sidemenu = (props) => {
                   Create Order
                 </li>
               </Link>
-              <li className={styles["list"]}>
-                <Link href="/app/outgoing/create-manifest">Create Manifest</Link>
-              </li>
-              <li className={styles["list"]}>Create Surat Jalan</li>
+              <Link href="/app/outgoing/create-manifest">
+                <li className={styles["list"]}>Create Manifest</li>
+              </Link>
+              <Link href="/app/outgoing/create-surat-jalan">
+                <li className={styles["list"]}>Create Surat Jalan</li>
+              </Link>
             </ul>
           )}
         </div>

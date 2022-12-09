@@ -2,7 +2,6 @@ import { connectDatabase, findResiBelumManifest } from "../../../../helpers/mong
 
 const handler = async (req, res) => {
   const { cabangAsal } = req.query;
-  console.log(req.query);
   let client;
   try {
     client = await connectDatabase();

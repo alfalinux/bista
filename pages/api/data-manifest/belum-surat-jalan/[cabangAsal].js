@@ -1,8 +1,7 @@
-import { connectDatabase, findResiBelumManifest } from "../../../../helpers/mongodbConnect";
+import { connectDatabase, findManifestBelumSuratJalan } from "../../../../helpers/mongodbConnect";
 
 const handler = async (req, res) => {
   const { cabangAsal } = req.query;
-  console.log(req.query);
   let client;
   try {
     client = await connectDatabase();
@@ -14,10 +13,10 @@ const handler = async (req, res) => {
 
   let result;
   try {
-    result = await findResiBelumManifest(client, "dataResi", cabangAsal);
+    result = await findManifestBelumSuratJalan(client, "dataManifest", cabangAsal);
   } catch (error) {
     client.close();
-    res.status(500).json({ message: "Data cabang tidak ditemukan" });
+    res.status(500).json({ message: "Data manifest tidak ditemukan" });
     return;
   }
   res.status(201).json(result);

@@ -19,7 +19,7 @@ const ModalPrintResi = ({ onEdit, onPrint, data }) => {
   }, []);
   const uploadDataHandler = () => {
     setIsLoading(true);
-    fetch("/api/data-resi/post", {
+    fetch("/api/data-resi/post-resi", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

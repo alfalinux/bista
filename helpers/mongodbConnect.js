@@ -15,6 +15,15 @@ export const insertDocument = async (client, collection, document) => {
   return result;
 };
 
+export const updateManyDocument = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .updateMany({ noResi: { $in: filter } }, { $set: { noManifest: update.no, tglManifest: update.tgl } });
+
+  return result;
+};
+
 export const getAllDatabase = async (client, collection, sort) => {
   const db = client.db("bista");
   const result = await db.collection(collection).find().sort(sort).toArray();
@@ -31,5 +40,15 @@ export const findResi = async (client, collection, noResi) => {
 export const findResiBelumManifest = async (client, collection, cabangAsal) => {
   const db = client.db("bista");
   const result = await db.collection(collection).find({ cabangAsal: cabangAsal, noManifest: null }).toArray();
+  return result;
+};
+
+export const findManifestBelumSuratJalan = async (client, collection, cabangAsal) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ dataResi: { $elemMatch: { cabangAsal: cabangAsal } }, noSuratJalan: null })
+    .toArray();
+
   return result;
 };

@@ -75,15 +75,32 @@ const CreateManifest = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+    const listNoResi = listResi.map((d) => d.noResi);
 
-    fetch("/api/data-manifest/post-manifest", {
-      method: "POST",
+    // post dataManifest
+    try {
+      fetch("/api/data-manifest/post-manifest", {
+        method: "POST",
+        body: JSON.stringify({
+          noManifest: noManifest,
+          tglManifest: tgl,
+          dataResi: listResi,
+          konsolidasi: konsolidasi,
+          petugasInput: data.nama,
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      alert("Berhasil Create Manifest");
+    } catch (error) {
+      alert(error);
+    }
+
+    // update dataResi
+    fetch("/api/data-resi/update-many-resi", {
+      method: "PATCH",
       body: JSON.stringify({
-        noManifest: noManifest,
-        tglManifest: tgl,
-        dataResi: listResi,
-        status: "created",
-        petugasInput: data.nama,
+        filter: listNoResi,
+        update: { no: noManifest, tgl: tgl },
       }),
       headers: { "Content-Type": "application/json" },
     });
@@ -113,15 +130,18 @@ const CreateManifest = () => {
       .then((data) => setListCabang(data));
   }, []);
 
-  // console.log(listCabang.filter((d) => d.cab === "bengkulu")[0].tlc);
-
   useEffect(() => {
+    setIsLoading(true);
     fetch("/api/data-resi/belum-manifest/" + cabangAsal)
       .then((response) => response.json())
-      .then((data) => setDataResi(data));
+      .then((data) => {
+        setDataResi(data);
+        setIsLoading(false);
+      });
   }, [cabangAsal]);
 
   useEffect(() => {
+    setIsLoading(true);
     if (dataResi) {
       const getCabang = dataResi.map((d) => ({ ibukota: d.dataOngkir.ibukota, cov: d.dataOngkir.cov }));
       const coveran = getCabang.map((d) => d.cov);
@@ -131,6 +151,7 @@ const CreateManifest = () => {
         setListTujuan([...new Set(tujuan)]);
       }
     }
+    setIsLoading(false);
   }, [dataResi, coveranArea]);
 
   return (
@@ -197,7 +218,11 @@ const CreateManifest = () => {
       )}
 
       {/* --Display Tabel Options -- */}
-      {dataResi ? (
+      {isLoading ? (
+        <div className="center-loading">
+          <LoadingSpinner />
+        </div>
+      ) : dataResi ? (
         <table className="table-container">
           <thead className="table-head">
             <tr>
