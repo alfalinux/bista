@@ -4,6 +4,7 @@ import styles from "./CreateSuratJalan.module.css";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
 import Button from "./ui/Button";
+import generateNoSuratJalan from "../helpers/generateNoSuratJalan";
 
 const CreateSuratJalan = () => {
   const { data, status } = useSession();
@@ -23,8 +24,8 @@ const CreateSuratJalan = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
     if (cabangAsal) {
+      setIsLoading(true);
       fetch("/api/data-manifest/belum-surat-jalan/" + cabangAsal)
         .then((response) => response.json())
         .then((data) => {
@@ -75,9 +76,66 @@ const CreateSuratJalan = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    const listNoManifest = listManifest.map((d) => d.noManifest);
+    const cabangAsalTlc = listCabang.filter((d) => d.cab === cabangAsal)[0].tlc;
+    const cabangTujuanTlc = listCabang.filter((d) => d.cab === cabangTujuan)[0].tlc;
+    const noSuratJalan = generateNoSuratJalan(cabangAsalTlc, cabangTujuanTlc);
+    const tgl = new Date().toLocaleString("en-UK", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const beratBarang = listManifest.reduce((total, obj) => Number(obj.beratBarang) + total, 0);
+    const konsolidasi = listManifest.reduce((total, obj) => Number(obj.konsolidasi) + total, 0);
+    const petugasInput = data.nama;
+
+    const dataSuratJalan = {
+      noSuratJalan: noSuratJalan,
+      tglSuratJalan: tgl,
+      cabangAsal: cabangAsal,
+      cabangAsalTlc: cabangAsalTlc,
+      cabangTujuan: cabangTujuan,
+      cabangTujuanTlc: cabangTujuanTlc,
+      namaDriver: namaDriver,
+      nopolDriver: nopolDriver,
+      konsolidasi: konsolidasi,
+      beratBarang: beratBarang,
+      petugasInput: petugasInput,
+      dataManifest: listManifest,
+    };
+
+    // post dataSuratJalan
+    fetch("/api/data-surat-jalan/post-surat-jalan", {
+      method: "POST",
+      body: JSON.stringify(dataSuratJalan),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    // update dataManifest
+    fetch("/api/data-manifest/update-many-manifest", {
+      method: "PATCH",
+      body: JSON.stringify({
+        filter: listNoManifest,
+        update: { suratJalan: [dataSuratJalan] },
+      }),
+      headers: { "Content-Type": "application/json" },
+    }).then((response) => {
+      if (response.status == 201) {
+        setCabangAsal("");
+        setCabangTujuan("");
+        setNamaDriver("");
+        setNopolDriver("");
+        setFetchDataManifest([]);
+        setListManifest([]);
+        alert("Berhasil Create Surat Jalan \n" + noSuratJalan);
+      } else {
+        alert("Surat Jalan Tidak Berhasil di Create \nCek Kembali Inputan Anda!");
+      }
+    });
   };
 
-  console.log(listManifest);
   return (
     <div className={styles["container"]}>
       {status === "authenticated" ? (
@@ -151,79 +209,89 @@ const CreateSuratJalan = () => {
           </form>
 
           {/* -- Display Table Manifest -- */}
-          <table className="table-container">
-            <thead className="table-head">
-              <tr>
-                <td>No</td>
-                <td>No Manifest</td>
-                <td>Asal</td>
-                <td>Tujuan</td>
-                <td>Coveran</td>
-                <td>Pilih</td>
-              </tr>
-            </thead>
-            <tbody className="table-body">
-              {cabangTujuan && fetchDataManifest
-                ? fetchDataManifest.map((d, i) => (
-                    <tr key={i}>
-                      <td className="center-element">{i + 1}</td>
-                      <td>{d.noManifest}</td>
-                      <td>{d.dataResi[0].cabangAsal.toUpperCase()}</td>
-                      <td>{d.dataResi[0].cabangTujuan.toUpperCase()}</td>
-                      <td>{d.dataResi[0].coveranArea.toUpperCase()}</td>
-                      <td className="center-element">
-                        <input
-                          id="checkbox"
-                          type="checkbox"
-                          onChange={(e) =>
-                            checkboxChangeHandler(e, {
-                              noManifest: d.noManifest,
-                              cabangAsal: d.dataResi[0].cabangAsal,
-                              cabangAsalTlc: d.dataResi[0].cabangAsalTlc,
-                              cabangTujuan: d.dataResi[0].cabangAsal,
-                              cabangTujuanTlc: d.dataResi[0].cabangTujuanTlc,
-                              coveranArea: d.dataResi[0].coveranArea,
-                              coveranAreaTlc: d.dataResi[0].coveranAreaTlc,
-                              beratBarang: d.dataResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
-                              konsolidasi: d.konsolidasi,
-                            })
-                          }
-                        />
-                      </td>
-                    </tr>
-                  ))
-                : null}
-            </tbody>
-          </table>
+          {isLoading ? (
+            <div className="center-loading">
+              <LoadingSpinner />
+            </div>
+          ) : fetchDataManifest.length !== 0 ? (
+            <table className="table-container">
+              <thead className="table-head">
+                <tr>
+                  <td>No</td>
+                  <td>No Manifest</td>
+                  <td>Asal</td>
+                  <td>Tujuan</td>
+                  <td>Coveran</td>
+                  <td>Pilih</td>
+                </tr>
+              </thead>
+              <tbody className="table-body">
+                {cabangAsal && fetchDataManifest
+                  ? fetchDataManifest.map((d, i) => (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>{d.noManifest}</td>
+                        <td>{d.cabangAsal.toUpperCase()}</td>
+                        <td>{d.cabangTujuan.toUpperCase()}</td>
+                        <td>{d.coveranArea.toUpperCase()}</td>
+                        <td className="center-element">
+                          <input
+                            id="checkbox"
+                            type="checkbox"
+                            onChange={(e) =>
+                              checkboxChangeHandler(e, {
+                                noManifest: d.noManifest,
+                                cabangAsal: d.cabangAsal,
+                                cabangAsalTlc: d.cabangAsalTlc,
+                                cabangTujuan: d.cabangTujuan,
+                                cabangTujuanTlc: d.cabangTujuanTlc,
+                                coveranArea: d.coveranArea,
+                                coveranAreaTlc: d.coveranAreaTlc,
+                                beratBarang: d.dataResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
+                                konsolidasi: d.konsolidasi,
+                              })
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  : null}
+              </tbody>
+            </table>
+          ) : null}
 
           {/* -- Display Create surat jalan Description */}
-          {listManifest ? (
-            <div className={styles["container-manifest"]}>
-              <div>
-                {cabangAsal.toUpperCase()} - {cabangTujuan.toUpperCase()}
-              </div>
-              <div className={styles["container-manifest-detail"]}>
-                <div>{listManifest.length} Manifest</div>
-                <div>{listManifest.reduce((total, obj) => Number(obj.beratBarang) + total, 0)} Kg</div>
-                <div>{listManifest.reduce((total, obj) => Number(obj.konsolidasi) + total, 0)} Koli</div>
-              </div>
 
-              <div>
-                <Button
-                  label="Create Manifest"
-                  width="full"
-                  color="black"
-                  icon={isLoading ? <LoadingSpinner /> : <Check />}
-                  disabled={
-                    !cabangAsal || !cabangTujuan || listManifest.length === 0 || !namaDriver || !nopolDriver
-                      ? true
-                      : false
-                  }
-                  clickHandler={submitHandler}
-                />
-              </div>
+          <div className={styles["container-manifest"]}>
+            {listManifest.length > 0 ? (
+              <>
+                <div>
+                  {cabangAsal.toUpperCase()} - {cabangTujuan.toUpperCase()}
+                </div>
+                <div className={styles["container-manifest-detail"]}>
+                  <div>{listManifest.length} Manifest</div>
+                  <div>{listManifest.reduce((total, obj) => Number(obj.beratBarang) + total, 0)} Kg</div>
+                  <div>{listManifest.reduce((total, obj) => Number(obj.konsolidasi) + total, 0)} Koli</div>
+                </div>
+              </>
+            ) : (
+              <div></div>
+            )}
+            <div>
+              <Button
+                label="Create Surat Jalan"
+                width="full"
+                color="black"
+                icon={isLoading ? <LoadingSpinner /> : <Check />}
+                disabled={
+                  !cabangAsal || !cabangTujuan || listManifest.length === 0 || !namaDriver || !nopolDriver
+                    ? true
+                    : false
+                }
+                clickHandler={submitHandler}
+              />
             </div>
-          ) : null}
+          </div>
         </>
       ) : null}
     </div>

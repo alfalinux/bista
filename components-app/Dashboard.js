@@ -1,8 +1,5 @@
-import React from "react";
-import ComingSoon from "./ui/ComingSoon";
-
 const Dashboard = () => {
-  return <div>DAhsboard</div>;
+  return <div> --- On Development ---</div>;
 };
 
 export default Dashboard;

@@ -5,7 +5,7 @@ import Topbar from "../../components-app/Topbar";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import LoadingPage from "../../components-app/ui/LoadingPage";
+import LoadingComponent from "../../components-app/ui/LoadingComponent";
 
 const Layouts = (props) => {
   const [showSideMenu, setShowSideMenu] = useState(false);
@@ -33,11 +33,10 @@ const Layouts = (props) => {
 
   return (
     <div className={styles["container"]}>
-      {loadingPage ? <LoadingPage /> : null}
       <Sidemenu style={showSideMenu} />
       <div className={styles["main-side"]}>
         <Topbar onToggle={showSideMenuHandler} onShow={showSideMenu} user={profile} />
-        {props.children}
+        {loadingPage ? <LoadingComponent /> : props.children}
       </div>
     </div>
   );

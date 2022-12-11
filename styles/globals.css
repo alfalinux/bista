@@ -65,10 +65,14 @@ button {
 
 .table-head tr td {
   font-size: 14px;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .table-body tr td {
   font-size: 14px;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .table-body * {

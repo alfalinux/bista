@@ -1,7 +1,6 @@
-import { connectDatabase, updateManyResi } from "../../../helpers/mongodbConnect";
+import { connectDatabase, insertDocument } from "../../../helpers/mongodbConnect";
 
 const handler = async (req, res) => {
-  const { filter, update } = req.body;
   let client;
   try {
     client = await connectDatabase();
@@ -10,10 +9,10 @@ const handler = async (req, res) => {
     return;
   }
 
-  if (req.method === "PATCH") {
+  if (req.method === "POST") {
     let result;
     try {
-      result = await updateManyResi(client, "dataResi", filter, update);
+      result = await insertDocument(client, "dataSuratJalan", req.body);
       client.close();
     } catch (error) {
       res.status(500).json({ message: "Gagal menyimpan ke database" });

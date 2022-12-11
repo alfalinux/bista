@@ -67,7 +67,12 @@ const CreateManifest = () => {
   const submitHandler = (e) => {
     e.preventDefault;
     setIsLoading(true);
-    const noManifest = generateNoManifest(listResi[0].cabangAsalTlc, listResi[0].cabangTujuanTlc);
+    const tlc = {
+      asal: listCabang.filter((d) => d.cab === cabangAsal)[0].tlc,
+      coveran: listCabang.filter((d) => d.cab === coveranArea)[0].tlc,
+      tujuan: dataResi.filter((d) => d.dataOngkir.ibukota === cabangTujuan)[0].dataOngkir.tlc,
+    };
+    const noManifest = generateNoManifest(tlc.asal, tlc.tujuan);
     const tgl = new Date().toLocaleString("en-UK", {
       day: "numeric",
       month: "short",
@@ -84,9 +89,17 @@ const CreateManifest = () => {
         body: JSON.stringify({
           noManifest: noManifest,
           tglManifest: tgl,
-          dataResi: listResi,
+          cabangAsal: cabangAsal,
+          cabangAsalTlc: tlc.asal,
+          cabangTujuan: cabangTujuan,
+          cabangTujuanTlc: tlc.tujuan,
+          coveranArea: coveranArea,
+          coveranAreaTlc: tlc.coveran,
+          jumlahBerat: listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
+          jumlahBarang: listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0),
           konsolidasi: konsolidasi,
           petugasInput: data.nama,
+          dataResi: listResi,
         }),
         headers: { "Content-Type": "application/json" },
       });
@@ -100,7 +113,7 @@ const CreateManifest = () => {
       method: "PATCH",
       body: JSON.stringify({
         filter: listNoResi,
-        update: { no: noManifest, tgl: tgl },
+        update: { noManifest: noManifest, tglManifest: tgl },
       }),
       headers: { "Content-Type": "application/json" },
     });
@@ -235,8 +248,15 @@ const CreateManifest = () => {
             </tr>
           </thead>
           <tbody className="table-body">
-            {cabangAsal && !coveranArea && !cabangTujuan
-              ? dataResi.map((d, i) => (
+            {cabangAsal && !coveranArea && !cabangTujuan ? (
+              dataResi.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="error-txt">
+                    Data Tidak Ditemukan...
+                  </td>
+                </tr>
+              ) : (
+                dataResi.map((d, i) => (
                   <tr key={i}>
                     <td className="center-element">{i + 1}</td>
                     <td>{d.noResi}</td>
@@ -250,12 +270,6 @@ const CreateManifest = () => {
                         onChange={(e) =>
                           checkboxChangeHandler(e, {
                             noResi: d.noResi,
-                            cabangAsal: d.cabangAsal,
-                            cabangAsalTlc: listCabang.filter((list) => list.cab === d.cabangAsal)[0].tlc,
-                            cabangTujuan: d.cabangTujuan,
-                            cabangTujuanTlc: d.dataOngkir.tlc,
-                            coveranArea: d.dataOngkir.cov,
-                            coveranAreaTlc: d.dataOngkir.covTlc,
                             beratBarang: d.beratBarang,
                             jumlahBarang: d.jumlahBarang,
                           })
@@ -265,94 +279,88 @@ const CreateManifest = () => {
                     </td>
                   </tr>
                 ))
-              : cabangAsal && coveranArea && !cabangTujuan
-              ? dataResi
-                  .filter((d) => d.dataOngkir.cov === coveranArea)
-                  .map((d, i) => (
-                    <tr key={i}>
-                      <td className="center-element">{i + 1}</td>
-                      <td>{d.noResi}</td>
-                      <td>{d.cabangAsal.toUpperCase()}</td>
-                      <td>{d.cabangTujuan}</td>
-                      <td>{d.dataOngkir.cov.toUpperCase()}</td>
-                      <td className="center-element">
-                        <input
-                          id="checkbox"
-                          type="checkbox"
-                          onChange={(e) =>
-                            checkboxChangeHandler(e, {
-                              noResi: d.noResi,
-                              cabangAsal: d.cabangAsal,
-                              cabangAsalTlc: listCabang.filter((list) => list.cab === d.cabangAsal)[0].tlc,
-                              cabangTujuan: d.cabangTujuan,
-                              cabangTujuanTlc: d.dataOngkir.tlc,
-                              coveranArea: d.dataOngkir.cov,
-                              coveranAreaTlc: d.dataOngkir.covTlc,
-                              beratBarang: d.beratBarang,
-                              jumlahBarang: d.jumlahBarang,
-                            })
-                          }
-                          disabled={true}
-                        />
-                      </td>
-                    </tr>
-                  ))
-              : cabangAsal && coveranArea && cabangTujuan
-              ? dataResi
-                  .filter((d) => d.dataOngkir.ibukota === cabangTujuan)
-                  .map((d, i) => (
-                    <tr key={i}>
-                      <td className="center-element">{i + 1}</td>
-                      <td>{d.noResi}</td>
-                      <td>{d.cabangAsal.toUpperCase()}</td>
-                      <td>{d.cabangTujuan}</td>
-                      <td>{d.dataOngkir.cov.toUpperCase()}</td>
-                      <td className="center-element">
-                        <input
-                          id="checkbox"
-                          type="checkbox"
-                          onChange={(e) =>
-                            checkboxChangeHandler(e, {
-                              noResi: d.noResi,
-                              cabangAsal: d.cabangAsal,
-                              cabangAsalTlc: listCabang.filter((list) => list.cab === d.cabangAsal)[0].tlc,
-                              cabangTujuan: d.cabangTujuan,
-                              cabangTujuanTlc: d.dataOngkir.tlc,
-                              coveranArea: d.dataOngkir.cov,
-                              coveranAreaTlc: d.dataOngkir.covTlc,
-                              beratBarang: d.beratBarang,
-                              jumlahBarang: d.jumlahBarang,
-                            })
-                          }
-                        />
-                      </td>
-                    </tr>
-                  ))
-              : null}
+              )
+            ) : cabangAsal && coveranArea && !cabangTujuan ? (
+              dataResi
+                .filter((d) => d.dataOngkir.cov === coveranArea)
+                .map((d, i) => (
+                  <tr key={i}>
+                    <td className="center-element">{i + 1}</td>
+                    <td>{d.noResi}</td>
+                    <td>{d.cabangAsal.toUpperCase()}</td>
+                    <td>{d.cabangTujuan}</td>
+                    <td>{d.dataOngkir.cov.toUpperCase()}</td>
+                    <td className="center-element">
+                      <input
+                        id="checkbox"
+                        type="checkbox"
+                        onChange={(e) =>
+                          checkboxChangeHandler(e, {
+                            noResi: d.noResi,
+                            beratBarang: d.beratBarang,
+                            jumlahBarang: d.jumlahBarang,
+                          })
+                        }
+                        disabled={true}
+                      />
+                    </td>
+                  </tr>
+                ))
+            ) : cabangAsal && coveranArea && cabangTujuan ? (
+              dataResi
+                .filter((d) => d.dataOngkir.ibukota === cabangTujuan)
+                .map((d, i) => (
+                  <tr key={i}>
+                    <td className="center-element">{i + 1}</td>
+                    <td>{d.noResi}</td>
+                    <td>{d.cabangAsal.toUpperCase()}</td>
+                    <td>{d.cabangTujuan}</td>
+                    <td>{d.dataOngkir.cov.toUpperCase()}</td>
+                    <td className="center-element">
+                      <input
+                        id="checkbox"
+                        type="checkbox"
+                        onChange={(e) =>
+                          checkboxChangeHandler(e, {
+                            noResi: d.noResi,
+                            beratBarang: d.beratBarang,
+                            jumlahBarang: d.jumlahBarang,
+                          })
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))
+            ) : null}
           </tbody>
         </table>
       ) : null}
-
       {/* -- Display Create MAnifest Description */}
       <div className={styles["container-manifest"]}>
-        <div>
-          {cabangAsal.toUpperCase()} - {cabangTujuan.toUpperCase()}
-        </div>
-        <div className={styles["container-manifest-detail"]}>
-          <div>{listResi.length} Resi</div>
-          <div>{listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0)} Kg</div>
-          <div>{listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0)} Koli</div>
-        </div>
-        <div>
-          Konsolidasi:{" "}
-          <input
-            type="number"
-            className={styles["konsol-input"]}
-            placeholder="jumlah konsol..."
-            value={konsolidasi}
-            onChange={konsolidasiChangeHandler}
-          />
-        </div>
+        {listResi.length > 0 ? (
+          <>
+            <div>
+              {cabangAsal.toUpperCase()} - {cabangTujuan.toUpperCase()}
+            </div>
+            <div className={styles["container-manifest-detail"]}>
+              <div>{listResi.length} Resi</div>
+              <div>{listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0)} Kg</div>
+              <div>{listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0)} Koli</div>
+            </div>
+            <div>
+              Konsolidasi:{" "}
+              <input
+                type="number"
+                className={styles["konsol-input"]}
+                placeholder="jumlah konsol..."
+                value={konsolidasi}
+                onChange={konsolidasiChangeHandler}
+              />
+            </div>
+          </>
+        ) : (
+          <div></div>
+        )}
         <div>
           <Button
             label="Create Manifest"
