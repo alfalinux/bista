@@ -11,13 +11,17 @@ const MainMenu = () => {
     router.push("/cek-tarif");
   };
 
+  const trackingHandler = () => {
+    router.push("/cek-paket");
+  };
+
   return (
     <section className={styles["container"]}>
       <div className={`${styles["card"]} ${styles["black"]}`}>
         <div className={styles["icon"]}>
           <Search />
         </div>
-        <div className={styles["text"]}>
+        <div className={styles["text"]} onClick={trackingHandler}>
           <h1>Cek Paket</h1>
           <p>Lihat status paket terkini</p>
         </div>

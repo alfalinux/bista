@@ -6,15 +6,17 @@ import styles from "./ReceiveManifest.module.css";
 import Button from "./ui/Button";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
+import LoadingPage from "./ui/LoadingPage";
 
 const ReceiveManifest = () => {
   const { data, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [listCabang, setListCabang] = useState([]);
 
   const [cabangTujuan, setCabangTujuan] = useState("");
   const [fetchDataManifest, setFetchDataManifest] = useState([]);
-  const [manifestChecked, setManifestChecked] = useState({});
+  const [manifestChecked, setManifestChecked] = useState([]);
 
   useEffect(() => {
     if (status !== "authenticated") {
@@ -23,10 +25,6 @@ const ReceiveManifest = () => {
     fetch("/api/cabang")
       .then((response) => response.json())
       .then((data) => setListCabang(data));
-
-    if (data.posisi !== "GEN") {
-      setCabangTujuan(data.cabang);
-    }
   }, [status]);
 
   useEffect(() => {
@@ -50,43 +48,60 @@ const ReceiveManifest = () => {
     }
   }, [cabangTujuan]);
 
+  useEffect(() => {
+    const checkbox = document.querySelectorAll("#checkbox");
+    for (let item of checkbox) {
+      item.checked = false;
+    }
+  }, [cabangTujuan]);
+
   const cabangTujuanChangeHandler = (e) => {
     setIsLoading(true);
     setCabangTujuan(e.target.value);
-    setManifestChecked({});
+    setManifestChecked([]);
     setIsLoading(false);
   };
 
   const checkboxChangeHandler = (e, checked) => {
-    setManifestChecked(checked);
+    if (e.target.checked) {
+      setManifestChecked((prevManifestChecked) => [...prevManifestChecked, checked]);
+    }
+
+    if (!e.target.checked) {
+      setManifestChecked((prevManifestChecked) =>
+        prevManifestChecked.filter((d) => d.noManifest !== checked.noManifest)
+      );
+    }
   };
 
   const submitHandler = (e) => {
+    setIsLoadingPage(true);
     e.preventDefault();
     const tgl = getDate();
-    const filter = listSuratJalan.map((d) => d.noSuratJalan);
+    const filter = manifestChecked.map((d) => d.noManifest);
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
 
-    // fetch("/api/data-surat-jalan/update-many-surat-jalan", {
-    //   method: "PATCH",
-    //   body: JSON.stringify({ filter: filter, update: update }),
-    //   headers: { "Content-Type": "application/json" },
-    // }).then((response) => {
-    //   if (response.status === 201) {
-    //     setCabangTujuan("");
-    //     setFetchDataManifest([]);
-    //     setListSuratJalan([]);
-    //     return alert("Surat Jalan Berhasil di Terima \n di cabang " + cabangTujuan);
-    //   } else {
-    //     return alert("Receiving Surat Jalan Tidak Berhasil \n Cek kembali inputan Anda");
-    //   }
-    // });
-
-    // Reset All State
+    fetch("/api/data-manifest/update-receive-manifest", {
+      method: "PATCH",
+      body: JSON.stringify({ filter: filter, update: update }),
+      headers: { "Content-Type": "application/json" },
+    }).then((response) => {
+      if (response.status === 201) {
+        setCabangTujuan("");
+        setManifestChecked([]);
+        setIsLoadingPage(false);
+        return alert("Manifest Berhasil di Recieve \n di cabang " + cabangTujuan);
+      } else {
+        setManifestChecked([]);
+        setIsLoadingPage(false);
+        return alert("Receiving Manifest Tidak Berhasil \n Cek kembali inputan Anda");
+      }
+    });
   };
 
   return (
     <div className={styles["container"]}>
+      {isLoadingPage ? <LoadingPage /> : null}
       {/* --- Show List Cabang Tujuan if user Role is GEN */}
       {status === "authenticated" ? (
         <div className={styles["cabang-option"]}>
@@ -95,11 +110,19 @@ const ReceiveManifest = () => {
             <option value="" disabled>
               --pilih cabang tujuan--
             </option>
-            {listCabang.map((d, i) => (
-              <option key={i} value={d.cab}>
-                {d.cab.toUpperCase()}
-              </option>
-            ))}
+            {data.posisi === "GEN"
+              ? listCabang.map((d, i) => (
+                  <option key={i} value={d.cab}>
+                    {d.cab.toUpperCase()}
+                  </option>
+                ))
+              : listCabang
+                  .filter((d) => d.tlc === data.cabang)
+                  .map((d, i) => (
+                    <option key={i} value={d.cab}>
+                      {d.cab.toUpperCase()}
+                    </option>
+                  ))}
           </select>
         </div>
       ) : null}
@@ -153,9 +176,9 @@ const ReceiveManifest = () => {
                     <input
                       id="checkbox"
                       name="checkbox"
-                      type="radio"
+                      type="checkbox"
                       onChange={(e) => checkboxChangeHandler(e, d)}
-                      disabled={true}
+                      disabled={!fetchDataManifest[0].suratJalan.map((d) => d.receivedIn).includes(cabangTujuan)}
                     />
                   </div>
                 </td>
@@ -176,9 +199,15 @@ const ReceiveManifest = () => {
         {Object.keys(manifestChecked).length > 0 ? (
           <div className={styles["container-manifest-detail"]}>
             <span>Anda akan melakukan proses Recieve untuk </span>
-            <span>Surat Jalan Nomor {manifestChecked.noManifest}, </span>
-            <span>total berat {manifestChecked.jumlahBerat} Kg, </span>
-            <span>jumlah paket {manifestChecked.jumlahBarang} koli</span>
+            <span>{manifestChecked.length} Nomor Manifest</span>
+            <span>
+              total berat barang{" "}
+              {manifestChecked.map((d) => d.jumlahBerat).reduce((total, val) => Number(val) + total, 0)} Kg,{" "}
+            </span>
+            <span>
+              jumlah barang {manifestChecked.map((d) => d.konsolidasi).reduce((total, val) => Number(val) + total, 0)}{" "}
+              Koli
+            </span>
           </div>
         ) : (
           <div />

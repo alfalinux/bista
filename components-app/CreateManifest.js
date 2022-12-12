@@ -11,6 +11,7 @@ import LoadingSpinner from "../public/icons/loading-spinner";
 const CreateManifest = () => {
   const { data, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [listCabang, setListCabang] = useState([]);
   const [cabangAsal, setCabangAsal] = useState("");
   const [cabangTujuan, setCabangTujuan] = useState("");
@@ -66,7 +67,7 @@ const CreateManifest = () => {
 
   const submitHandler = (e) => {
     e.preventDefault;
-    setIsLoading(true);
+    setIsLoadingPage(true);
     const tlc = {
       asal: listCabang.filter((d) => d.cab === cabangAsal)[0].tlc,
       coveran: listCabang.filter((d) => d.cab === coveranArea)[0].tlc,
@@ -81,6 +82,16 @@ const CreateManifest = () => {
       minute: "2-digit",
     });
     const listNoResi = listResi.map((d) => d.noResi);
+
+    // update dataResi
+    fetch("/api/data-resi/update-many-resi", {
+      method: "PATCH",
+      body: JSON.stringify({
+        filter: listNoResi,
+        update: { noManifest: noManifest, tglManifest: tgl },
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
 
     // post dataManifest
     try {
@@ -103,20 +114,12 @@ const CreateManifest = () => {
         }),
         headers: { "Content-Type": "application/json" },
       });
+      setIsLoadingPage(false);
       alert("Berhasil Create Manifest");
     } catch (error) {
-      alert(error);
+      setIsLoadingPage(false);
+      alert("Terjadi Kesalahan, silahkan ulangi proses");
     }
-
-    // update dataResi
-    fetch("/api/data-resi/update-many-resi", {
-      method: "PATCH",
-      body: JSON.stringify({
-        filter: listNoResi,
-        update: { noManifest: noManifest, tglManifest: tgl },
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
 
     // reset all state
     setCabangAsal("");
@@ -127,7 +130,6 @@ const CreateManifest = () => {
     setDataResi([]);
     setListResi([]);
     setKonsolidasi("");
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -169,6 +171,7 @@ const CreateManifest = () => {
 
   return (
     <div className={styles["container"]}>
+      {isLoadingPage ? <LoadingPage /> : null}
       {/* -- Display Form Selection -- */}
       {status === "authenticated" ? (
         <form className={styles["form-wrapper"]}>

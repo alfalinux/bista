@@ -4,12 +4,14 @@ import getDate from "../helpers/getDate";
 
 import styles from "./ReceiveSuratJalan.module.css";
 import Button from "./ui/Button";
+import LoadingPage from "../components-app/ui/LoadingPage";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
 
 const ReceiveSuratJalan = () => {
   const { data, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [listCabang, setListCabang] = useState([]);
 
   const [cabangTujuan, setCabangTujuan] = useState("");
@@ -23,10 +25,6 @@ const ReceiveSuratJalan = () => {
     fetch("/api/cabang")
       .then((response) => response.json())
       .then((data) => setListCabang(data));
-
-    if (data.posisi !== "GEN") {
-      setCabangTujuan(data.cabang);
-    }
   }, [status]);
 
   useEffect(() => {
@@ -56,7 +54,7 @@ const ReceiveSuratJalan = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoadingPage(true);
     const tgl = getDate();
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
     const filter = {
@@ -88,13 +86,15 @@ const ReceiveSuratJalan = () => {
         setCabangTujuan("");
         setFetchDataSuratJalan([]);
         setSuratJalanChecked({});
+        setIsLoadingPage(false);
       }
+      setIsLoadingPage(false);
     });
-    setIsLoading(false);
   };
-
+  console.log();
   return (
     <div className={styles["container"]}>
+      {isLoadingPage ? <LoadingPage /> : null}
       {/* --- Show List Cabang Tujuan if user Role is GEN */}
       {status === "authenticated" ? (
         <div className={styles["cabang-option"]}>
@@ -103,11 +103,19 @@ const ReceiveSuratJalan = () => {
             <option value="" disabled>
               --pilih cabang tujuan--
             </option>
-            {listCabang.map((d, i) => (
-              <option key={i} value={d.cab}>
-                {d.cab.toUpperCase()}
-              </option>
-            ))}
+            {data.posisi === "GEN"
+              ? listCabang.map((d, i) => (
+                  <option key={i} value={d.cab}>
+                    {d.cab.toUpperCase()}
+                  </option>
+                ))
+              : listCabang
+                  .filter((d) => d.tlc === data.cabang)
+                  .map((d, i) => (
+                    <option key={i} value={d.cab}>
+                      {d.cab.toUpperCase()}
+                    </option>
+                  ))}
           </select>
         </div>
       ) : null}

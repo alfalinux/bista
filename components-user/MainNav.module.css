@@ -71,12 +71,12 @@
 
   .list-menu-mobile {
     position: absolute;
-    width: 60%;
-    background-color: #fff;
+    min-width: 200px;
+    background-color: red;
     top: 60px;
-    left: 0;
+    right: 130px;
     margin: 0;
-    padding: 20px;
+    padding: 2px;
     border-radius: 4px;
     display: flex;
     flex-direction: column;
@@ -93,13 +93,11 @@
   }
 
   .list-menu-mobile li {
-    background-color: red;
-    border-radius: 4px;
+    background-color: #000;
     color: #fff;
-    font-size: 1.2em;
+    font-size: 16px;
     font-weight: 900;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 2p x 6px 0 rgba(0, 0, 0, 0.5);
   }
 
   .ham-menu-icon {

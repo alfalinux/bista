@@ -5,16 +5,19 @@ import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
 import Button from "./ui/Button";
 import generateNoSuratJalan from "../helpers/generateNoSuratJalan";
+import LoadingPage from "./ui/LoadingPage";
 
 const CreateSuratJalan = () => {
   const { data, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [listCabang, setListCabang] = useState([]);
   const [cabangAsal, setCabangAsal] = useState("");
   const [cabangTujuan, setCabangTujuan] = useState("");
   const [namaDriver, setNamaDriver] = useState("");
   const [nopolDriver, setNopolDriver] = useState("");
   const [fetchDataManifest, setFetchDataManifest] = useState([]);
+  const [fetchDataManifestTransit, setFetchDataManifestTransit] = useState([]);
   const [listManifest, setListManifest] = useState([]);
 
   useEffect(() => {
@@ -33,14 +36,27 @@ const CreateSuratJalan = () => {
           setFetchDataManifest(data);
           setIsLoading(false);
         });
+
+      fetch("/api/data-manifest/cabang-transit/" + cabangAsal)
+        .then((response) => response.json())
+        .then((data) => setFetchDataManifestTransit(data));
     }
+
     setCabangTujuan("");
     setFetchDataManifest([]);
+    setFetchDataManifestTransit([]);
     setNamaDriver("");
     setNopolDriver("");
     setFetchDataManifest([]);
     setListManifest([]);
   }, [cabangAsal]);
+
+  useEffect(() => {
+    const checkbox = document.querySelectorAll("#checkbox");
+    for (let item of checkbox) {
+      item.checked = false;
+    }
+  }, [cabangAsal, cabangTujuan]);
 
   const cabangAsalChangeHandler = (e) => {
     if (e.target.value === "") {
@@ -50,10 +66,10 @@ const CreateSuratJalan = () => {
   };
 
   const cabangTujuanChangeHandler = (e) => {
-    if (e.target.value === "") {
-      setCabangTujuan("");
-    }
     setCabangTujuan(e.target.value);
+    setNamaDriver("");
+    setNopolDriver("");
+    setListManifest([]);
   };
 
   const namaDriverChangeHandler = (e) => {
@@ -76,6 +92,7 @@ const CreateSuratJalan = () => {
   };
 
   const submitHandler = (e) => {
+    setIsLoadingPage(true);
     e.preventDefault();
     const listNoManifest = listManifest.map((d) => d.noManifest);
     const cabangAsalTlc = listCabang.filter((d) => d.cab === cabangAsal)[0].tlc;
@@ -124,14 +141,16 @@ const CreateSuratJalan = () => {
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       if (response.status == 201) {
-        setCabangAsal("");
         setCabangTujuan("");
         setNamaDriver("");
         setNopolDriver("");
         setFetchDataManifest([]);
+        setFetchDataManifestTransit([]);
         setListManifest([]);
+        setIsLoadingPage(false);
         alert("Berhasil Create Surat Jalan \n" + noSuratJalan);
       } else {
+        setIsLoadingPage(false);
         alert("Surat Jalan Tidak Berhasil di Create \nCek Kembali Inputan Anda!");
       }
     });
@@ -139,6 +158,7 @@ const CreateSuratJalan = () => {
 
   return (
     <div className={styles["container"]}>
+      {isLoadingPage ? <LoadingPage /> : null}
       {status === "authenticated" ? (
         <>
           <form className={styles["form-wrapper"]}>
@@ -209,7 +229,7 @@ const CreateSuratJalan = () => {
             </div>
           </form>
 
-          {/* -- Display Table Manifest -- */}
+          {/* -- Display Table Manifest Origin-- */}
           {isLoading ? (
             <div className="center-loading">
               <LoadingSpinner />
@@ -219,7 +239,7 @@ const CreateSuratJalan = () => {
               <thead className="table-head">
                 <tr>
                   <td>No</td>
-                  <td>No Manifest</td>
+                  <td>No Manifest Origin</td>
                   <td>Asal</td>
                   <td>Tujuan</td>
                   <td>Coveran</td>
@@ -239,6 +259,60 @@ const CreateSuratJalan = () => {
                           <input
                             id="checkbox"
                             type="checkbox"
+                            disabled={!cabangAsal || !cabangTujuan || !namaDriver || !nopolDriver}
+                            onChange={(e) =>
+                              checkboxChangeHandler(e, {
+                                noManifest: d.noManifest,
+                                cabangAsal: d.cabangAsal,
+                                cabangAsalTlc: d.cabangAsalTlc,
+                                cabangTujuan: d.cabangTujuan,
+                                cabangTujuanTlc: d.cabangTujuanTlc,
+                                coveranArea: d.coveranArea,
+                                coveranAreaTlc: d.coveranAreaTlc,
+                                beratBarang: d.dataResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
+                                konsolidasi: d.konsolidasi,
+                              })
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  : null}
+              </tbody>
+            </table>
+          ) : null}
+
+          {/* -- Display Table Manifest TRANSIT-- */}
+          {isLoading ? (
+            <div className="center-loading">
+              <LoadingSpinner />
+            </div>
+          ) : fetchDataManifestTransit.length !== 0 ? (
+            <table className="table-container">
+              <thead className="table-head">
+                <tr>
+                  <td>No</td>
+                  <td>No Manifest Transit</td>
+                  <td>Asal</td>
+                  <td>Tujuan</td>
+                  <td>Coveran</td>
+                  <td>Pilih</td>
+                </tr>
+              </thead>
+              <tbody className="table-body">
+                {cabangAsal && fetchDataManifestTransit
+                  ? fetchDataManifestTransit.map((d, i) => (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>{d.noManifest}</td>
+                        <td>{d.cabangAsal.toUpperCase()}</td>
+                        <td>{d.cabangTujuan.toUpperCase()}</td>
+                        <td>{d.coveranArea.toUpperCase()}</td>
+                        <td className="center-element">
+                          <input
+                            id="checkbox"
+                            type="checkbox"
+                            disabled={!cabangAsal || !cabangTujuan || !namaDriver || !nopolDriver}
                             onChange={(e) =>
                               checkboxChangeHandler(e, {
                                 noManifest: d.noManifest,

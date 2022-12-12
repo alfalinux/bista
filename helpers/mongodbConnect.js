@@ -33,7 +33,21 @@ export const updateManyResi = async (client, collection, filter, update) => {
 
 export const updateManyManifest = async (client, collection, filter, update) => {
   const db = client.db("bista");
-  const result = await db.collection(collection).updateMany({ noManifest: { $in: filter } }, { $set: update });
+  const result = await db
+    .collection(collection)
+    .updateMany({ noManifest: { $in: filter } }, { $push: { suratJalan: update.suratJalan[0] } });
+
+  return result;
+};
+
+export const updateReceiveManifest = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .updateMany(
+      { noManifest: { $in: filter } },
+      { $set: { receivedIn: update.receivedIn, receivedAt: update.receivedAt, receivedBy: update.receivedBy } }
+    );
 
   return result;
 };

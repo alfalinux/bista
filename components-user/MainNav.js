@@ -5,7 +5,6 @@ import Link from "next/link";
 import styles from "./MainNav.module.css";
 import Bars from "../public/icons/bars";
 import Close from "../public/icons/close";
-import LoginIcon from "../public/icons/login-icon";
 import MenuModal from "./MenuModal";
 
 const MainNav = () => {
@@ -21,11 +20,6 @@ const MainNav = () => {
     }
   }, [status]);
 
-  const logoutHandler = (e) => {
-    e.preventDefault();
-    signOut();
-  };
-
   const showMenuHandler = () => {
     setShowMenu(showMenu ? false : true);
   };
@@ -34,26 +28,28 @@ const MainNav = () => {
     <>
       <nav className={styles["container"]}>
         <div className={styles["img-wrapper"]}>
-          <img className={styles["img-logo"]} src="/images/bista-header.png" alt="Bista Cargo Logo" />
+          <Link href="/">
+            <img className={styles["img-logo"]} src="/images/bista-header.png" alt="Bista Cargo Logo" />
+          </Link>
         </div>
         <ul className={showMenu ? styles["list-menu-mobile"] : styles["list-menu"]}>
-          <li className={styles["list-item"]}>
+          <li className={styles["list-item"]} onClick={showMenuHandler}>
             <Link href="/">Beranda</Link>
           </li>
-          <li className={styles["list-item"]}>
+          <li className={styles["list-item"]} onClick={showMenuHandler}>
             <Link href="/#about">Tentang</Link>
           </li>
-          <li className={styles["list-item"]}>
+          <li className={styles["list-item"]} onClick={showMenuHandler}>
             <Link href="/#layanan">Layanan</Link>
           </li>
-          <li className={styles["list-item"]}>
+          <li className={styles["list-item"]} onClick={showMenuHandler}>
             <Link href="/#lokasi">Lokasi</Link>
           </li>
-          <li className={styles["list-item"]}>
+          <li className={styles["list-item"]} onClick={showMenuHandler}>
             <Link href="/#kontak">Kontak</Link>
           </li>
-          <li className={styles["list-item"]}>
-            {status === "authenticated" ? <div onClick={logoutHandler}>Logout</div> : <Link href="/auth">Login</Link>}
+          <li className={styles["list-item"]} onClick={showMenuHandler}>
+            {status === "authenticated" ? <Link href="/app">Member Area</Link> : <Link href="/auth">Login</Link>}
           </li>
         </ul>
         <div className={styles["ham-menu-icon"]} onClick={showMenuHandler}>
