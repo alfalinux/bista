@@ -54,9 +54,9 @@ export const updateManyManifestBySuratJalan = async (client, collection, filter,
   return result;
 };
 
-export const updateManySuratJalan = async (client, collection, filter, update) => {
+export const updateSuratJalan = async (client, collection, filter, update) => {
   const db = client.db("bista");
-  const result = await db.collection(collection).updateMany({ noSuratJalan: { $in: filter } }, { $set: update });
+  const result = await db.collection(collection).updateOne({ noSuratJalan: filter.noSuratJalan }, { $set: update });
 
   return result;
 };
@@ -77,7 +77,17 @@ export const findResiBelumManifest = async (client, collection, cabangAsal) => {
 
 export const findManifestBelumSuratJalan = async (client, collection, cabangAsal) => {
   const db = client.db("bista");
-  const result = await db.collection(collection).find({ cabangAsal: cabangAsal, noSuratJalan: null }).toArray();
+  const result = await db.collection(collection).find({ cabangAsal: cabangAsal, suratJalan: null }).toArray();
+
+  return result;
+};
+
+export const findManifestTransit = async (client, collection, cabangTujuan) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ "suratJalan.receivedIn": cabangTujuan, "suratJalan.cabangAsal": { $ne: cabangTujuan } })
+    .toArray();
 
   return result;
 };
@@ -93,7 +103,7 @@ export const findManifestBelumReceive = async (client, collection, cabangTujuan)
   const db = client.db("bista");
   const result = await db
     .collection(collection)
-    .find({ coveranArea: cabangTujuan, receivedIn: null, noSuratJalan: { $ne: null } })
+    .find({ coveranArea: cabangTujuan, receivedIn: null, suratJalan: { $ne: null } })
     .toArray();
 
   return result;

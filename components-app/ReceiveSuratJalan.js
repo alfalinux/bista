@@ -54,9 +54,9 @@ const ReceiveSuratJalan = () => {
     setSuratJalanChecked(checked);
   };
 
-  console.log();
   const submitHandler = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const tgl = getDate();
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
     const filter = {
@@ -79,24 +79,20 @@ const ReceiveSuratJalan = () => {
       }
     });
 
-    // fetch("/api/data-surat-jalan/update-many-surat-jalan", {
-    //   method: "PATCH",
-    //   body: JSON.stringify({ filter: filter, update: update }),
-    //   headers: { "Content-Type": "application/json" },
-    // }).then((response) => {
-    //   if (response.status === 201) {
-    //     setCabangTujuan("");
-    //     setFetchDataSuratJalan([]);
-    //     setListSuratJalan([]);
-    //     return alert("Surat Jalan Berhasil di Terima \n di cabang " + cabangTujuan);
-    //   } else {
-    //     return alert("Receiving Surat Jalan Tidak Berhasil \n Cek kembali inputan Anda");
-    //   }
-    // });
-
-    // Reset All State
+    fetch("/api/data-surat-jalan/update-surat-jalan", {
+      method: "PATCH",
+      body: JSON.stringify({ filter: filter, update: update }),
+      headers: { "Content-Type": "application/json" },
+    }).then((response) => {
+      if (response.status === 201) {
+        setCabangTujuan("");
+        setFetchDataSuratJalan([]);
+        setSuratJalanChecked({});
+      }
+    });
+    setIsLoading(false);
   };
-  // console.log(suratJalanChecked);
+
   return (
     <div className={styles["container"]}>
       {/* --- Show List Cabang Tujuan if user Role is GEN */}

@@ -26,6 +26,7 @@ const CreateSuratJalan = () => {
   useEffect(() => {
     if (cabangAsal) {
       setIsLoading(true);
+
       fetch("/api/data-manifest/belum-surat-jalan/" + cabangAsal)
         .then((response) => response.json())
         .then((data) => {
@@ -33,17 +34,17 @@ const CreateSuratJalan = () => {
           setIsLoading(false);
         });
     }
+    setCabangTujuan("");
+    setFetchDataManifest([]);
+    setNamaDriver("");
+    setNopolDriver("");
+    setFetchDataManifest([]);
+    setListManifest([]);
   }, [cabangAsal]);
 
   const cabangAsalChangeHandler = (e) => {
     if (e.target.value === "") {
       setCabangAsal("");
-      setCabangTujuan("");
-      setFetchDataManifest([]);
-      setNamaDriver("");
-      setNopolDriver("");
-      setFetchDataManifest([]);
-      setListManifest([]);
     }
     setCabangAsal(e.target.value);
   };
@@ -167,8 +168,8 @@ const CreateSuratJalan = () => {
               <label className={styles["label"]} htmlFor="cabangTujuan">
                 Cabang Tujuan
               </label>
-              <select name="cabangTujuan" id="cabangTujuan" onChange={cabangTujuanChangeHandler}>
-                <option defaultValue=""></option>
+              <select name="cabangTujuan" id="cabangTujuan" defaultValue="" onChange={cabangTujuanChangeHandler}>
+                <option value=""></option>
                 {cabangAsal
                   ? listCabang.map((d, i) => (
                       <option key={i} value={d.cab}>

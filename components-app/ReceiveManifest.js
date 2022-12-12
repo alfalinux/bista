@@ -14,24 +14,7 @@ const ReceiveManifest = () => {
 
   const [cabangTujuan, setCabangTujuan] = useState("");
   const [fetchDataManifest, setFetchDataManifest] = useState([]);
-  const [fetchDataSuratJalan, setFetchDataSuratJalan] = useState([]);
-  const [listManifest, setListManifest] = useState([]);
-  const [manifestStatus, setManifestStatus] = useState([]);
-
-  // console.log(manifestStatus);
-  useEffect(() => {
-    if (fetchDataManifest.length > 0 || fetchDataSuratJalan > 0) {
-      const statusManifest = fetchDataManifest
-        .map((d) => d.noManifest)
-        .map((noManifest) => ({
-          noManifest: noManifest,
-          dataSuratJalan: fetchDataSuratJalan.filter((d) =>
-            d.dataManifest.map((d) => d.noManifest).includes(noManifest)
-          ),
-        }));
-      setManifestStatus(statusManifest);
-    }
-  }, [fetchDataManifest, fetchDataSuratJalan]);
+  const [manifestChecked, setManifestChecked] = useState({});
 
   useEffect(() => {
     if (status !== "authenticated") {
@@ -61,29 +44,21 @@ const ReceiveManifest = () => {
   }, [cabangTujuan]);
 
   useEffect(() => {
-    if (fetchDataManifest.length > 0) {
-      const listManifest = fetchDataManifest.map((d) => d.noManifest).join("/");
-      fetch("/api/data-manifest/inside-surat-jalan/" + listManifest)
-        .then((response) => response.json())
-        .then((data) => setFetchDataSuratJalan(data));
+    const checkbox = document.querySelectorAll("#checkbox");
+    for (let item of checkbox) {
+      item.checked = false;
     }
-  }, [fetchDataManifest]);
+  }, [cabangTujuan]);
 
   const cabangTujuanChangeHandler = (e) => {
     setIsLoading(true);
     setCabangTujuan(e.target.value);
+    setManifestChecked({});
     setIsLoading(false);
-    setListManifest([]);
   };
 
   const checkboxChangeHandler = (e, checked) => {
-    if (e.target.checked) {
-      setListManifest((prevListManifest) => [...prevListManifest, checked]);
-    }
-
-    if (!e.target.checked) {
-      setListManifest((prevListManifest) => prevListManifest.filter((d) => d.noManifest !== checked.noManifest));
-    }
+    setManifestChecked(checked);
   };
 
   const submitHandler = (e) => {
@@ -139,12 +114,11 @@ const ReceiveManifest = () => {
             <td>Tujuan</td>
             <td>Coveran</td>
             <td>Status</td>
-            <td>Nopol / No AWB</td>
             <td>Terima</td>
           </tr>
         </thead>
         <tbody className="table-body">
-          {cabangTujuan && fetchDataManifest.length !== 0 ? (
+          {cabangTujuan && fetchDataManifest.length > 0 ? (
             fetchDataManifest.map((d, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
@@ -153,17 +127,37 @@ const ReceiveManifest = () => {
                 <td>{d.cabangTujuan.toUpperCase()}</td>
                 <td>{d.coveranArea.toUpperCase()}</td>
                 <td>
-                  <div>
-                    {(() => {
-                      const noManifest = d.noManifest;
-                      const suratJalan = manifestStatus.filter((data) => data.noManifest === noManifest);
-                      return suratJalan[0].dataSuratJalan[0].noSuratJalan;
-                    })()}
-                  </div>
+                  {d.suratJalan.map((d) =>
+                    d.receivedIn ? (
+                      <div className="status-paket">
+                        <div>
+                          Received in <b>{d.receivedIn.toUpperCase()}</b>
+                        </div>
+                        <div>tgl {d.receivedAt}</div>
+                      </div>
+                    ) : (
+                      <div className="status-paket">
+                        <div>
+                          Perjalanan
+                          <b>
+                            {d.cabangAsal.toUpperCase()} - {d.cabangTujuan.toUpperCase()}
+                          </b>
+                        </div>
+                        <div>tgl {d.tglSuratJalan}</div>
+                      </div>
+                    )
+                  )}
                 </td>
-                <td></td>
-                <td className="center-element">
-                  <input id="checkbox" type="checkbox" onChange={(e) => checkboxChangeHandler(e, d)} />
+                <td>
+                  <div className="center-element">
+                    <input
+                      id="checkbox"
+                      name="checkbox"
+                      type="radio"
+                      onChange={(e) => checkboxChangeHandler(e, d)}
+                      disabled={true}
+                    />
+                  </div>
                 </td>
               </tr>
             ))
@@ -179,12 +173,12 @@ const ReceiveManifest = () => {
 
       {/* -- Display Create MAnifest Description */}
       <div className={styles["container-manifest"]}>
-        {listManifest.length !== 0 ? (
+        {Object.keys(manifestChecked).length > 0 ? (
           <div className={styles["container-manifest-detail"]}>
             <span>Anda akan melakukan proses Recieve untuk </span>
-            <span>{listManifest.length} Surat Jalan, </span>
-            <span>total berat {listManifest.reduce((total, obj) => Number(obj.beratBarang) + total, 0)} Kg, </span>
-            <span>jumlah paket {listManifest.reduce((total, obj) => Number(obj.konsolidasi) + total, 0)} koli</span>
+            <span>Surat Jalan Nomor {manifestChecked.noManifest}, </span>
+            <span>total berat {manifestChecked.jumlahBerat} Kg, </span>
+            <span>jumlah paket {manifestChecked.jumlahBarang} koli</span>
           </div>
         ) : (
           <div />
@@ -196,7 +190,7 @@ const ReceiveManifest = () => {
             width="full"
             color="black"
             icon={isLoading ? <LoadingSpinner /> : <Check />}
-            disabled={!cabangTujuan || listManifest.length === 0 ? true : false}
+            disabled={!cabangTujuan || Object.keys(manifestChecked).length === 0 ? true : false}
             clickHandler={submitHandler}
           />
         </div>

@@ -2,7 +2,7 @@ import { connectDatabase, updateManyManifestBySuratJalan } from "../../../helper
 
 const handler = async (req, res) => {
   const { filter, update } = req.body;
-  //   console.log(filter, update);
+
   let client;
   try {
     client = await connectDatabase();
