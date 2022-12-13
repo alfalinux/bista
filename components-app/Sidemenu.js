@@ -7,11 +7,14 @@ import HomeIcon from "../public/icons/HomeIcon";
 import TruckIcon from "../public/icons/TruckIcon";
 import RocketIcon from "../public/icons/RocketIcon";
 import ReportIcon from "../public/icons/ReportIcon";
+import PlaneIcon from "../public/icons/plane-icon";
 
 const Sidemenu = (props) => {
   const [outgoingSubmenu, setOutgoingSubmenu] = useState(false);
   const [incomingSubmenu, setIncomingSubmenu] = useState(false);
-  const [showReprintMenu, setShowReprintMenu] = useState(false);
+  const [reprintSubmenu, setReprintSubmenu] = useState(false);
+  const [deliverySubmenu, setDeliverySubmenu] = useState(false);
+
   const showMobileMenu = props.style;
   const router = useRouter();
 
@@ -23,13 +26,18 @@ const Sidemenu = (props) => {
     setIncomingSubmenu(incomingSubmenu ? false : true);
   };
 
-  const showReprintMenuHandler = (e) => {
-    setShowReprintMenu(showReprintMenu ? false : true);
+  const reprintMenuHandler = (e) => {
+    setReprintSubmenu(reprintSubmenu ? false : true);
+  };
+
+  const deliveryMenuHandler = (e) => {
+    setDeliverySubmenu(deliverySubmenu ? false : true);
   };
 
   const outgoingSubmenuIsValid = outgoingSubmenu || router.pathname.startsWith("/app/outgoing");
   const incomingSubmenuIsValid = incomingSubmenu || router.pathname.startsWith("/app/incoming");
-  const reprintSubmenuIsValid = showReprintMenu || router.pathname.startsWith("/app/reprint");
+  const deliverySubmenuIsValid = deliverySubmenu || router.pathname.startsWith("/app/delivery");
+  const reprintSubmenuIsValid = reprintSubmenu || router.pathname.startsWith("/app/reprint");
 
   return (
     <nav className={showMobileMenu ? styles["mobile-side-menu"] : styles["container"]}>
@@ -115,13 +123,37 @@ const Sidemenu = (props) => {
                   Receive Manifest
                 </li>
               </Link>
-              <Link href="/app/incoming/create-delivery">
+            </ul>
+          )}
+        </div>
+
+        {/* --- Delivery Menu --- */}
+        <div
+          className={router.pathname.startsWith("/app/delivery") ? styles["menu-active"] : styles["menu-btn"]}
+          onClick={deliveryMenuHandler}
+        >
+          <div className={styles["menu-title"]}>
+            <PlaneIcon />
+            <p className={styles["text-icon"]}>Delivery</p>
+          </div>
+          {deliverySubmenuIsValid && (
+            <ul className={styles["menu-list"]}>
+              <Link href="/app/delivery/create-delivery">
                 <li
                   className={
-                    router.pathname === "/app/incoming/create-delivery" ? styles["list-active"] : styles["list"]
+                    router.pathname === "/app/delivery/create-delivery" ? styles["list-active"] : styles["list"]
                   }
                 >
                   Create Delivery
+                </li>
+              </Link>
+              <Link href="/app/delivery/update-status-delivery">
+                <li
+                  className={
+                    router.pathname === "/app/delivery/update-status-delivery" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Update Status Delivery
                 </li>
               </Link>
             </ul>
@@ -131,7 +163,7 @@ const Sidemenu = (props) => {
         {/* --- Reprint Menu --- */}
         <div
           className={router.pathname.startsWith("/app/reprint") ? styles["menu-active"] : styles["menu-btn"]}
-          onClick={showReprintMenuHandler}
+          onClick={reprintMenuHandler}
         >
           <div className={styles["menu-title"]}>
             <ReportIcon />

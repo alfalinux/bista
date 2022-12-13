@@ -17,6 +17,7 @@ const handler = async (req, res) => {
   const db = client.db("bista");
 
   const existingUser = await db.collection("users").findOne({ email: email });
+  const idUser = await db.collection("users").find({ cabang: cabang, posisi: posisi }).toArray();
 
   if (existingUser) {
     res.status(422).json({ message: "email sudah pernah terdaftar" });
@@ -27,6 +28,7 @@ const handler = async (req, res) => {
   const hashedPassword = await hashPassword(password);
 
   const result = await db.collection("users").insertOne({
+    id: idUser.length + 1,
     nama: nama,
     posisi: posisi,
     cabang: cabang,

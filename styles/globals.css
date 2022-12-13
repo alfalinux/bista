@@ -20,6 +20,10 @@ button {
   box-sizing: border-box;
 }
 
+a:visited {
+  color: inherit;
+}
+
 .error-txt {
   width: 100%;
   color: red;

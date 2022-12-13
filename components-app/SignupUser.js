@@ -1,7 +1,7 @@
 import styles from "./SignupUser.module.css";
 import LoginIcon from "../public/icons/login-icon";
 import LoadingSpinner from "../public/icons/loading-spinner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 async function createUser(nama, posisi, cabang, email, password) {
   const response = await fetch("/api/auth/signup", {
@@ -26,10 +26,17 @@ const SignupUser = () => {
   const [signupSuccess, setSignupSuccess] = useState("");
   const [signupFailed, setSignupFailed] = useState("");
   const [showLoading, setShowLoading] = useState(false);
+  const [listCabang, setListCabang] = useState([]);
 
   const blurHandler = (e) => {
     setTouchedField({ ...touchedField, [e.target.name]: true });
   };
+
+  useEffect(() => {
+    fetch("/api/cabang")
+      .then((response) => response.json())
+      .then((data) => setListCabang(data));
+  }, []);
 
   const signupHandler = async (e) => {
     e.preventDefault();
@@ -65,27 +72,44 @@ const SignupUser = () => {
       </div>
       <div className={styles["field"]}>
         <label htmlFor="posisi">Posisi / Jabatan:</label>
-        <select name="posisi" id="posisi" onBlur={blurHandler} data-touched={touchedField.posisi} required>
+        <select
+          name="posisi"
+          id="posisi"
+          onBlur={blurHandler}
+          data-touched={touchedField.posisi}
+          defaultValue=""
+          required
+        >
           <option value="">Pilih posisi / jabatan</option>
-          <option value="adm">Admin</option>
-          <option value="cso">Customer Service</option>
-          <option value="kur">Kurir</option>
-          <option value="drv">Driver</option>
-          <option value="spr">Sprinter</option>
-          <option value="spv">Supervisor</option>
-          <option value="mgr">Manager</option>
-          <option value="dir">Direktur</option>
+          <option value="ADM">Admin</option>
+          <option value="CSO">Customer Service</option>
+          <option value="KUR">Kurir</option>
+          <option value="DRV">Driver</option>
+          <option value="SPR">Sprinter</option>
+          <option value="SPV">Supervisor</option>
+          <option value="MGR">Manager</option>
+          <option value="GEN">General</option>
         </select>
         <div className="form-reqs">Wajib dipilih salah satu</div>
       </div>
       <div className={styles["field"]}>
         <label htmlFor="cabang">Cabang Penempatan:</label>
-        <select name="cabang" id="cabang" onBlur={blurHandler} data-touched={touchedField.cabang} required>
+        <select
+          name="cabang"
+          id="cabang"
+          onBlur={blurHandler}
+          data-touched={touchedField.cabang}
+          defaultValue=""
+          required
+        >
           <option value="">--Pilih cabang penempatan--</option>
-          <option value="BKU">Bengkulu</option>
-          <option value="JKT">Jakarta</option>
-          <option value="SBY">Surabaya</option>
-          <option value="GEN">General</option>
+          {listCabang.length > 0
+            ? listCabang.map((d, i) => (
+                <option key={i} value={d.tlc}>
+                  {d.cab.toUpperCase()}
+                </option>
+              ))
+            : null}
         </select>
         <div className="form-reqs">Wajib dipilih salah satu</div>
       </div>

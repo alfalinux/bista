@@ -31,6 +31,15 @@ export const updateManyResi = async (client, collection, filter, update) => {
   return result;
 };
 
+export const updateManyResiByDelivery = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .updateMany({ noResi: { $in: filter } }, { $push: { delivery: update } });
+
+  return result;
+};
+
 export const updateManyManifest = async (client, collection, filter, update) => {
   const db = client.db("bista");
   const result = await db
@@ -77,15 +86,53 @@ export const updateSuratJalan = async (client, collection, filter, update) => {
 
 // ---- GET DATA ----
 
+export const findUserCabang = async (client, collection, cabang) => {
+  const db = client.db("bista");
+  const getData = await db.collection(collection).find({ cabang: cabang }).toArray();
+  const result = getData.map((d) => ({ nama: d.nama, posisi: d.posisi, cabang: d.cabang, email: d.email, id: d.id }));
+  return result;
+};
+
 export const findResi = async (client, collection, noResi) => {
   const db = client.db("bista");
   const result = await db.collection(collection).findOne({ noResi: noResi });
   return result;
 };
 
+export const findResiBelumDelivery = async (client, collection, cabangTujuan) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({
+      $or: [
+        {
+          cabangAsal: cabangTujuan,
+          "dataOngkir.cov": cabangTujuan,
+          $or: [{ delivery: null }, { "delivery.status": { $nin: ["proses", "diterima"] } }],
+        },
+        {
+          "dataOngkir.cov": cabangTujuan,
+          manifestReceivedAt: { $ne: null },
+          $or: [{ delivery: null }, { "delivery.status": { $nin: ["proses", "diterima"] } }],
+        },
+      ],
+    })
+    .toArray();
+  return result;
+};
+
 export const findResiBelumManifest = async (client, collection, cabangAsal) => {
   const db = client.db("bista");
   const result = await db.collection(collection).find({ cabangAsal: cabangAsal, noManifest: null }).toArray();
+  return result;
+};
+
+export const findResiBelumUpdateStatus = async (client, collection, cabang) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ "dataOngkir.cov": cabang, delivery: { $elemMatch: { status: "proses" } } })
+    .toArray();
   return result;
 };
 
@@ -129,6 +176,13 @@ export const findManifestInSuratJalan = async (client, collection, noManifest) =
     .collection(collection)
     .find({ dataManifest: { $elemMatch: { noManifest: { $in: noManifest } } } })
     .toArray();
+
+  return result;
+};
+
+export const findDeliveryOnProses = async (client, collection, namaKurir) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).find({ namaKurir: namaKurir, status: "proses" }).toArray();
 
   return result;
 };
