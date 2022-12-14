@@ -94,7 +94,6 @@ const CreateDelivery = () => {
       noDelivery: noDelivery,
       tglDelivery: tgl,
       userDelivery: data.nama,
-      status: "proses",
       namaKurir: namaKurir,
       dataResi: listCheckedResi,
     };
@@ -113,8 +112,11 @@ const CreateDelivery = () => {
           noDelivery: noDelivery,
           tglDelivery: tgl,
           userDelivery: data.nama,
-          status: "proses",
           namaKurir: namaKurir,
+          statusDelivery: "proses",
+          keteranganDelivery: "",
+          deliveredAt: "",
+          deliveredBy: "",
         },
       }),
       headers: { "Content-Type": "application/json" },
@@ -230,6 +232,10 @@ const CreateDelivery = () => {
                       onChange={(e) =>
                         checkboxChangeHandler(e, {
                           noResi: d.noResi,
+                          statusDelivery: "proses",
+                          keteranganDelivery: "",
+                          deliveredAt: "",
+                          deliveredBy: "",
                           namaPengirim: d.namaPengirim,
                           namaPenerima: d.namaPenerima,
                           nohpPengirim: d.nohpPengirim,

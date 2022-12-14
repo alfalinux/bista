@@ -108,12 +108,12 @@ export const findResiBelumDelivery = async (client, collection, cabangTujuan) =>
         {
           cabangAsal: cabangTujuan,
           "dataOngkir.cov": cabangTujuan,
-          $or: [{ delivery: null }, { "delivery.status": { $nin: ["proses", "diterima"] } }],
+          $or: [{ delivery: null }, { "delivery.statusDelivery": { $nin: ["proses", "diterima"] } }],
         },
         {
           "dataOngkir.cov": cabangTujuan,
           manifestReceivedAt: { $ne: null },
-          $or: [{ delivery: null }, { "delivery.status": { $nin: ["proses", "diterima"] } }],
+          $or: [{ delivery: null }, { "delivery.statusDelivery": { $nin: ["proses", "diterima"] } }],
         },
       ],
     })
@@ -131,7 +131,7 @@ export const findResiBelumUpdateStatus = async (client, collection, cabang) => {
   const db = client.db("bista");
   const result = await db
     .collection(collection)
-    .find({ "dataOngkir.cov": cabang, delivery: { $elemMatch: { status: "proses" } } })
+    .find({ "dataOngkir.cov": cabang, delivery: { $elemMatch: { statusDelivery: "proses" } } })
     .toArray();
   return result;
 };
@@ -182,7 +182,10 @@ export const findManifestInSuratJalan = async (client, collection, noManifest) =
 
 export const findDeliveryOnProses = async (client, collection, namaKurir) => {
   const db = client.db("bista");
-  const result = await db.collection(collection).find({ namaKurir: namaKurir, status: "proses" }).toArray();
+  const result = await db
+    .collection(collection)
+    .find({ namaKurir: namaKurir, dataResi: { $elemMatch: { statusDelivery: "proses" } } })
+    .toArray();
 
   return result;
 };

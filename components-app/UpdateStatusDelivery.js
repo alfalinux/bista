@@ -6,19 +6,23 @@ import LoadingPage from "./ui/LoadingPage";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import Button from "../components-app/ui/Button";
 import Check from "../public/icons/check";
-import generateNoDelivery from "../helpers/generateNoDelivery";
+import CloseCircle from "../public/icons/close-circle";
+import Stack from "../public/icons/stack";
+import Refresh from "../public/icons/refresh";
+import ModalUpdateDelivery from "../components-app/ui/ModalUpdateDelivery";
 
 const CreateDelivery = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { data, status } = useSession();
   const [listCabang, setListCabang] = useState([]);
-  const [listUserCabang, setListUserCabang] = useState([]);
 
   const [cabangTujuan, setCabangTujuan] = useState("");
   const [namaKurir, setNamaKurir] = useState("");
-  const [resiBelumUpdateStatus, setResiBelumUpdateStatus] = useState([]);
-  const [listCheckedResi, setListCheckedResi] = useState([]);
+  const [listDelivery, setListDelivery] = useState([]);
+  const [listKurir, setListKurir] = useState([]);
+
+  const [showModalUpdate, setShowModalUpdate] = useState(false);
 
   useEffect(() => {
     const checkbox = document.querySelectorAll("#checkbox");
@@ -33,22 +37,27 @@ const CreateDelivery = () => {
       .then((data) => setListCabang(data));
   }, []);
 
-  //   useEffect(() => {
-  //     if (cabangTujuan) {
-  //       const cabang = listCabang.filter((d) => d.cab === cabangTujuan)[0];
-  //       fetch("/api/users/" + cabang.tlc)
-  //         .then((response) => response.json())
-  //         .then((data) => setListUserCabang(data));
-  //     }
-  //   }, [cabangTujuan]);
+  useEffect(() => {
+    setIsLoading(true);
+    if (namaKurir) {
+      fetch("/api/data-delivery/proses/" + namaKurir)
+        .then((response) => response.json())
+        .then((data) => {
+          setIsLoading(false);
+          setListDelivery(data);
+        });
+    } else {
+      setIsLoading(false);
+    }
+  }, [cabangTujuan, namaKurir]);
 
   useEffect(() => {
     setIsLoading(true);
-    if (cabangTujuan !== "") {
+    if (cabangTujuan) {
       fetch("/api/data-resi/belum-update-status/" + cabangTujuan)
         .then((response) => response.json())
         .then((data) => {
-          setResiBelumUpdateStatus(data);
+          setListKurir([...new Set(...data.map((d) => d.delivery.map((a) => a.namaKurir)))]);
           setIsLoading(false);
         });
     } else {
@@ -56,34 +65,22 @@ const CreateDelivery = () => {
     }
   }, [cabangTujuan]);
 
-  console.log(resiBelumUpdateStatus.filter((d) => d.delivery.namaKurir === "Suprapto - BKUKUR1"));
-
   const cabangTujuanChangeHandler = (e) => {
     setCabangTujuan(e.target.value);
-    setListCheckedResi([]);
     setNamaKurir("");
   };
 
   const kurirChangeHandler = (e) => {
     setNamaKurir(e.target.value);
-    setListCheckedResi([]);
   };
 
-  const checkboxChangeHandler = (e, checked) => {
-    if (e.target.checked) {
-      setListCheckedResi((prevListCheckedResi) => [...prevListCheckedResi, checked]);
-    }
-
-    if (!e.target.checked) {
-      setListCheckedResi((prevListCheckedResi) => prevListCheckedResi.filter((d) => d.noResi !== checked.noResi));
-    }
+  const onUpdateHandler = () => {
+    setShowModalUpdate(!showModalUpdate);
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
     setIsLoadingPage(true);
-    const listNoResi = listCheckedResi.map((d) => d.noResi);
-    const noDelivery = generateNoDelivery(namaKurir.split("-")[1]);
     const tgl = new Date().toLocaleString("en-UK", {
       day: "numeric",
       month: "short",
@@ -91,46 +88,7 @@ const CreateDelivery = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
-
-    const dataDelivery = {
-      noDelivery: noDelivery,
-      tglDelivery: tgl,
-      userDelivery: data.nama,
-      status: "proses",
-      namaKurir: namaKurir,
-      dataResi: listCheckedResi,
-    };
-
-    fetch("/api/data-delivery/post-delivery", {
-      method: "POST",
-      body: JSON.stringify(dataDelivery),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    fetch("/api/data-resi/update-many-resi-by-delivery", {
-      method: "PATCH",
-      body: JSON.stringify({
-        filter: listNoResi,
-        update: {
-          noDelivery: noDelivery,
-          tglDelivery: tgl,
-          userDelivery: data.nama,
-          status: "proses",
-          namaKurir: namaKurir,
-        },
-      }),
-      headers: { "Content-Type": "application/json" },
-    }).then((response) => {
-      if (response.status == 201) {
-        setIsLoadingPage(false);
-        setResiBelumUpdateStatus([]);
-        setListCheckedResi([]);
-        alert("Berhasil assign delivery dengan nomor" + noDelivery);
-      } else {
-        setIsLoadingPage(false);
-        alert("Terjadi kesalahan, silahkan refresh halaman dan coba kembali");
-      }
-    });
+    setIsLoadingPage(false);
   };
 
   return (
@@ -141,10 +99,10 @@ const CreateDelivery = () => {
       {status === "authenticated" ? (
         <form className={styles["form-wrapper"]}>
           <div className={styles["field"]}>
-            <label className={styles["label"]} htmlFor="cabangAsal">
+            <label className={styles["label"]} htmlFor="cabang">
               Cabang
             </label>
-            <select name="cabangAsal" id="cabangAsal" defaultValue="" onChange={cabangTujuanChangeHandler}>
+            <select name="cabang" id="cabang" defaultValue="" onChange={cabangTujuanChangeHandler}>
               <option value="" disabled>
                 -- Pilih Cabang --
               </option>
@@ -170,14 +128,12 @@ const CreateDelivery = () => {
             </label>
             <select name="kurir" id="kurir" defaultValue="" onChange={kurirChangeHandler}>
               <option value="">-- Pilih Kurir --</option>
-              {resiBelumUpdateStatus.length > 0
-                ? resiBelumUpdateStatus.map((d) =>
-                    d.delivery.map((d, i) => (
-                      <option key={i} value={d.namaKurir}>
-                        {d.namaKurir}
-                      </option>
-                    ))
-                  )
+              {listKurir.length > 0
+                ? listKurir.map((d, i) => (
+                    <option key={i} value={d}>
+                      {d.toUpperCase()}
+                    </option>
+                  ))
                 : null}
             </select>
           </div>
@@ -191,96 +147,83 @@ const CreateDelivery = () => {
         <div className="center-loading">
           <LoadingSpinner />
         </div>
-      ) : cabangTujuan ? (
-        <table className="table-container">
-          <thead className="table-head">
-            <tr>
-              <td>No</td>
-              <td>No Resi</td>
-              <td>Asal-Tujuan</td>
-              <td>Kecamatan</td>
-              <td>Jumlah Paket</td>
-              <td>Berat Paket</td>
-              <td>Pilih</td>
-            </tr>
-          </thead>
-          <tbody className="table-body">
-            {resiBelumUpdateStatus.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="error-txt">
-                  Data Tidak Ditemukan...
-                </td>
-              </tr>
-            ) : (
-              resiBelumUpdateStatus.map((d, i) => (
-                <tr key={i}>
-                  <td className="center-element">{i + 1}</td>
-                  <td>{d.noResi}</td>
-                  <td>
-                    {d.cabangAsal.toUpperCase()} - {d.cabangTujuan}
-                  </td>
-                  <td>{d.dataOngkir.kec.toUpperCase()}</td>
-                  <td>{d.jumlahBarang} koli</td>
-                  <td>{d.beratBarang} Kg</td>
-                  <td className="center-element">
-                    <input
-                      id="checkbox"
-                      type="checkbox"
-                      disabled={!namaKurir}
-                      onChange={(e) =>
-                        checkboxChangeHandler(e, {
-                          noResi: d.noResi,
-                          namaPengirim: d.namaPengirim,
-                          namaPenerima: d.namaPenerima,
-                          nohpPengirim: d.nohpPengirim,
-                          nohpPenerima: d.nohpPenerima,
-                          alamatPenerima: d.alamatPenerima,
-                          alamatPengirim: d.alamatPengirim,
-                          beratBarang: d.beratBarang,
-                          jumlahBarang: d.jumlahBarang,
-                          cabangAsal: d.cabangAsal,
-                          cabangTujuan: d.cabangTujuan,
-                          tujuanKecamatan: d.tujuan.kec,
-                          keteranganBarang: d.keteranganBarang,
-                          layanan: d.layanan,
-                          pembayaran: d.pembayaran,
-                          grandTotal: d.grandTotal,
-                        })
-                      }
-                    />
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      ) : null}
-
-      {/* -- Display Create Delivery Description */}
-      <div className={styles["container-manifest"]}>
-        {listCheckedResi.length > 0 ? (
+      ) : namaKurir ? (
+        listDelivery.map((d, i) => (
           <>
-            <div>Assign Delivery to {namaKurir}</div>
-            <div className={styles["container-manifest-detail"]}>
-              <div>{listCheckedResi.length} Resi</div>
-              <div>{listCheckedResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0)} Kg</div>
-              <div>{listCheckedResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0)} Koli</div>
+            <div className={styles["table-title"]} key={i}>
+              <span className={styles["table-title__icon"]}>
+                <Stack />
+              </span>
+              <span className={styles["table-title__text"]}>{d.noDelivery}</span>
+              <span className={styles["table-title__date"]}>{d.tglDelivery}</span>
             </div>
+            <table className="table-container">
+              <thead className="table-head">
+                <tr>
+                  <td>No</td>
+                  <td>No Resi</td>
+                  <td>Penerima</td>
+                  <td>Isi Paket</td>
+                  <td>Jlh Paket</td>
+                  <td>Berat Paket</td>
+                  <td style={{ width: "100px" }}>Status</td>
+                </tr>
+              </thead>
+              <tbody className="table-body">
+                {d.dataResi.map((val, idx) => (
+                  <tr key={idx}>
+                    <td>{idx + 1}</td>
+                    <td>{val.noResi}</td>
+                    <td>
+                      <div className={styles["table-penerima"]}>
+                        <span className={styles["table-penerima__nama"]}>{val.namaPenerima}</span>
+                        <span className={styles["table-penerima__nohp"]}>{val.nohpPenerima}</span>
+                        <span className={styles["table-penerima__alamat"]}>{val.alamatPenerima}</span>
+                      </div>
+                    </td>
+                    <td>{val.keteranganBarang}</td>
+                    <td>{val.jumlahBarang} Koli</td>
+                    <td>{val.jumlahBarang} Kg</td>
+                    <td>
+                      {val.statusDelivery === "proses" && (
+                        <Button
+                          type="submit"
+                          label="Pengantaran"
+                          color="orange"
+                          width="full"
+                          icon={<Refresh />}
+                          clickHandler={onUpdateHandler}
+                        />
+                      )}
+                      {val.statusDelivery === "diterima" && (
+                        <Button
+                          type="submit"
+                          label="Diterima"
+                          color="cornflowerblue"
+                          width="full"
+                          icon={<Check />}
+                          clickHandler={onUpdateHandler}
+                        />
+                      )}
+                      {val.statusDelivery === "gagal" && (
+                        <Button
+                          type="submit"
+                          label="Diterima"
+                          color="red"
+                          width="full"
+                          icon={<CloseCircle />}
+                          clickHandler={onUpdateHandler}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {showModalUpdate ? <ModalUpdateDelivery onCloseModal={onUpdateHandler} /> : null}
           </>
-        ) : (
-          <div></div>
-        )}
-        <div>
-          <Button
-            label="Create Delivery"
-            width="full"
-            color="black"
-            icon={isLoading ? <LoadingSpinner /> : <Check />}
-            disabled={!cabangTujuan || listCheckedResi.length === 0 || !namaKurir}
-            clickHandler={submitHandler}
-          />
-        </div>
-      </div>
+        ))
+      ) : null}
     </div>
   );
 };

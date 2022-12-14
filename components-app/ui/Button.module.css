@@ -58,6 +58,52 @@
   cursor: not-allowed;
 }
 
+.green {
+  background-color: limegreen;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.green:hover {
+  background-color: #000;
+}
+
+.green:active,
+.green:focus {
+  background-color: transparent;
+  border: 2px solid limegreen;
+  color: limegreen;
+}
+
+.green:disabled {
+  background-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.cornflowerblue {
+  background-color: cornflowerblue;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.cornflowerblue:hover {
+  background-color: #000;
+}
+
+.cornflowerblue:active,
+.cornflowerblue:focus {
+  background-color: transparent;
+  border: 2px solid cornflowerblue;
+  color: cornflowerblue;
+}
+
+.cornflowerblue:disabled {
+  background-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
 .blue {
   background-color: blue;
   color: #fff;
