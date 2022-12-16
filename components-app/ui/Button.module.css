@@ -173,3 +173,26 @@
   color: #999;
   cursor: not-allowed;
 }
+
+.greenoutlined {
+  background-color: transparent;
+  border: 2px solid limegreen;
+  color: limegreen;
+}
+
+.greenoutlined:hover {
+  background-color: #000;
+}
+
+.greenoutlined:active,
+.greenoutlined:focus {
+  background-color: limegreen;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.greenoutlined:disabled {
+  background-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}

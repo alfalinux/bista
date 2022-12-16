@@ -59,10 +59,11 @@ const CreateSuratJalan = () => {
   }, [cabangAsal, cabangTujuan]);
 
   const cabangAsalChangeHandler = (e) => {
-    if (e.target.value === "") {
-      setCabangAsal("");
-    }
     setCabangAsal(e.target.value);
+    setCabangTujuan("");
+    setNamaDriver("");
+    setNopolDriver("");
+    setListManifest([]);
   };
 
   const cabangTujuanChangeHandler = (e) => {
@@ -166,8 +167,8 @@ const CreateSuratJalan = () => {
               <label className={styles["label"]} htmlFor="cabangAsal">
                 Cabang Asal
               </label>
-              <select name="cabangAsal" id="cabangAsal" onChange={cabangAsalChangeHandler}>
-                <option defaultValue=""></option>
+              <select name="cabangAsal" id="cabangAsal" value={cabangAsal} onChange={cabangAsalChangeHandler}>
+                <option value=""></option>
                 {data.posisi === "GEN"
                   ? listCabang.map((d, i) => (
                       <option key={i} value={d.cab}>
@@ -188,7 +189,7 @@ const CreateSuratJalan = () => {
               <label className={styles["label"]} htmlFor="cabangTujuan">
                 Cabang Tujuan
               </label>
-              <select name="cabangTujuan" id="cabangTujuan" defaultValue="" onChange={cabangTujuanChangeHandler}>
+              <select name="cabangTujuan" id="cabangTujuan" value={cabangTujuan} onChange={cabangTujuanChangeHandler}>
                 <option value=""></option>
                 {cabangAsal
                   ? listCabang.map((d, i) => (

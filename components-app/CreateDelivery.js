@@ -78,6 +78,9 @@ const CreateDelivery = () => {
   };
 
   const submitHandler = (e) => {
+    const cabang = cabangTujuan;
+    const kurir = namaKurir;
+
     e.preventDefault();
     setIsLoadingPage(true);
     const listNoResi = listCheckedResi.map((d) => d.noResi);
@@ -98,37 +101,46 @@ const CreateDelivery = () => {
       dataResi: listCheckedResi,
     };
 
+    setCabangTujuan("");
+    setNamaKurir("");
+
     fetch("/api/data-delivery/post-delivery", {
       method: "POST",
       body: JSON.stringify(dataDelivery),
       headers: { "Content-Type": "application/json" },
-    });
-
-    fetch("/api/data-resi/update-many-resi-by-delivery", {
-      method: "PATCH",
-      body: JSON.stringify({
-        filter: listNoResi,
-        update: {
-          noDelivery: noDelivery,
-          tglDelivery: tgl,
-          userDelivery: data.nama,
-          namaKurir: namaKurir,
-          statusDelivery: "proses",
-          keteranganDelivery: "",
-          deliveredAt: "",
-          deliveredBy: "",
-        },
-      }),
-      headers: { "Content-Type": "application/json" },
     }).then((response) => {
-      if (response.status == 201) {
-        setIsLoadingPage(false);
-        setResiBelumDelivery([]);
-        setListCheckedResi([]);
-        alert("Berhasil assign delivery dengan nomor" + noDelivery);
+      if (response.status === 201) {
+        fetch("/api/data-resi/update-many-resi-by-delivery", {
+          method: "PATCH",
+          body: JSON.stringify({
+            filter: listNoResi,
+            update: {
+              noDelivery: noDelivery,
+              tglDelivery: tgl,
+              userDelivery: data.nama,
+              namaKurir: namaKurir,
+              statusDelivery: "proses",
+              keteranganDelivery: "",
+              deliveredAt: "",
+              deliveredBy: "",
+            },
+          }),
+          headers: { "Content-Type": "application/json" },
+        }).then((response) => {
+          if (response.status == 201) {
+            setIsLoadingPage(false);
+            setResiBelumDelivery([]);
+            setListCheckedResi([]);
+            setCabangTujuan(cabang);
+            setNamaKurir(kurir);
+            alert("Berhasil assign delivery dengan nomor " + noDelivery);
+          } else {
+            setIsLoadingPage(false);
+            alert("Terjadi kesalahan, silahkan refresh halaman dan coba kembali");
+          }
+        });
       } else {
-        setIsLoadingPage(false);
-        alert("Terjadi kesalahan, silahkan refresh halaman dan coba kembali");
+        alert("Gagal Create Delivery");
       }
     });
   };
@@ -144,7 +156,7 @@ const CreateDelivery = () => {
             <label className={styles["label"]} htmlFor="cabangAsal">
               Cabang
             </label>
-            <select name="cabangAsal" id="cabangAsal" defaultValue="" onChange={cabangTujuanChangeHandler}>
+            <select name="cabangAsal" id="cabangAsal" value={cabangTujuan} onChange={cabangTujuanChangeHandler}>
               <option value="" disabled>
                 -- Pilih Cabang --
               </option>
@@ -168,7 +180,7 @@ const CreateDelivery = () => {
             <label className={styles["label"]} htmlFor="kurir">
               Kurir
             </label>
-            <select name="kurir" id="kurir" defaultValue="" onChange={kurirChangeHandler}>
+            <select name="kurir" id="kurir" value={namaKurir} onChange={kurirChangeHandler}>
               <option value="">-- Pilih Kurir --</option>
               {listUserCabang.length > 0
                 ? listUserCabang.map((d, i) => (

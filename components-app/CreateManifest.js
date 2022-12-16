@@ -23,17 +23,11 @@ const CreateManifest = () => {
   const [konsolidasi, setKonsolidasi] = useState("");
 
   const cabangAsalChangeHandler = (e) => {
-    if (e.target.value === "") {
-      setCabangAsal("");
-      setCabangTujuan("");
-      setCoveranArea("");
-      setListTujuan([]);
-      setListCoveran([]);
-      setDataResi([]);
-      setListResi([]);
-      setKonsolidasi("");
-    }
     setCabangAsal(e.target.value);
+    setCabangTujuan("");
+    setCoveranArea("");
+    setListResi([]);
+    setKonsolidasi("");
   };
 
   const coveranChangeHandler = (e) => {
@@ -180,7 +174,7 @@ const CreateManifest = () => {
               Cabang Asal
             </label>
             <select name="cabangAsal" id="cabangAsal" value={cabangAsal} onChange={cabangAsalChangeHandler}>
-              <option defaultValue=""></option>
+              <option value=""></option>
               {data.posisi === "GEN"
                 ? listCabang.map((d, i) => (
                     <option key={i} value={d.cab}>
@@ -201,8 +195,8 @@ const CreateManifest = () => {
             <label className={styles["label"]} htmlFor="coveran">
               Coveran Area
             </label>
-            <select name="coveran" id="coveran" onChange={coveranChangeHandler}>
-              <option defaultValue=""></option>
+            <select name="coveran" id="coveran" value={coveranArea} onChange={coveranChangeHandler}>
+              <option value=""></option>
               {cabangAsal
                 ? listCoveran.map((d, i) => (
                     <option key={i} value={d}>
@@ -217,8 +211,8 @@ const CreateManifest = () => {
             <label className={styles["label"]} htmlFor="cabangTujuan">
               Cabang Tujuan
             </label>
-            <select name="cabangTujuan" id="cabangTujuan" onChange={tujuanChangeHandler}>
-              <option defaultValue=""></option>
+            <select name="cabangTujuan" id="cabangTujuan" value={cabangTujuan} onChange={tujuanChangeHandler}>
+              <option value=""></option>
               {coveranArea
                 ? listTujuan.map((d, i) => (
                     <option key={i} value={d}>

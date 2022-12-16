@@ -150,9 +150,9 @@ const ReceiveManifest = () => {
                 <td>{d.cabangTujuan.toUpperCase()}</td>
                 <td>{d.coveranArea.toUpperCase()}</td>
                 <td>
-                  {d.suratJalan.map((d) =>
+                  {d.suratJalan.map((d, i) =>
                     d.receivedIn ? (
-                      <div className="status-paket">
+                      <div className="status-paket" key={i}>
                         <div>
                           Received in <b>{d.receivedIn.toUpperCase()}</b>
                         </div>

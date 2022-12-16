@@ -90,6 +90,17 @@ a:visited {
   background-color: #dddddd;
 }
 
+.table-foot {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+}
+
+.table-foot * {
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
 .status-paket {
   display: flex;
   flex-direction: column;

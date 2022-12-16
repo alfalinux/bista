@@ -12,12 +12,17 @@ const CekPaket = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fetchSuccess, setFetchSuccess] = useState(false);
   const [dataResi, setDataResi] = useState({});
-  const noResiRef = useRef();
+  const [noResi, setNoResi] = useState("");
+
+  const noResiChangeHandler = (e) => {
+    setNoResi(e.target.value);
+  };
 
   const submitHandler = (e) => {
+    setFetchSuccess(false);
     e.preventDefault();
     setIsLoading(true);
-    fetch("/api/data-resi/" + noResiRef.current.value.toUpperCase())
+    fetch("/api/data-resi/cek-resi/" + noResi.toUpperCase())
       .then((response) => response.json())
       .then((data) => {
         setFetchSuccess(true);
@@ -25,7 +30,7 @@ const CekPaket = () => {
         setIsLoading(false);
       });
   };
-  console.log(dataResi);
+
   return (
     <div>
       <MainNav />
@@ -34,7 +39,14 @@ const CekPaket = () => {
           <h2 className={styles["title"]}>Cek Paket</h2>
           <form className={styles["form-container"]} onSubmit={submitHandler}>
             <label htmlFor="noResi">Nomor Resi</label>
-            <input type="text" id="noResi" name="noResi" placeholder="Ketik Nomor Resi..." ref={noResiRef} />
+            <input
+              type="text"
+              id="noResi"
+              name="noResi"
+              placeholder="Ketik Nomor Resi..."
+              onChange={noResiChangeHandler}
+              value={noResi}
+            />
             {isLoading ? (
               <div className={styles["icon"]}>
                 <LoadingSpinner />
@@ -48,18 +60,106 @@ const CekPaket = () => {
           <h2 className={styles["title"]}>Detail Posisi Paket</h2>
 
           {fetchSuccess ? (
-            <div className={styles["content"]}>
-              <div className={styles["content__icon"]}>
-                <Check />
-              </div>
-              <div className={styles["content__detail"]}>
-                <div className={styles["content__title"]}>
-                  Transaksi Pengiriman [{dataResi.cabangAsal.toUpperCase()}]
+            dataResi.noResi === "" ? (
+              <div>Nomor Resi Tidak Terdaftar</div>
+            ) : (
+              <>
+                {/* Transaksi */}
+                <div className={styles["content"]}>
+                  <div className={styles["content__icon"]}>
+                    <Check />
+                  </div>
+                  <div className={styles["content__detail"]}>
+                    <div className={styles["content__title"]}>
+                      Transaksi Pengiriman [Cabang {dataResi.resiCreatedIn.toUpperCase()}]
+                    </div>
+                    <div className={styles["content__date"]}>{dataResi.tglResi}</div>
+                  </div>
                 </div>
-                <div className={styles["content__date"]}>{dataResi.tglTransaksi}</div>
-              </div>
-            </div>
-          ) : null}
+
+                {/* Manifest */}
+                {dataResi.noManifest === "" ? null : (
+                  <div className={styles["content"]}>
+                    <div className={styles["content__icon"]}>
+                      <Check />
+                    </div>
+                    <div className={styles["content__detail"]}>
+                      <div className={styles["content__title"]}>
+                        Proses Pemberangkatan [Gateway {dataResi.manifestCreatedIn.toUpperCase()}]
+                      </div>
+                      <div className={styles["content__date"]}>{dataResi.tglManifest}</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Surat Jalan */}
+                {dataResi.listSuratJalan.length === 0
+                  ? null
+                  : dataResi.listSuratJalan.map((d) => (
+                      <>
+                        <div className={styles["content"]}>
+                          <div className={styles["content__icon"]}>
+                            <Check />
+                          </div>
+                          <div className={styles["content__detail"]}>
+                            <div className={styles["content__title"]}>
+                              Paket Berangkat Menuju {d.cabangTujuan.toUpperCase()}
+                            </div>
+                            <div className={styles["content__date"]}>{d.tglSuratJalan}</div>
+                          </div>
+                        </div>
+                        {d.receivedAt ? (
+                          <div className={styles["content"]}>
+                            <div className={styles["content__icon"]}>
+                              <Check />
+                            </div>
+                            <div className={styles["content__detail"]}>
+                              <div className={styles["content__title"]}>
+                                Paket Telah Sampai di {d.receivedIn.toUpperCase()}
+                              </div>
+                              <div className={styles["content__date"]}>{d.receivedAt}</div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </>
+                    ))}
+
+                {/* Delivery */}
+                {dataResi.listDelivery.map((d) => (
+                  <>
+                    <div className={styles["content"]}>
+                      <div className={styles["content__icon"]}>
+                        <Check />
+                      </div>
+                      <div className={styles["content__detail"]}>
+                        <div className={styles["content__title"]}>Paket Sedang Diantar [{d.namaKurir}]</div>
+                        <div className={styles["content__date"]}>{d.tglDelivery}</div>
+                      </div>
+                    </div>
+                    {d.deliveredAt ? (
+                      <div className={styles["content"]}>
+                        <div className={styles["content__icon"]}>
+                          <Check />
+                        </div>
+                        <div className={styles["content__detail"]}>
+                          <div className={styles["content__title"]}>
+                            {d.statusDelivery === "diterima"
+                              ? "Paket Telah Diterima Oleh - " + d.keteranganDelivery
+                              : d.statusDelivery === "gagal"
+                              ? "Paket Tidak Terantar - " + d.keteranganDelivery
+                              : ""}
+                          </div>
+                          <div className={styles["content__date"]}>{d.deliveredAt}</div>
+                        </div>
+                      </div>
+                    ) : null}
+                  </>
+                ))}
+              </>
+            )
+          ) : (
+            <div>Silahkan ketik nomor resi...</div>
+          )}
         </div>
       </div>
     </div>

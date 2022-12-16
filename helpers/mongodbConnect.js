@@ -40,6 +40,23 @@ export const updateManyResiByDelivery = async (client, collection, filter, updat
   return result;
 };
 
+export const updateOneResiByDelivery = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).updateOne(
+    { noResi: filter.noResi, delivery: { $elemMatch: { noDelivery: filter.noDelivery } } },
+    {
+      $set: {
+        "delivery.$.statusDelivery": update.statusDelivery,
+        "delivery.$.keteranganDelivery": update.keteranganDelivery,
+        "delivery.$.deliveredAt": update.deliveredAt,
+        "delivery.$.deliveredBy": update.deliveredBy,
+      },
+    }
+  );
+
+  return result;
+};
+
 export const updateManyManifest = async (client, collection, filter, update) => {
   const db = client.db("bista");
   const result = await db
@@ -84,6 +101,50 @@ export const updateSuratJalan = async (client, collection, filter, update) => {
   return result;
 };
 
+export const updateDeliveryByResi = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).updateOne(
+    { noDelivery: filter.noDelivery, dataResi: { $elemMatch: { noResi: filter.noResi } } },
+    {
+      $set: {
+        "dataResi.$.statusDelivery": update.statusDelivery,
+        "dataResi.$.keteranganDelivery": update.keteranganDelivery,
+        "dataResi.$.deliveredAt": update.deliveredAt,
+        "dataResi.$.deliveredBy": update.deliveredBy,
+      },
+    }
+  );
+
+  return result;
+};
+
+export const updateCloseDelivery = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).updateOne(
+    { noDelivery: filter },
+    {
+      $set: {
+        closedAt: update.closedAt,
+        closedBy: update.closedBy,
+      },
+    }
+  );
+
+  return result;
+};
+
+export const updateResiByDelivery = async (client, collection, filter, update) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .updateOne(
+      { noResi: filter.noResi, $elemMatch: { "delivery.noDelivery": filter.noDelivery } },
+      { $push: { delivery: update } }
+    );
+
+  return result;
+};
+
 // ---- GET DATA ----
 
 export const findUserCabang = async (client, collection, cabang) => {
@@ -96,6 +157,12 @@ export const findUserCabang = async (client, collection, cabang) => {
 export const findResi = async (client, collection, noResi) => {
   const db = client.db("bista");
   const result = await db.collection(collection).findOne({ noResi: noResi });
+  return result;
+};
+
+export const findResiInManifest = async (client, collection, noResi) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).findOne({ dataResi: { $elemMatch: { noResi: noResi } } });
   return result;
 };
 
@@ -182,10 +249,7 @@ export const findManifestInSuratJalan = async (client, collection, noManifest) =
 
 export const findDeliveryOnProses = async (client, collection, namaKurir) => {
   const db = client.db("bista");
-  const result = await db
-    .collection(collection)
-    .find({ namaKurir: namaKurir, dataResi: { $elemMatch: { statusDelivery: "proses" } } })
-    .toArray();
+  const result = await db.collection(collection).find({ namaKurir: namaKurir, closedAt: null }).toArray();
 
   return result;
 };
