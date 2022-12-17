@@ -17,7 +17,6 @@ const CekPaket = () => {
   const noResiChangeHandler = (e) => {
     setNoResi(e.target.value);
   };
-
   const submitHandler = (e) => {
     setFetchSuccess(false);
     e.preventDefault();
@@ -46,6 +45,8 @@ const CekPaket = () => {
               placeholder="Ketik Nomor Resi..."
               onChange={noResiChangeHandler}
               value={noResi}
+              required
+              autoComplete="off"
             />
             {isLoading ? (
               <div className={styles["icon"]}>
@@ -60,7 +61,7 @@ const CekPaket = () => {
           <h2 className={styles["title"]}>Detail Posisi Paket</h2>
 
           {fetchSuccess ? (
-            dataResi.noResi === "" ? (
+            dataResi.noResi === "" || noResi === "" ? (
               <div>Nomor Resi Tidak Terdaftar</div>
             ) : (
               <>
@@ -157,6 +158,8 @@ const CekPaket = () => {
                 ))}
               </>
             )
+          ) : isLoading ? (
+            <div>Loading...</div>
           ) : (
             <div>Silahkan ketik nomor resi...</div>
           )}

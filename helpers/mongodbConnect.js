@@ -247,9 +247,9 @@ export const findManifestInSuratJalan = async (client, collection, noManifest) =
   return result;
 };
 
-export const findDeliveryOnProses = async (client, collection, namaKurir) => {
+export const findDeliveryOnProses = async (client, collection, cabang) => {
   const db = client.db("bista");
-  const result = await db.collection(collection).find({ namaKurir: namaKurir, closedAt: null }).toArray();
+  const result = await db.collection(collection).find({ cabang: cabang, closedAt: null }).toArray();
 
   return result;
 };

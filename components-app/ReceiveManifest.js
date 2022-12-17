@@ -73,28 +73,43 @@ const ReceiveManifest = () => {
       );
     }
   };
-
+  console.log();
   const submitHandler = (e) => {
     setIsLoadingPage(true);
     e.preventDefault();
     const tgl = getDate();
     const filter = manifestChecked.map((d) => d.noManifest);
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
+    const filterResi = manifestChecked
+      .map((d) => d.dataResi.map((d) => d.noResi))
+      .join()
+      .split(",");
+    const updateResi = { manifestReceivedIn: cabangTujuan, manifestReceivedAt: tgl, manifestReceivedBy: data.nama };
 
-    fetch("/api/data-manifest/update-receive-manifest", {
+    fetch("/api/data-resi/update-many-resi", {
       method: "PATCH",
-      body: JSON.stringify({ filter: filter, update: update }),
+      body: JSON.stringify({ filter: filterResi, update: updateResi }),
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       if (response.status === 201) {
-        setCabangTujuan("");
-        setManifestChecked([]);
-        setIsLoadingPage(false);
-        return alert("Manifest Berhasil di Recieve \n di cabang " + cabangTujuan);
+        fetch("/api/data-manifest/update-receive-manifest", {
+          method: "PATCH",
+          body: JSON.stringify({ filter: filter, update: update }),
+          headers: { "Content-Type": "application/json" },
+        }).then((response) => {
+          if (response.status === 201) {
+            setCabangTujuan("");
+            setManifestChecked([]);
+            setIsLoadingPage(false);
+            return alert("Manifest Berhasil di Recieve \n di cabang " + cabangTujuan);
+          } else {
+            setManifestChecked([]);
+            setIsLoadingPage(false);
+            return alert("Receiving Manifest Tidak Berhasil \n Cek kembali inputan Anda");
+          }
+        });
       } else {
-        setManifestChecked([]);
-        setIsLoadingPage(false);
-        return alert("Receiving Manifest Tidak Berhasil \n Cek kembali inputan Anda");
+        alert("Gagal Update Resi");
       }
     });
   };
@@ -102,10 +117,11 @@ const ReceiveManifest = () => {
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}
+
       {/* --- Show List Cabang Tujuan if user Role is GEN */}
       {status === "authenticated" ? (
         <div className={styles["cabang-option"]}>
-          <label htmlFor="cabangTujuan">Cabang Tujuan</label>
+          <label htmlFor="cabangTujuan">Cabang</label>
           <select name="cabangTujuan" id="cabangTujuan" defaultValue="" onChange={cabangTujuanChangeHandler}>
             <option value="" disabled>
               --pilih cabang tujuan--
@@ -150,26 +166,50 @@ const ReceiveManifest = () => {
                 <td>{d.cabangTujuan.toUpperCase()}</td>
                 <td>{d.coveranArea.toUpperCase()}</td>
                 <td>
-                  {d.suratJalan.map((d, i) =>
-                    d.receivedIn ? (
+                  {(() => {
+                    const sj = d.suratJalan[d.suratJalan.length - 1];
+                    if (sj.receivedIn) {
+                      return (
+                        <div className="status-paket" key={i}>
+                          <div>
+                            Received in <b>{sj.receivedIn.toUpperCase()}</b>
+                          </div>
+                          <div>Tgl {sj.receivedAt}</div>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div className="status-paket">
+                          <div>
+                            Perjalanan
+                            <b>
+                              {sj.cabangAsal.toUpperCase()} - {sj.cabangTujuan.toUpperCase()}
+                            </b>
+                          </div>
+                          <div>Tgl {sj.tglSuratJalan}</div>
+                        </div>
+                      );
+                    }
+                  })()}
+
+                  {/* sj.receivedIn ? (
                       <div className="status-paket" key={i}>
                         <div>
-                          Received in <b>{d.receivedIn.toUpperCase()}</b>
+                          Received in <b>{sj.receivedIn.toUpperCase()}</b>
                         </div>
-                        <div>tgl {d.receivedAt}</div>
+                        <div>tgl {sj.receivedAt}</div>
                       </div>
                     ) : (
                       <div className="status-paket">
                         <div>
                           Perjalanan
                           <b>
-                            {d.cabangAsal.toUpperCase()} - {d.cabangTujuan.toUpperCase()}
+                            {sj.cabangAsal.toUpperCase()} - {sj.cabangTujuan.toUpperCase()}
                           </b>
                         </div>
-                        <div>tgl {d.tglSuratJalan}</div>
+                        <div>tgl {sj.tglSuratJalan}</div>
                       </div>
-                    )
-                  )}
+                    ); */}
                 </td>
                 <td>
                   <div className="center-element">
@@ -215,7 +255,7 @@ const ReceiveManifest = () => {
 
         <div>
           <Button
-            label="Receive Surat Jalan"
+            label="Receive Manifest"
             width="full"
             color="black"
             icon={isLoading ? <LoadingSpinner /> : <Check />}

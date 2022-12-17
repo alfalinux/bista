@@ -95,6 +95,7 @@ const CreateDelivery = () => {
 
     const dataDelivery = {
       noDelivery: noDelivery,
+      cabang: cabang,
       tglDelivery: tgl,
       userDelivery: data.nama,
       namaKurir: namaKurir,

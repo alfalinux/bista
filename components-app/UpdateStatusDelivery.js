@@ -10,6 +10,7 @@ import CloseCircle from "../public/icons/close-circle";
 import Stack from "../public/icons/stack";
 import Refresh from "../public/icons/refresh";
 import ModalUpdateDelivery from "../components-app/ui/ModalUpdateDelivery";
+import ModalStatusDelivery from "../components-app/ui/ModalStatusDelivery";
 
 const CreateDelivery = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
@@ -23,8 +24,10 @@ const CreateDelivery = () => {
   const [listKurir, setListKurir] = useState([]);
   const [noResiClicked, setNoResiClicked] = useState("");
   const [noDeliveryClicked, setNoDeliveryClicked] = useState("");
+  const [valueStatusDelivery, setValueStatusDelivery] = useState({});
 
   const [showModalUpdate, setShowModalUpdate] = useState(false);
+  const [showStatusDelivery, setShowStatusDelivery] = useState(false);
 
   const resetInput = () => {
     setCabangTujuan("");
@@ -55,8 +58,8 @@ const CreateDelivery = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (namaKurir) {
-      fetch("/api/data-delivery/proses/" + namaKurir)
+    if (cabangTujuan) {
+      fetch("/api/data-delivery/proses/" + cabangTujuan)
         .then((response) => response.json())
         .then((data) => {
           setIsLoading(false);
@@ -65,7 +68,7 @@ const CreateDelivery = () => {
     } else {
       setIsLoading(false);
     }
-  }, [cabangTujuan, namaKurir]);
+  }, [cabangTujuan]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -73,7 +76,15 @@ const CreateDelivery = () => {
       fetch("/api/data-resi/belum-update-status/" + cabangTujuan)
         .then((response) => response.json())
         .then((data) => {
-          setListKurir([...new Set(...data.map((d) => d.delivery.map((a) => a.namaKurir)))]);
+          console.log();
+          setListKurir([
+            ...new Set(
+              data
+                .map((d) => d.delivery.map((d) => d.namaKurir))
+                .join()
+                .split(",")
+            ),
+          ]);
           setIsLoading(false);
         });
     } else {
@@ -96,13 +107,24 @@ const CreateDelivery = () => {
     setNoDeliveryClicked(noDelivery);
   };
 
+  const showStatusHandler = (val) => {
+    setShowStatusDelivery(true);
+    setValueStatusDelivery(val);
+  };
+
   const closeUpdateHandler = () => {
     setShowModalUpdate(false);
     setNoResiClicked("");
     setNoDeliveryClicked("");
   };
 
+  const closeStatusHandler = () => {
+    setShowStatusDelivery(false);
+    setValueStatusDelivery({});
+  };
+
   const closeDelivery = (noDelivery) => {
+    setIsLoadingPage(true);
     const cabang = cabangTujuan;
     const kurir = namaKurir;
     resetInput();
@@ -123,14 +145,15 @@ const CreateDelivery = () => {
     }).then((response) => {
       if (response.status === 201) {
         setInput(cabang, kurir);
+        setIsLoadingPage(false);
         alert("Delivery berhasil di close");
       } else {
         setInput(cabang, kurir);
+        setIsLoadingPage(false);
         alert("Gagal Close Delivery");
       }
     });
   };
-
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}
@@ -188,120 +211,125 @@ const CreateDelivery = () => {
         <div className="center-loading">
           <LoadingSpinner />
         </div>
-      ) : namaKurir && listDelivery.length > 0 ? (
-        listDelivery.map((d, i) => (
-          <div key={i}>
-            <div className={styles["table-title"]}>
-              <span className={styles["table-title__icon"]}>
-                <Stack />
-              </span>
-              <span className={styles["table-title__text"]}>{d.noDelivery}</span>
-              <span className={styles["table-title__date"]}>{d.tglDelivery}</span>
-            </div>
-            <table className="table-container">
-              <thead className="table-head">
-                <tr>
-                  <td>No</td>
-                  <td>No Resi</td>
-                  <td>Penerima</td>
-                  <td>Isi Paket</td>
-                  <td>Jlh Paket</td>
-                  <td>Berat Paket</td>
-                  <td style={{ width: "50px" }}>Status</td>
-                </tr>
-              </thead>
-              <tbody className="table-body">
-                {d.dataResi.map((val, idx) => (
-                  <tr key={idx}>
-                    <td>{idx + 1}</td>
-                    <td>{val.noResi}</td>
-                    <td>
-                      <div className={styles["table-penerima"]}>
-                        <span className={styles["table-penerima__nama"]}>{val.namaPenerima}</span>
-                        <span className={styles["table-penerima__nohp"]}>{val.nohpPenerima}</span>
-                        <span className={styles["table-penerima__alamat"]}>{val.alamatPenerima}</span>
+      ) : listDelivery.length > 0 ? (
+        listDelivery
+          .filter((d) => (namaKurir ? d.namaKurir === namaKurir : d.namaKurir))
+          .map((d, i) => (
+            <div key={i}>
+              <div className={styles["table-title"]}>
+                <span className={styles["table-title__icon"]}>
+                  <Stack />
+                </span>
+                <span className={styles["table-title__text"]}>{d.noDelivery}</span>
+                <span className={styles["table-title__date"]}>{d.tglDelivery}</span>
+              </div>
+              <table className="table-container">
+                <thead className="table-head">
+                  <tr>
+                    <td>No</td>
+                    <td>No Resi</td>
+                    <td>Penerima</td>
+                    <td>Isi Paket</td>
+                    <td>Jlh Paket</td>
+                    <td>Berat Paket</td>
+                    <td style={{ width: "160px" }}>Status</td>
+                  </tr>
+                </thead>
+                <tbody className="table-body">
+                  {d.dataResi.map((val, idx) => (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>{val.noResi}</td>
+                      <td>
+                        <div className={styles["table-penerima"]}>
+                          <span className={styles["table-penerima__nama"]}>{val.namaPenerima}</span>
+                          <span className={styles["table-penerima__nohp"]}>{val.nohpPenerima}</span>
+                          <span className={styles["table-penerima__alamat"]}>{val.alamatPenerima}</span>
+                        </div>
+                      </td>
+                      <td>{val.keteranganBarang}</td>
+                      <td>{val.jumlahBarang} Koli</td>
+                      <td>{val.beratBarang} Kg</td>
+                      <td>
+                        {val.statusDelivery === "proses" && (
+                          <Button
+                            type="submit"
+                            label="Pengantaran"
+                            color="orange"
+                            width="full"
+                            icon={<Refresh />}
+                            clickHandler={() => showUpdateHandler(val.noResi, d.noDelivery)}
+                          />
+                        )}
+                        {val.statusDelivery === "diterima" && (
+                          <Button
+                            type="submit"
+                            label="Diterima"
+                            color="cornflowerblue"
+                            width="full"
+                            icon={<Check />}
+                            clickHandler={() => showStatusHandler(val)}
+                          />
+                        )}
+                        {val.statusDelivery === "gagal" && (
+                          <Button
+                            type="submit"
+                            label="Gagal"
+                            color="red"
+                            width="full"
+                            icon={<CloseCircle />}
+                            clickHandler={() => showStatusHandler(val)}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="table-foot">
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center", fontWeight: "800" }}>
+                      <div>
+                        <span>
+                          Paket Diterima : {d.dataResi.filter((val) => val.statusDelivery === "diterima").length} resi
+                        </span>
+                        <span> || </span>
+                        <span>
+                          Gagal Kirim : {d.dataResi.filter((val) => val.statusDelivery === "gagal").length} resi
+                        </span>
+                        <span> || </span>
+                        <span>
+                          Proses Pengiriman : {d.dataResi.filter((val) => val.statusDelivery === "proses").length} resi{" "}
+                        </span>
+                        <div className="center-element">
+                          <Button
+                            label="Selesaikan Delivery"
+                            color="greenoutlined"
+                            icon={<Check />}
+                            clickHandler={() => closeDelivery(d.noDelivery)}
+                            disabled={d.dataResi.filter((val) => val.statusDelivery === "proses").length > 0}
+                          />
+                        </div>
                       </div>
-                    </td>
-                    <td>{val.keteranganBarang}</td>
-                    <td>{val.jumlahBarang} Koli</td>
-                    <td>{val.jumlahBarang} Kg</td>
-                    <td>
-                      {val.statusDelivery === "proses" && (
-                        <Button
-                          type="submit"
-                          label="Pengantaran"
-                          color="orange"
-                          width="full"
-                          icon={<Refresh />}
-                          clickHandler={() => showUpdateHandler(val.noResi, d.noDelivery)}
-                        />
-                      )}
-                      {val.statusDelivery === "diterima" && (
-                        <Button
-                          type="submit"
-                          label="Diterima"
-                          color="cornflowerblue"
-                          width="full"
-                          icon={<Check />}
-                          clickHandler={() => showUpdateHandler(val.noResi, d.noDelivery)}
-                        />
-                      )}
-                      {val.statusDelivery === "gagal" && (
-                        <Button
-                          type="submit"
-                          label="Gagal"
-                          color="red"
-                          width="full"
-                          icon={<CloseCircle />}
-                          clickHandler={() => showUpdateHandler(val.noResi, d.noDelivery)}
-                        />
-                      )}
                     </td>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot className="table-foot">
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center", fontWeight: "800" }}>
-                    <div>
-                      <span>
-                        Paket Diterima : {d.dataResi.filter((val) => val.statusDelivery === "diterima").length} resi
-                      </span>
-                      <span> || </span>
-                      <span>
-                        Gagal Kirim : {d.dataResi.filter((val) => val.statusDelivery === "gagal").length} resi
-                      </span>
-                      <span> || </span>
-                      <span>
-                        Proses Pengiriman : {d.dataResi.filter((val) => val.statusDelivery === "proses").length} resi{" "}
-                      </span>
-                      <div className="center-element">
-                        <Button
-                          label="Selesaikan Delivery"
-                          color="greenoutlined"
-                          icon={<Check />}
-                          clickHandler={() => closeDelivery(d.noDelivery)}
-                          disabled={d.dataResi.filter((val) => val.statusDelivery === "proses").length > 0}
-                        />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-            {showModalUpdate ? (
-              <ModalUpdateDelivery
-                onCloseModal={closeUpdateHandler}
-                noResi={noResiClicked}
-                noDelivery={noDeliveryClicked}
-                cabang={cabangTujuan}
-                kurir={namaKurir}
-                onReset={resetInput}
-                onSet={setInput}
-              />
-            ) : null}
-          </div>
-        ))
+                </tfoot>
+              </table>
+              {showModalUpdate ? (
+                <ModalUpdateDelivery
+                  onCloseModal={closeUpdateHandler}
+                  noResi={noResiClicked}
+                  noDelivery={noDeliveryClicked}
+                  cabang={cabangTujuan}
+                  kurir={namaKurir}
+                  onReset={resetInput}
+                  onSet={setInput}
+                />
+              ) : null}
+              {showStatusDelivery ? (
+                <ModalStatusDelivery onCloseModal={closeStatusHandler} getValue={valueStatusDelivery} />
+              ) : null}
+            </div>
+          ))
       ) : (
         <div className="center-element" style={{ marginTop: "20px", color: "red" }}>
           {!cabangTujuan

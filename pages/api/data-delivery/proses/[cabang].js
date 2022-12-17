@@ -1,7 +1,7 @@
 import { connectDatabase, findDeliveryOnProses } from "../../../../helpers/mongodbConnect";
 
 const handler = async (req, res) => {
-  const { namaKurir } = req.query;
+  const { cabang } = req.query;
   let client;
   try {
     client = await connectDatabase();
@@ -13,7 +13,7 @@ const handler = async (req, res) => {
 
   let result;
   try {
-    result = await findDeliveryOnProses(client, "dataDelivery", namaKurir);
+    result = await findDeliveryOnProses(client, "dataDelivery", cabang);
   } catch (error) {
     client.close();
     res.status(500).json({ message: "Data kurir tidak ditemukan" });
