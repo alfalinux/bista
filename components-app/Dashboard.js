@@ -35,15 +35,19 @@ const Dashboard = () => {
             <option value="" disabled={true}>
               --Pilih Cabang--
             </option>
-            {listCabang.map((d, i) => (
-              <option key={i} value={d.cab}>
-                {d.cab.toUpperCase()}
-              </option>
-            ))}
+            {!data ? null : data.posisi === "GEN" ? (
+              listCabang.map((d, i) => (
+                <option key={i} value={d.cab}>
+                  {d.cab.toUpperCase()}
+                </option>
+              ))
+            ) : (
+              <option value={data.cabangDesc}>{data.cabangDesc.toUpperCase()}</option>
+            )}
           </select>
         </div>
 
-        <ResiActive />
+        <ResiActive cabang={selectedCabang} />
       </main>
     </div>
   );

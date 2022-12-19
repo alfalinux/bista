@@ -1,29 +1,20 @@
-import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import styles from "./ResiActive.module.css";
 import LoadingSpinner from "../../../public/icons/loading-spinner";
 
-const ResiActive = () => {
-  const { data, status } = useSession();
+const ResiActive = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [resiActive, setResiActive] = useState([]);
-  const [selectedCabang, setSelectedCabang] = useState("");
 
   useEffect(() => {
-    if (data) {
-      setSelectedCabang(data.cabangDesc);
-    }
-  }, [data]);
-  console.log(selectedCabang);
-  useEffect(() => {
     setIsLoading(true);
-    fetch("/api/data-resi/find-resi-aktif/" + selectedCabang)
+    fetch("/api/data-resi/find-resi-aktif/" + props.cabang)
       .then((response) => response.json())
       .then((data) => {
         setResiActive(data);
         setIsLoading(false);
       });
-  }, [selectedCabang]);
+  }, [props.cabang]);
 
   return (
     <table className="table-container">
@@ -52,7 +43,12 @@ const ResiActive = () => {
           resiActive.map((d, i) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>{d.noResi}</td>
+              <td>
+                <div className={styles["table-resi"]}>
+                  <span className={styles["table-resi__noResi"]}>{d.noResi}</span>
+                  <span className={styles["table-resi__tgl"]}>{d.tglTransaksi}</span>
+                </div>
+              </td>
               <td>
                 <div className={styles["table-penerima"]}>
                   <span className={styles["table-penerima__nama"]}>{d.namaPengirim}</span>
