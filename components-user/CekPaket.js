@@ -4,9 +4,9 @@ import MainNav from "./MainNav";
 import Button from "../components-app/ui/Button";
 import Search from "../public/icons/search";
 import LoadingSpinner from "../public/icons/loading-spinner";
-import Check from "../public/icons/check";
 
 import styles from "./CekPaket.module.css";
+import TrackingResult from "./TrackingResult";
 
 const CekPaket = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,99 +67,7 @@ const CekPaket = () => {
             dataResi.noResi === "" || noResi === "" ? (
               <div>Nomor Resi Tidak Terdaftar</div>
             ) : (
-              <>
-                {/* Transaksi */}
-                <div className={styles["content"]}>
-                  <div className={styles["content__icon"]}>
-                    <Check />
-                  </div>
-                  <div className={styles["content__detail"]}>
-                    <div className={styles["content__title"]}>
-                      Transaksi Pengiriman [Cabang {dataResi.resiCreatedIn.toUpperCase()}]
-                    </div>
-                    <div className={styles["content__date"]}>{dataResi.tglResi}</div>
-                  </div>
-                </div>
-
-                {/* Manifest */}
-                {dataResi.noManifest === "" ? null : (
-                  <div className={styles["content"]}>
-                    <div className={styles["content__icon"]}>
-                      <Check />
-                    </div>
-                    <div className={styles["content__detail"]}>
-                      <div className={styles["content__title"]}>
-                        Proses Pemberangkatan [Gateway {dataResi.manifestCreatedIn.toUpperCase()}]
-                      </div>
-                      <div className={styles["content__date"]}>{dataResi.tglManifest}</div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Surat Jalan */}
-                {dataResi.listSuratJalan.length === 0
-                  ? null
-                  : dataResi.listSuratJalan.map((d, i) => (
-                      <div key={i}>
-                        <div className={styles["content"]}>
-                          <div className={styles["content__icon"]}>
-                            <Check />
-                          </div>
-                          <div className={styles["content__detail"]}>
-                            <div className={styles["content__title"]}>
-                              Paket Berangkat Menuju {d.cabangTujuan.toUpperCase()}
-                            </div>
-                            <div className={styles["content__date"]}>{d.tglSuratJalan}</div>
-                          </div>
-                        </div>
-                        {d.receivedAt ? (
-                          <div className={styles["content"]}>
-                            <div className={styles["content__icon"]}>
-                              <Check />
-                            </div>
-                            <div className={styles["content__detail"]}>
-                              <div className={styles["content__title"]}>
-                                Paket Telah Sampai di {d.receivedIn.toUpperCase()}
-                              </div>
-                              <div className={styles["content__date"]}>{d.receivedAt}</div>
-                            </div>
-                          </div>
-                        ) : null}
-                      </div>
-                    ))}
-
-                {/* Delivery */}
-                {dataResi.listDelivery.map((d, i) => (
-                  <div key={i}>
-                    <div className={styles["content"]}>
-                      <div className={styles["content__icon"]}>
-                        <Check />
-                      </div>
-                      <div className={styles["content__detail"]}>
-                        <div className={styles["content__title"]}>Paket Sedang Diantar [{d.namaKurir}]</div>
-                        <div className={styles["content__date"]}>{d.tglDelivery}</div>
-                      </div>
-                    </div>
-                    {d.deliveredAt ? (
-                      <div className={styles["content"]}>
-                        <div className={styles["content__icon"]}>
-                          <Check />
-                        </div>
-                        <div className={styles["content__detail"]}>
-                          <div className={styles["content__title"]}>
-                            {d.statusDelivery === "diterima"
-                              ? "Paket Telah Diterima Oleh - " + d.keteranganDelivery
-                              : d.statusDelivery === "gagal"
-                              ? "Paket Tidak Terantar - " + d.keteranganDelivery
-                              : ""}
-                          </div>
-                          <div className={styles["content__date"]}>{d.deliveredAt}</div>
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
-              </>
+              <TrackingResult dataResi={dataResi} />
             )
           ) : isLoading ? (
             <div>Loading...</div>

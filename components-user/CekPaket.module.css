@@ -1,6 +1,5 @@
 .container {
   width: 75%;
-  /* background-color: #eaeaea; */
   margin: 50px auto;
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -50,25 +49,6 @@
 
 .icon {
   margin: 0 auto;
-}
-
-.content {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  margin: 10px auto;
-}
-
-.content__icon {
-  width: 40px;
-  color: lime;
-}
-
-.content__date {
-  font-size: 14px;
-  color: palegreen;
 }
 
 @media screen and (max-width: 760px) {
