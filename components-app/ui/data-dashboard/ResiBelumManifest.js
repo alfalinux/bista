@@ -1,15 +1,16 @@
-import { useState } from "react";
-import styles from "./ResiActive.module.css";
+import { useState, useEffect } from "react";
+import styles from "./ResiBelumManifest.module.css";
 import LoadingSpinner from "../../../public/icons/loading-spinner";
 import LoadingPage from "../LoadingPage";
 import Button from "../Button";
 import Search from "../../../public/icons/search";
 import ModalDetailResi from "./ModalDetailResi";
 
-const ResiActive = (props) => {
+const ResiBelumManifest = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [showModalDetailResi, setShowModalDetailResi] = useState(false);
-
+  const [resiActive, setResiActive] = useState([]);
   const [dataResi, setDataResi] = useState({});
 
   const detailClickHandler = (noResi) => {
@@ -27,6 +28,16 @@ const ResiActive = (props) => {
     setShowModalDetailResi(false);
     setDataResi({});
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetch("/api/data-resi/find-resi-aktif/" + props.cabang)
+      .then((response) => response.json())
+      .then((data) => {
+        setResiActive(data);
+        setIsLoading(false);
+      });
+  }, [props.cabang]);
 
   return (
     <>
@@ -46,14 +57,14 @@ const ResiActive = (props) => {
           </tr>
         </thead>
         <tbody className="table-body">
-          {!props.dataResi ? null : props.isLoading ? (
+          {!resiActive ? null : isLoading ? (
             <tr>
               <td colSpan={10}>
                 <LoadingSpinner />
               </td>
             </tr>
           ) : (
-            props.dataResi.map((d, i) => (
+            resiActive.map((d, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td>
@@ -107,4 +118,4 @@ const ResiActive = (props) => {
   );
 };
 
-export default ResiActive;
+export default ResiBelumManifest;
