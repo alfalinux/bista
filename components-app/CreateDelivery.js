@@ -18,6 +18,7 @@ const CreateDelivery = () => {
   const [cabangTujuan, setCabangTujuan] = useState("");
   const [namaKurir, setNamaKurir] = useState("");
   const [resiBelumDelivery, setResiBelumDelivery] = useState([]);
+  const [resiBelumCloseDelivery, setResiBelumCloseDelivery] = useState([]);
   const [listCheckedResi, setListCheckedResi] = useState([]);
 
   useEffect(() => {
@@ -43,12 +44,32 @@ const CreateDelivery = () => {
   }, [cabangTujuan]);
 
   useEffect(() => {
+    if (cabangTujuan) {
+      const cabang = listCabang.filter((d) => d.cab === cabangTujuan)[0];
+      fetch("/api/users/" + cabang.tlc)
+        .then((response) => response.json())
+        .then((data) => setListUserCabang(data));
+    }
+  }, [cabangTujuan]);
+
+  useEffect(() => {
     setIsLoading(true);
     if (cabangTujuan !== "") {
       fetch("/api/data-resi/belum-delivery/" + cabangTujuan)
         .then((response) => response.json())
         .then((data) => {
           setResiBelumDelivery(data);
+          setIsLoading(false);
+        });
+
+      fetch("/api/data-delivery/proses/" + cabangTujuan)
+        .then((response) => response.json())
+        .then((data) => {
+          const listResi = data
+            .map((d) => d.dataResi.map((d) => d.noResi))
+            .join()
+            .split(",");
+          setResiBelumCloseDelivery(listResi);
           setIsLoading(false);
         });
     } else {
@@ -146,6 +167,7 @@ const CreateDelivery = () => {
     });
   };
 
+  console.log();
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}
@@ -226,50 +248,59 @@ const CreateDelivery = () => {
                   Data Tidak Ditemukan...
                 </td>
               </tr>
+            ) : resiBelumDelivery.filter((d) => !resiBelumCloseDelivery.includes(d.noResi)).length === 0 ? (
+              <tr>
+                <td colSpan="6" className="error-txt">
+                  Ditemukan {resiBelumCloseDelivery.length} Resi GAGAL KIRIM yang masih dibawa kurir, silahkan close
+                  status delivery untuk melakukan delivery ulang...
+                </td>
+              </tr>
             ) : (
-              resiBelumDelivery.map((d, i) => (
-                <tr key={i}>
-                  <td className="center-element">{i + 1}</td>
-                  <td>{d.noResi}</td>
-                  <td>
-                    {d.cabangAsal.toUpperCase()} - {d.cabangTujuan}
-                  </td>
-                  <td>{d.dataOngkir.kec.toUpperCase()}</td>
-                  <td>{d.jumlahBarang} koli</td>
-                  <td>{d.beratBarang} Kg</td>
-                  <td className="center-element">
-                    <input
-                      id="checkbox"
-                      type="checkbox"
-                      disabled={!namaKurir}
-                      onChange={(e) =>
-                        checkboxChangeHandler(e, {
-                          noResi: d.noResi,
-                          statusDelivery: "proses",
-                          keteranganDelivery: "",
-                          deliveredAt: "",
-                          deliveredBy: "",
-                          namaPengirim: d.namaPengirim,
-                          namaPenerima: d.namaPenerima,
-                          nohpPengirim: d.nohpPengirim,
-                          nohpPenerima: d.nohpPenerima,
-                          alamatPenerima: d.alamatPenerima,
-                          alamatPengirim: d.alamatPengirim,
-                          beratBarang: d.beratBarang,
-                          jumlahBarang: d.jumlahBarang,
-                          cabangAsal: d.cabangAsal,
-                          cabangTujuan: d.cabangTujuan,
-                          tujuanKecamatan: d.tujuan.kec,
-                          keteranganBarang: d.keteranganBarang,
-                          layanan: d.layanan,
-                          pembayaran: d.pembayaran,
-                          grandTotal: d.grandTotal,
-                        })
-                      }
-                    />
-                  </td>
-                </tr>
-              ))
+              resiBelumDelivery
+                .filter((d) => !resiBelumCloseDelivery.includes(d.noResi))
+                .map((d, i) => (
+                  <tr key={i}>
+                    <td className="center-element">{i + 1}</td>
+                    <td>{d.noResi}</td>
+                    <td>
+                      {d.cabangAsal.toUpperCase()} - {d.cabangTujuan}
+                    </td>
+                    <td>{d.dataOngkir.kec.toUpperCase()}</td>
+                    <td>{d.jumlahBarang} koli</td>
+                    <td>{d.beratBarang} Kg</td>
+                    <td className="center-element">
+                      <input
+                        id="checkbox"
+                        type="checkbox"
+                        disabled={!namaKurir}
+                        onChange={(e) =>
+                          checkboxChangeHandler(e, {
+                            noResi: d.noResi,
+                            statusDelivery: "proses",
+                            keteranganDelivery: "",
+                            deliveredAt: "",
+                            deliveredBy: "",
+                            namaPengirim: d.namaPengirim,
+                            namaPenerima: d.namaPenerima,
+                            nohpPengirim: d.nohpPengirim,
+                            nohpPenerima: d.nohpPenerima,
+                            alamatPenerima: d.alamatPenerima,
+                            alamatPengirim: d.alamatPengirim,
+                            beratBarang: d.beratBarang,
+                            jumlahBarang: d.jumlahBarang,
+                            cabangAsal: d.cabangAsal,
+                            cabangTujuan: d.cabangTujuan,
+                            tujuanKecamatan: d.tujuan.kec,
+                            keteranganBarang: d.keteranganBarang,
+                            layanan: d.layanan,
+                            pembayaran: d.pembayaran,
+                            grandTotal: d.grandTotal,
+                          })
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))
             )}
           </tbody>
         </table>

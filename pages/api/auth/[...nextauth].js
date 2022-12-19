@@ -33,18 +33,24 @@ export default NextAuth({
   callbacks: {
     jwt: ({ token, user }) => {
       if (user) {
+        token.id = user.id;
         token.nama = user.nama;
         token.posisi = user.posisi;
+        token.posisiDesc = user.posisiDesc;
         token.cabang = user.cabang;
+        token.cabangDesc = user.cabangDesc;
         token.email = user.email;
       }
       return token;
     },
     session: ({ session, token }) => {
       if (token) {
+        session.id = token.id;
         session.nama = token.nama;
         session.posisi = token.posisi;
+        session.posisiDesc = token.posisiDesc;
         session.cabang = token.cabang;
+        session.cabangDesc = token.cabangDesc;
         session.email = token.email;
       }
       return session;

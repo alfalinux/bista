@@ -2,6 +2,7 @@ import { connectDatabase, updateManyResi } from "../../../helpers/mongodbConnect
 
 const handler = async (req, res) => {
   const { filter, update } = req.body;
+
   let client;
   try {
     client = await connectDatabase();

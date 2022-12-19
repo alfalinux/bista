@@ -182,7 +182,6 @@ const InputResi = (props) => {
     inputValue.biayaSurat,
   ]);
 
-  console.log(inputValue);
   useEffect(() => {
     if (inputValue.cabangAsal !== "" && inputValue.tujuan !== "") {
       fetch("/api/ongkir/" + inputValue.cabangAsal.toLowerCase() + "/" + inputValue.tujuan.id)

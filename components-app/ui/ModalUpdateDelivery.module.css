@@ -51,6 +51,7 @@
 .form-field input,
 .form-field select {
   padding: 10px;
+  margin-bottom: 5px;
 }
 
 .form-text {

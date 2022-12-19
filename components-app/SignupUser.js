@@ -3,10 +3,10 @@ import LoginIcon from "../public/icons/login-icon";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import { useState, useEffect } from "react";
 
-async function createUser(nama, posisi, cabang, email, password) {
+async function createUser(nama, posisi, posisiDesc, cabang, cabangDesc, email, password) {
   const response = await fetch("/api/auth/signup", {
     method: "POST",
-    body: JSON.stringify({ nama, posisi, cabang, email, password }),
+    body: JSON.stringify({ nama, posisi, posisiDesc, cabang, cabangDesc, email, password }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -27,6 +27,8 @@ const SignupUser = () => {
   const [signupFailed, setSignupFailed] = useState("");
   const [showLoading, setShowLoading] = useState(false);
   const [listCabang, setListCabang] = useState([]);
+  const [posisiDesc, setPosisiDesc] = useState("");
+  const [cabangDesc, setCabangDesc] = useState("");
 
   const blurHandler = (e) => {
     setTouchedField({ ...touchedField, [e.target.name]: true });
@@ -38,6 +40,14 @@ const SignupUser = () => {
       .then((data) => setListCabang(data));
   }, []);
 
+  const posisiChangeHandler = (e) => {
+    setPosisiDesc(e.target.selectedOptions[0].text.toLowerCase());
+  };
+
+  const cabangChangeHandler = (e) => {
+    setCabangDesc(e.target.selectedOptions[0].text.toLowerCase());
+  };
+
   const signupHandler = async (e) => {
     e.preventDefault();
     setShowLoading(true);
@@ -45,14 +55,22 @@ const SignupUser = () => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const result = await createUser(data.nama, data.posisi, data.cabang, data.email, data.password);
+      const result = await createUser(
+        data.nama,
+        data.posisi,
+        posisiDesc,
+        data.cabang,
+        cabangDesc,
+        data.email,
+        data.password
+      );
       setSignupSuccess(result.message);
+      setShowLoading(false);
     } catch (error) {
       setSignupFailed(error.message);
+      setShowLoading(false);
     }
-    setShowLoading(false);
   };
-
   return (
     <form onSubmit={signupHandler} className={styles["container"]}>
       <div className={styles["field"]}>
@@ -76,6 +94,7 @@ const SignupUser = () => {
           name="posisi"
           id="posisi"
           onBlur={blurHandler}
+          onChange={posisiChangeHandler}
           data-touched={touchedField.posisi}
           defaultValue=""
           required
@@ -98,6 +117,7 @@ const SignupUser = () => {
           name="cabang"
           id="cabang"
           onBlur={blurHandler}
+          onChange={cabangChangeHandler}
           data-touched={touchedField.cabang}
           defaultValue=""
           required

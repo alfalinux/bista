@@ -4,7 +4,7 @@ import { connectDatabase } from "../../../helpers/mongodbConnect";
 const handler = async (req, res) => {
   const data = req.body;
 
-  const { nama, posisi, cabang, email, password } = data;
+  const { nama, posisi, posisiDesc, cabang, cabangDesc, email, password } = data;
 
   if (!email || !email.includes("@") || !password || password.trim().length < 6) {
     res.status(422).json({ message: "Invalid Input, cek kembali" });
@@ -31,7 +31,9 @@ const handler = async (req, res) => {
     id: idUser.length + 1,
     nama: nama,
     posisi: posisi,
+    posisiDesc: posisiDesc,
     cabang: cabang,
+    cabangDesc: cabangDesc,
     email: email,
     password: hashedPassword,
   });

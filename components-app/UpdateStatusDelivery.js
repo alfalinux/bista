@@ -127,6 +127,8 @@ const CreateDelivery = () => {
     setIsLoadingPage(true);
     const cabang = cabangTujuan;
     const kurir = namaKurir;
+    const noResi = noResiClicked;
+
     resetInput();
     const tgl = new Date().toLocaleString("en-UK", {
       day: "numeric",
@@ -137,20 +139,32 @@ const CreateDelivery = () => {
     });
     const update = { closedAt: tgl, closedBy: data.nama };
     const filter = noDelivery;
+    const filterResi = { noResi: noResi, noDelivery: noDelivery };
 
-    fetch("/api/data-delivery/close-delivery", {
+    fetch("/api/data-resi/update-one-resi-by-delivery", {
       method: "PATCH",
-      body: JSON.stringify({ filter: filter, update: update }),
+      body: JSON.stringify({ filter: filterResi, update: update }),
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       if (response.status === 201) {
-        setInput(cabang, kurir);
-        setIsLoadingPage(false);
-        alert("Delivery berhasil di close");
+        fetch("/api/data-delivery/close-delivery", {
+          method: "PATCH",
+          body: JSON.stringify({ filter: filter, update: update }),
+          headers: { "Content-Type": "application/json" },
+        }).then((response) => {
+          if (response.status === 201) {
+            setInput(cabang, kurir);
+            setIsLoadingPage(false);
+            alert("Delivery berhasil di close");
+          } else {
+            setInput(cabang, kurir);
+            setIsLoadingPage(false);
+            alert("Gagal Close Delivery");
+          }
+        });
       } else {
-        setInput(cabang, kurir);
+        alert("Gagal Update Status Resi");
         setIsLoadingPage(false);
-        alert("Gagal Close Delivery");
       }
     });
   };

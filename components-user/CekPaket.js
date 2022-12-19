@@ -16,7 +16,10 @@ const CekPaket = () => {
 
   const noResiChangeHandler = (e) => {
     setNoResi(e.target.value);
+    setFetchSuccess(false);
+    setDataResi({});
   };
+
   const submitHandler = (e) => {
     setFetchSuccess(false);
     e.preventDefault();
@@ -96,8 +99,8 @@ const CekPaket = () => {
                 {/* Surat Jalan */}
                 {dataResi.listSuratJalan.length === 0
                   ? null
-                  : dataResi.listSuratJalan.map((d) => (
-                      <>
+                  : dataResi.listSuratJalan.map((d, i) => (
+                      <div key={i}>
                         <div className={styles["content"]}>
                           <div className={styles["content__icon"]}>
                             <Check />
@@ -122,12 +125,12 @@ const CekPaket = () => {
                             </div>
                           </div>
                         ) : null}
-                      </>
+                      </div>
                     ))}
 
                 {/* Delivery */}
-                {dataResi.listDelivery.map((d) => (
-                  <>
+                {dataResi.listDelivery.map((d, i) => (
+                  <div key={i}>
                     <div className={styles["content"]}>
                       <div className={styles["content__icon"]}>
                         <Check />
@@ -154,7 +157,7 @@ const CekPaket = () => {
                         </div>
                       </div>
                     ) : null}
-                  </>
+                  </div>
                 ))}
               </>
             )

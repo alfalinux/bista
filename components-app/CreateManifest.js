@@ -85,45 +85,49 @@ const CreateManifest = () => {
         update: { noManifest: noManifest, tglManifest: tgl },
       }),
       headers: { "Content-Type": "application/json" },
+    }).then((response) => {
+      if (response.status === 201) {
+        fetch("/api/data-manifest/post-manifest", {
+          method: "POST",
+          body: JSON.stringify({
+            noManifest: noManifest,
+            tglManifest: tgl,
+            cabangAsal: cabangAsal,
+            cabangAsalTlc: tlc.asal,
+            cabangTujuan: cabangTujuan,
+            cabangTujuanTlc: tlc.tujuan,
+            coveranArea: coveranArea,
+            coveranAreaTlc: tlc.coveran,
+            jumlahBerat: listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
+            jumlahBarang: listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0),
+            konsolidasi: konsolidasi,
+            petugasInput: data.nama,
+            dataResi: listResi,
+          }),
+          headers: { "Content-Type": "application/json" },
+        }).then((response) => {
+          if (response.status === 201) {
+            // reset all state
+            setCabangAsal("");
+            setCabangTujuan("");
+            setCoveranArea("");
+            setListTujuan([]);
+            setListCoveran([]);
+            setDataResi([]);
+            setListResi([]);
+            setKonsolidasi("");
+            setIsLoadingPage(false);
+            alert("Berhasil Create Manifest");
+          } else {
+            setIsLoadingPage(false);
+            alert("Terjadi Kesalahan, silahkan ulangi proses");
+          }
+        });
+      } else {
+        setIsLoadingPage(false);
+        alert("Gagal Update Data Resi");
+      }
     });
-
-    // post dataManifest
-    try {
-      fetch("/api/data-manifest/post-manifest", {
-        method: "POST",
-        body: JSON.stringify({
-          noManifest: noManifest,
-          tglManifest: tgl,
-          cabangAsal: cabangAsal,
-          cabangAsalTlc: tlc.asal,
-          cabangTujuan: cabangTujuan,
-          cabangTujuanTlc: tlc.tujuan,
-          coveranArea: coveranArea,
-          coveranAreaTlc: tlc.coveran,
-          jumlahBerat: listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
-          jumlahBarang: listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0),
-          konsolidasi: konsolidasi,
-          petugasInput: data.nama,
-          dataResi: listResi,
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      setIsLoadingPage(false);
-      alert("Berhasil Create Manifest");
-    } catch (error) {
-      setIsLoadingPage(false);
-      alert("Terjadi Kesalahan, silahkan ulangi proses");
-    }
-
-    // reset all state
-    setCabangAsal("");
-    setCabangTujuan("");
-    setCoveranArea("");
-    setListTujuan([]);
-    setListCoveran([]);
-    setDataResi([]);
-    setListResi([]);
-    setKonsolidasi("");
   };
 
   useEffect(() => {

@@ -73,7 +73,7 @@ const ReceiveManifest = () => {
       );
     }
   };
-  console.log();
+
   const submitHandler = (e) => {
     setIsLoadingPage(true);
     e.preventDefault();
@@ -114,6 +114,7 @@ const ReceiveManifest = () => {
     });
   };
 
+  console.log();
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}
@@ -191,25 +192,6 @@ const ReceiveManifest = () => {
                       );
                     }
                   })()}
-
-                  {/* sj.receivedIn ? (
-                      <div className="status-paket" key={i}>
-                        <div>
-                          Received in <b>{sj.receivedIn.toUpperCase()}</b>
-                        </div>
-                        <div>tgl {sj.receivedAt}</div>
-                      </div>
-                    ) : (
-                      <div className="status-paket">
-                        <div>
-                          Perjalanan
-                          <b>
-                            {sj.cabangAsal.toUpperCase()} - {sj.cabangTujuan.toUpperCase()}
-                          </b>
-                        </div>
-                        <div>tgl {sj.tglSuratJalan}</div>
-                      </div>
-                    ); */}
                 </td>
                 <td>
                   <div className="center-element">
@@ -218,7 +200,13 @@ const ReceiveManifest = () => {
                       name="checkbox"
                       type="checkbox"
                       onChange={(e) => checkboxChangeHandler(e, d)}
-                      disabled={!fetchDataManifest[0].suratJalan.map((d) => d.receivedIn).includes(cabangTujuan)}
+                      disabled={
+                        !d.suratJalan
+                          .map((d) => d.receivedIn)
+                          .join()
+                          .split(",")
+                          .includes(cabangTujuan)
+                      }
                     />
                   </div>
                 </td>

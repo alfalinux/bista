@@ -160,6 +160,15 @@ export const findResi = async (client, collection, noResi) => {
   return result;
 };
 
+export const findManyResiActive = async (client, collection, cabang) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ cabangAsal: cabang, "delivery.statusDelivery": { $nin: ["diterima"] } })
+    .toArray();
+  return result;
+};
+
 export const findResiInManifest = async (client, collection, noResi) => {
   const db = client.db("bista");
   const result = await db.collection(collection).findOne({ dataResi: { $elemMatch: { noResi: noResi } } });
