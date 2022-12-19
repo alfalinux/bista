@@ -10,7 +10,6 @@ const ResiBelumManifest = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [showModalDetailResi, setShowModalDetailResi] = useState(false);
-  const [resiActive, setResiActive] = useState([]);
   const [dataResi, setDataResi] = useState({});
 
   const detailClickHandler = (noResi) => {
@@ -28,16 +27,6 @@ const ResiBelumManifest = (props) => {
     setShowModalDetailResi(false);
     setDataResi({});
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    fetch("/api/data-resi/find-resi-aktif/" + props.cabang)
-      .then((response) => response.json())
-      .then((data) => {
-        setResiActive(data);
-        setIsLoading(false);
-      });
-  }, [props.cabang]);
 
   return (
     <>
@@ -57,14 +46,14 @@ const ResiBelumManifest = (props) => {
           </tr>
         </thead>
         <tbody className="table-body">
-          {!resiActive ? null : isLoading ? (
+          {!props.dataResi ? null : isLoading ? (
             <tr>
               <td colSpan={10}>
                 <LoadingSpinner />
               </td>
             </tr>
           ) : (
-            resiActive.map((d, i) => (
+            props.dataResi.map((d, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td>

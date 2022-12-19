@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import styles from "./Dashboard.module.css";
 import DashboardNav from "./ui/data-dashboard/DashboardNav";
 import ResiActive from "./ui/data-dashboard/ResiActive";
+import ResiBelumManifest from "./ui/data-dashboard/ResiBelumManifest";
 
 const Dashboard = () => {
   const { data, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [resiActive, setResiActive] = useState([]);
+  const [resiActiveBelumManifest, setResiActiveBelumManifest] = useState([]);
+  const [resiActiveBelumSuratJalan, setResiActiveBelumSuratJalan] = useState([]);
   const [listCabang, setListCabang] = useState([]);
   const [selectedCabang, setSelectedCabang] = useState("");
   const [resiAktifSelected, setResiAktifSelected] = useState(false);
@@ -47,10 +50,30 @@ const Dashboard = () => {
     fetch("/api/data-resi/find-resi-aktif/" + selectedCabang)
       .then((response) => response.json())
       .then((data) => {
-        setResiActive(data);
+        !data
+          ? null
+          : setResiActive(
+              data.sort((a, b) => {
+                a.tglTransaksi - b.tglTransaksi;
+                return -1;
+              })
+            );
         setIsLoading(false);
       });
   }, [selectedCabang]);
+
+  useEffect(() => {
+    if (resiActive) {
+      setResiActiveBelumManifest(
+        resiActive
+          .filter((d) => !d.noManifest)
+          .sort((a, b) => {
+            a.tglTransaksi - b.tglTransaksi;
+            return -1;
+          })
+      );
+    }
+  }, [resiActive]);
 
   return (
     <div className={styles["container"]}>
@@ -88,6 +111,7 @@ const Dashboard = () => {
         ) : null}
 
         {resiAktifSelected ? <ResiActive dataResi={resiActive} isLoading={isLoading} /> : null}
+        {resiBelumManifestSelected ? <ResiBelumManifest dataResi={resiActiveBelumManifest} /> : null}
       </main>
     </div>
   );
