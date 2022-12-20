@@ -24,6 +24,18 @@ a:visited {
   color: inherit;
 }
 
+/* styling slide menu */
+.radio1 {
+  margin-left: 0;
+}
+.radio2 {
+  margin-left: -100%;
+}
+.radio3 {
+  margin-left: -200%;
+}
+/* styling slide menu */
+
 .error-txt {
   width: 100%;
   color: red;

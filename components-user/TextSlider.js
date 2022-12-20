@@ -60,21 +60,15 @@ const TextSlider = () => {
       <div className={styles["nav-manual"]}>
         <label
           htmlFor="radio1"
-          className={
-            radioChecked === "radio1" ? styles["manual-btn-checked"] : styles["manual-btn"]
-          }
+          className={radioChecked === "radio1" ? styles["manual-btn-checked"] : styles["manual-btn"]}
         ></label>
         <label
           htmlFor="radio2"
-          className={
-            radioChecked === "radio2" ? styles["manual-btn-checked"] : styles["manual-btn"]
-          }
+          className={radioChecked === "radio2" ? styles["manual-btn-checked"] : styles["manual-btn"]}
         ></label>
         <label
           htmlFor="radio3"
-          className={
-            radioChecked === "radio3" ? styles["manual-btn-checked"] : styles["manual-btn"]
-          }
+          className={radioChecked === "radio3" ? styles["manual-btn-checked"] : styles["manual-btn"]}
         ></label>
       </div>
     </div>

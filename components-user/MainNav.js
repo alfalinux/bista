@@ -33,22 +33,22 @@ const MainNav = () => {
           </Link>
         </div>
         <ul className={showMenu ? styles["list-menu-mobile"] : styles["list-menu"]}>
-          <li className={styles["list-item"]} onClick={showMenuHandler}>
+          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
             <Link href="/">Beranda</Link>
           </li>
-          <li className={styles["list-item"]} onClick={showMenuHandler}>
+          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
             <Link href="/#about">Tentang</Link>
           </li>
-          <li className={styles["list-item"]} onClick={showMenuHandler}>
+          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
             <Link href="/#layanan">Layanan</Link>
           </li>
-          <li className={styles["list-item"]} onClick={showMenuHandler}>
+          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
             <Link href="/#lokasi">Lokasi</Link>
           </li>
-          <li className={styles["list-item"]} onClick={showMenuHandler}>
+          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
             <Link href="/#kontak">Kontak</Link>
           </li>
-          <li className={styles["list-item"]} onClick={showMenuHandler}>
+          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
             {status === "authenticated" ? <Link href="/app">Member Area</Link> : <Link href="/auth">Login</Link>}
           </li>
         </ul>

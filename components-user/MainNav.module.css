@@ -35,6 +35,9 @@
 .list-item {
   padding: 5px 10px;
 }
+.list-item a {
+  color: #fff;
+}
 
 .list-item a:visited {
   text-decoration: none;
