@@ -178,7 +178,16 @@ const Sidemenu = (props) => {
                   Reprint Resi / Label
                 </li>
               </Link>
-              <li className={styles["list"]}>Reprint Manifest</li>
+              <Link href="/app/reprint/reprint-manifest">
+                <li
+                  className={
+                    router.pathname === "/app/reprint/reprint-manifest" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Reprint Manifest
+                </li>
+              </Link>
+
               <li className={styles["list"]}>Reprint Surat Jalan</li>
             </ul>
           ) : null}

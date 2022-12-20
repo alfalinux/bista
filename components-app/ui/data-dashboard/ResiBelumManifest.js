@@ -65,18 +65,18 @@ const ResiBelumManifest = (props) => {
                 <td>
                   <div className={styles["table-penerima"]}>
                     <span className={styles["table-penerima__nama"]}>{d.namaPengirim}</span>
-                    <span className={styles["table-penerima__nohp"]}>{d.nohpPengirim}</span>
-                    <span className={styles["table-penerima__alamat"]}>{d.alamatPengirim}</span>
+                    <span className={styles["table-penerima__alamat"]}>{d.cabangAsal}</span>
                   </div>
                 </td>
                 <td>
                   <div className={styles["table-penerima"]}>
                     <span className={styles["table-penerima__nama"]}>{d.namaPenerima}</span>
-                    <span className={styles["table-penerima__nohp"]}>{d.nohpPenerima}</span>
-                    <span className={styles["table-penerima__alamat"]}>{d.alamatPenerima}</span>
+                    <span className={styles["table-penerima__alamat"]}>
+                      {d.tujuan.kec}, {d.tujuan.kabkot}
+                    </span>
                   </div>
                 </td>
-                <td>{d.keteranganBarang}</td>
+                <td className={styles["table-penerima__keterangan"]}>{d.keteranganBarang}</td>
                 <td>{d.jumlahBarang} Koli</td>
                 <td>{d.beratBarang} Kg</td>
                 <td>{d.layanan.toUpperCase()}</td>

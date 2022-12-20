@@ -12,37 +12,38 @@ import LoadingSpinner from "../../../public/icons/loading-spinner";
 import Search from "../../../public/icons/search";
 
 import styles from "../../../styles/reprint.module.css";
+import manifestPdf from "../../../helpers/manifestPdf";
 
-const ReprintResiPage = () => {
-  const [nomorResi, setNomorResi] = useState("");
-  const [getDataResi, setGetDataResi] = useState("");
+const ReprintManifestPage = () => {
+  const [nomorManifest, setNomorManifest] = useState("");
+  const [getDataManifest, setGetDataManifest] = useState("");
   const [dataNotFound, setDataNotFound] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const base64qrcode = UseQrcode("https://bistacargo.com/cek/paket/" + nomorResi);
+  const base64qrcode = UseQrcode("https://bistacargo.com/cek/paket/" + nomorManifest);
 
   const changeHandler = (e) => {
-    setNomorResi(e.target.value);
+    setNomorManifest(e.target.value);
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (!nomorResi) {
-      setDataNotFound("Nomor Resi Tidak Ditemukan");
+    if (!nomorManifest) {
+      setDataNotFound("Nomor Manifest Tidak Ditemukan");
       setIsLoading(false);
-      setGetDataResi("");
+      setGetDataManifest("");
       return;
     }
     setIsLoading(true);
-    fetch("/api/data-resi/" + nomorResi)
+    fetch("/api/data-manifest/" + nomorManifest)
       .then((response) => response.json())
       .then((data) => {
         if (!data) {
-          setDataNotFound("Nomor Resi Tidak Ditemukan");
+          setDataNotFound("Nomor Manifest Tidak Ditemukan");
           setIsLoading(false);
-          setGetDataResi("");
+          setGetDataManifest("");
           return;
         }
-        setGetDataResi(data);
+        setGetDataManifest(data);
         setIsLoading(false);
         setDataNotFound("");
       });
@@ -53,19 +54,21 @@ const ReprintResiPage = () => {
       <div id="bungkus" className={styles["bungkus"]}>
         <div className={styles["container"]}>
           <form className={styles["wrapper"]} onSubmit={submitHandler}>
-            <label htmlFor="reprintResi">
-              <h2>Reprint Resi</h2>
+            <label htmlFor="reprintManifest">
+              <h2>Reprint Manifest</h2>
             </label>
             <div className={styles["action"]}>
               <input
                 type="text"
-                id="reprintResi"
-                name="reprintResi"
-                placeholder="Masukkan Nomor Resi"
+                id="reprintManifest"
+                name="reprintManifest"
+                placeholder="Masukkan Nomor Manifest"
                 onChange={changeHandler}
+                autoComplete="off"
+                required
               />
               {!isLoading ? (
-                <Button type="submit" label="Cari Resi" color="red" icon={<Search />} />
+                <Button type="submit" label="Cari Manifest" color="red" icon={<Search />} />
               ) : (
                 <div>
                   <LoadingSpinner />
@@ -75,45 +78,28 @@ const ReprintResiPage = () => {
             </div>
           </form>
           {dataNotFound ? <p>{dataNotFound}</p> : null}
-          {getDataResi ? (
+          {getDataManifest ? (
             <table className={styles["container"]}>
               <tbody>
                 <tr>
-                  <th>Nomor Resi</th>
-                  <th>Tgl Transaksi</th>
-                  <th>Nama Pengirim</th>
-                  <th>Nama Penerima</th>
+                  <th>Nomor Manifest</th>
+                  <th>Tanggal</th>
+                  <th>Asal</th>
                   <th>Tujuan</th>
+                  <th>Coveran</th>
                   <th>Actions</th>
                 </tr>
                 <tr>
-                  <td>{getDataResi.noResi}</td>
-                  <td>{getDataResi.tglTransaksi}</td>
-                  <td>{getDataResi.namaPengirim}</td>
-                  <td>{getDataResi.namaPenerima}</td>
-                  <td>
-                    {getDataResi.tujuan.kec} - {getDataResi.tujuan.ibukota}
-                  </td>
+                  <td>{getDataManifest.noManifest}</td>
+                  <td>{getDataManifest.tglManifest}</td>
+                  <td>{getDataManifest.cabangAsal.toUpperCase()}</td>
+                  <td>{getDataManifest.cabangTujuan.toUpperCase()}</td>
+                  <td>{getDataManifest.coveranArea.toUpperCase()}</td>
                   <td className={styles["btn-table"]}>
                     <Button
-                      clickHandler={() => resiPdf(getDataResi, base64qrcode)}
-                      label="Cetak Resi"
+                      clickHandler={() => manifestPdf(getDataManifest)}
+                      label="Cetak Manifest"
                       color="red"
-                      width="full"
-                      icon={<Printer />}
-                    />
-                    <Button
-                      clickHandler={() => labelPdf(getDataResi)}
-                      label="Cetak Label"
-                      color="blue"
-                      width="full"
-                      icon={<Printer />}
-                    />
-                    <Button
-                      clickHandler={() => strukPdf(getDataResi, base64qrcode)}
-                      label="Cetak Struk"
-                      color="orange"
-                      width="full"
                       icon={<Printer />}
                     />
                   </td>
@@ -127,4 +113,4 @@ const ReprintResiPage = () => {
   );
 };
 
-export default ReprintResiPage;
+export default ReprintManifestPage;

@@ -160,6 +160,12 @@ export const findResi = async (client, collection, noResi) => {
   return result;
 };
 
+export const findManifest = async (client, collection, noManifest) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).findOne({ noManifest: noManifest });
+  return result;
+};
+
 export const findManyResiActive = async (client, collection, cabang) => {
   const db = client.db("bista");
   const result = await db

@@ -62,3 +62,11 @@
   color: #555;
   text-align: right;
 }
+
+.table-penerima__keterangan {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  overflow: hidden;
+}
