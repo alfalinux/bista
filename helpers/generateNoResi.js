@@ -1,6 +1,6 @@
-const generateNoResi = (cab, user) => {
+const generateNoResi = (cab, user, id) => {
   const cabang = cab.toUpperCase();
-  const userId = user.toUpperCase();
+  const userId = user.toUpperCase() + id;
   const date = new Date();
   const tahun = date.getFullYear().toString().slice(-2);
   const bulan = ("0" + (date.getMonth() + 1).toString()).slice(-2);

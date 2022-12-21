@@ -204,7 +204,7 @@ const InputResi = (props) => {
     if (status !== "authenticated") {
       return;
     }
-    const noResi = generateNoResi(data.cabang, data.posisi);
+    const noResi = generateNoResi(data.cabang, data.posisi, data.id);
     const tgl = new Date().toLocaleString("en-UK", {
       day: "numeric",
       month: "short",

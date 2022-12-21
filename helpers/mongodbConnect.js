@@ -166,6 +166,21 @@ export const findManifest = async (client, collection, noManifest) => {
   return result;
 };
 
+export const findManyManifest = async (client, collection, noManifest) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ noManifest: { $in: noManifest } })
+    .toArray();
+  return result;
+};
+
+export const findSuratJalan = async (client, collection, noSuratJalan) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).findOne({ noSuratJalan: noSuratJalan });
+  return result;
+};
+
 export const findManyResiActive = async (client, collection, cabang) => {
   const db = client.db("bista");
   const result = await db

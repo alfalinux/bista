@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Layouts from "../_layouts";
 
@@ -8,62 +8,71 @@ import LoadingSpinner from "../../../public/icons/loading-spinner";
 import Search from "../../../public/icons/search";
 
 import styles from "../../../styles/reprint.module.css";
-import manifestPdf from "../../../helpers/manifestPdf";
+import suratjalanPdf from "../../../helpers/suratjalanPdf";
 
-const ReprintManifestPage = () => {
-  const [nomorManifest, setNomorManifest] = useState("");
-  const [getDataManifest, setGetDataManifest] = useState("");
+const ReprintSuratJalanPage = () => {
+  const [nomorSuratJalan, setNomorSuratJalan] = useState("");
+  const [getDataSuratJalan, setGetDataSuratJalan] = useState("");
+  const [getDataManifest, setGetDataManifest] = useState([]);
   const [dataNotFound, setDataNotFound] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const changeHandler = (e) => {
-    setNomorManifest(e.target.value);
+    setNomorSuratJalan(e.target.value.toUpperCase());
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (!nomorManifest) {
-      setDataNotFound("Nomor Manifest Tidak Ditemukan");
+    if (!nomorSuratJalan) {
+      setDataNotFound("Nomor Surat Jalan Tidak Ditemukan");
       setIsLoading(false);
-      setGetDataManifest("");
+      setGetDataSuratJalan("");
       return;
     }
     setIsLoading(true);
-    fetch("/api/data-manifest/" + nomorManifest)
+    fetch("/api/data-surat-jalan/" + nomorSuratJalan)
       .then((response) => response.json())
       .then((data) => {
         if (!data) {
-          setDataNotFound("Nomor Manifest Tidak Ditemukan");
+          setDataNotFound("Nomor Surat Jalan Tidak Ditemukan");
           setIsLoading(false);
-          setGetDataManifest("");
+          setGetDataSuratJalan("");
           return;
         }
-        setGetDataManifest(data);
+        setGetDataSuratJalan(data);
         setIsLoading(false);
         setDataNotFound("");
       });
   };
+
+  useEffect(() => {
+    if (getDataSuratJalan) {
+      fetch("/api/data-manifest/find-many/" + getDataSuratJalan.dataManifest.map((d) => d.noManifest).join("/"))
+        .then((response) => response.json())
+        .then((data) => setGetDataManifest(data));
+    }
+  }, [getDataSuratJalan]);
 
   return (
     <Layouts>
       <div id="bungkus" className={styles["bungkus"]}>
         <div className={styles["container"]}>
           <form className={styles["wrapper"]} onSubmit={submitHandler}>
-            <label htmlFor="reprintManifest">
-              <h2>Reprint Manifest</h2>
+            <label htmlFor="reprintSuratJalan">
+              <h2>Reprint Surat Jalan</h2>
             </label>
             <div className={styles["action"]}>
               <input
                 type="text"
-                id="reprintManifest"
-                name="reprintManifest"
-                placeholder="Masukkan Nomor Manifest"
+                id="reprintSuratJalan"
+                name="reprintSuratJalan"
+                placeholder="Masukkan Nomor Surat Jalan"
                 onChange={changeHandler}
                 autoComplete="off"
                 required
               />
               {!isLoading ? (
-                <Button type="submit" label="Cari Manifest" color="red" icon={<Search />} />
+                <Button type="submit" label="Cari Surat Jalan" color="red" icon={<Search />} />
               ) : (
                 <div>
                   <LoadingSpinner />
@@ -73,27 +82,25 @@ const ReprintManifestPage = () => {
             </div>
           </form>
           {dataNotFound ? <p>{dataNotFound}</p> : null}
-          {getDataManifest ? (
+          {getDataSuratJalan ? (
             <table className={styles["container"]}>
               <tbody>
                 <tr>
-                  <th>Nomor Manifest</th>
+                  <th>Nomor Surat Jalan</th>
                   <th>Tanggal</th>
-                  <th>Asal</th>
-                  <th>Tujuan</th>
-                  <th>Coveran</th>
+                  <th>Cabang Asal</th>
+                  <th>Cabang Tujuan</th>
                   <th>Actions</th>
                 </tr>
                 <tr>
-                  <td>{getDataManifest.noManifest}</td>
-                  <td>{getDataManifest.tglManifest}</td>
-                  <td>{getDataManifest.cabangAsal.toUpperCase()}</td>
-                  <td>{getDataManifest.cabangTujuan.toUpperCase()}</td>
-                  <td>{getDataManifest.coveranArea.toUpperCase()}</td>
+                  <td>{getDataSuratJalan.noSuratJalan}</td>
+                  <td>{getDataSuratJalan.tglSuratJalan}</td>
+                  <td>{getDataSuratJalan.cabangAsal.toUpperCase()}</td>
+                  <td>{getDataSuratJalan.cabangTujuan.toUpperCase()}</td>
                   <td className={styles["btn-table"]}>
                     <Button
-                      clickHandler={() => manifestPdf(getDataManifest)}
-                      label="Cetak Manifest"
+                      clickHandler={() => suratjalanPdf(getDataSuratJalan, getDataManifest)}
+                      label="Cetak Surat Jalan"
                       color="red"
                       icon={<Printer />}
                     />
@@ -108,4 +115,4 @@ const ReprintManifestPage = () => {
   );
 };
 
-export default ReprintManifestPage;
+export default ReprintSuratJalanPage;

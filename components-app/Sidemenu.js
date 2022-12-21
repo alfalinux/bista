@@ -188,7 +188,15 @@ const Sidemenu = (props) => {
                 </li>
               </Link>
 
-              <li className={styles["list"]}>Reprint Surat Jalan</li>
+              <Link href="/app/reprint/reprint-surat-jalan">
+                <li
+                  className={
+                    router.pathname === "/app/reprint/reprint-surat-jalan" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Reprint Surat Jalan
+                </li>
+              </Link>
             </ul>
           ) : null}
         </div>
