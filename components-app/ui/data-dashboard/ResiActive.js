@@ -72,7 +72,6 @@ const ResiActive = (props) => {
                 <td>
                   <div className={styles["table-penerima"]}>
                     <span className={styles["table-penerima__nama"]}>{d.namaPenerima}</span>
-                    {/* <span className={styles["table-penerima__nohp"]}>{d.nohpPenerima}</span> */}
                     <span className={styles["table-penerima__alamat"]}>
                       {d.tujuan.kec}, {d.tujuan.kabkot}
                     </span>
@@ -82,11 +81,11 @@ const ResiActive = (props) => {
                 <td>{d.jumlahBarang} Koli</td>
                 <td>{d.beratBarang} Kg</td>
                 <td>{d.layanan.toUpperCase()}</td>
-                <td>
+                <td style={{ whiteSpace: "nowrap" }}>
                   <div className={styles["table-pembayaran"]}>
                     <span className={styles["table-pembayaran__option"]}>{d.pembayaran.toUpperCase()}</span>
                     <span className={styles["table-pembayaran__total"]}>
-                      Rp. {Number(d.grandTotal).toLocaleString("id-ID")} ,-
+                      Rp. {Number(d.grandTotal).toLocaleString("id-ID")}
                     </span>
                   </div>
                 </td>

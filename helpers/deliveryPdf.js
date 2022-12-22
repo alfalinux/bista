@@ -12,14 +12,140 @@ function base64barcode(text) {
   return canvas.toDataURL("image/png");
 }
 
-const suratjalanPdf = (suratJalan, manifest) => {
+const suratjalanPdf = (data) => {
   let imglogo = base64logo();
-  let imgbarcode = base64barcode(suratJalan.noSuratJalan);
+  let imgbarcode = base64barcode(data.noDelivery);
+
+  const bodyContent = data.dataResi.map((d, i) => [
+    [
+      {
+        content: i + 1,
+        rowSpan: 3,
+        styles: {
+          cellWidth: "wrap",
+          halign: "center",
+          valign: "top",
+          cellWidth: "wrap",
+          cellPadding: { top: 1, right: 2, bottom: 1, left: 2 },
+          lineWidth: { top: 0, right: 0.2, bottom: 0.2, left: 0.2 },
+        },
+      },
+      {
+        content: d.noResi,
+        rowSpan: 3,
+        styles: {
+          halign: "center",
+          valign: "top",
+          cellWidth: "wrap",
+          cellPadding: { top: 1, right: 2, bottom: 1, left: 2 },
+          lineWidth: { top: 0, right: 0.2, bottom: 0.2, left: 0.2 },
+        },
+      },
+      {
+        content: d.namaPengirim,
+        styles: {
+          cellWidth: "wrap",
+          halign: "left",
+          cellPadding: { top: 1, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 },
+        },
+      },
+      {
+        content: d.namaPenerima,
+        styles: {
+          cellWidth: "wrap",
+          halign: "left",
+          cellPadding: { top: 1, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 },
+        },
+      },
+      {
+        content: d.jumlahBarang + " Koli" + " - " + d.beratBarang + " Kg",
+        styles: {
+          cellWidth: "wrap",
+          cellPadding: { top: 1, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 },
+          halign: "left",
+        },
+      },
+      {
+        content: d.pembayaran.toUpperCase(),
+        styles: {
+          cellWidth: "wrap",
+          lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 },
+          cellPadding: { top: 1, right: 2, bottom: 0, left: 2 },
+        },
+      },
+    ],
+    [
+      {
+        content: d.nohpPengirim,
+        styles: {
+          cellWidth: "wrap",
+          fontSize: 8,
+          fontStyle: "bold",
+          halign: "left",
+          cellPadding: { top: 0, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 },
+        },
+      },
+      {
+        content: d.nohpPenerima,
+        styles: {
+          cellWidth: "wrap",
+          fontSize: 8,
+          fontStyle: "bold",
+          halign: "left",
+          cellPadding: { top: 0, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 },
+        },
+      },
+      {
+        content: d.keteranganBarang,
+        rowSpan: 2,
+        styles: {
+          halign: "left",
+          fontSize: 8,
+          cellPadding: { top: 1, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0.2, left: 0.1 },
+        },
+      },
+      {
+        content: "Rp. " + Number(d.grandTotal).toLocaleString("id-ID"),
+        rowSpan: 2,
+        styles: {
+          cellWidth: "wrap",
+          cellPadding: { top: 1, right: 2, bottom: 0, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0.2, left: 0.1 },
+        },
+      },
+    ],
+    [
+      {
+        content: d.alamatPengirim,
+        styles: {
+          fontSize: 8,
+          halign: "left",
+          cellPadding: { top: 0, right: 2, bottom: 2, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0.2, left: 0.1 },
+        },
+      },
+      {
+        content: d.alamatPenerima,
+
+        styles: {
+          fontSize: 8,
+          halign: "left",
+          cellPadding: { top: 0, right: 2, bottom: 2, left: 2 },
+          lineWidth: { top: 0, right: 0.1, bottom: 0.2, left: 0.1 },
+        },
+      },
+    ],
+  ]);
 
   const doc = new jsPDF("p", "mm", [210, 297]);
 
   doc.addImage(imglogo, "PNG", 10, 10, 75, 14.375);
-  // doc.addImage(imgbarcode, "PNG", 156.875, 10, 43.125, 14.375);
   doc.addImage(imgbarcode, "PNG", 140, 7.5, 60, 20);
 
   // title
@@ -37,14 +163,14 @@ const suratjalanPdf = (suratJalan, manifest) => {
     body: [
       [
         {
-          content: "SURAT JALAN",
+          content: "DELIVERY REPORT",
           styles: { fontStyle: "bold" },
         },
       ],
     ],
   });
 
-  // tanggal surat jalan
+  // tanggal DELIVERY
   doc.autoTable({
     theme: "plain",
     startY: doc.lastAutoTable.finalY,
@@ -59,7 +185,7 @@ const suratjalanPdf = (suratJalan, manifest) => {
     body: [
       [
         {
-          content: suratJalan.tglSuratJalan,
+          content: data.tglDelivery,
           styles: { fontStyle: "italic" },
         },
       ],
@@ -81,113 +207,61 @@ const suratjalanPdf = (suratJalan, manifest) => {
     body: [
       [
         {
-          content: "Nama Sopir / Vendor",
-          styles: { cellWidth: 40 },
+          content: "Cabang",
+          styles: { cellWidth: 30 },
         },
         {
           content: ":",
           styles: { cellWidth: 5 },
         },
         {
-          content: suratJalan.namaDriver,
+          content: data.cabang.toUpperCase(),
           styles: { fontStyle: "bold" },
         },
       ],
       [
         {
-          content: "Nopol / AWB Vendor: ",
-          styles: { cellWidth: 40 },
+          content: "Kurir",
+          styles: { cellWidth: 30 },
         },
         {
           content: ":",
           styles: { cellWidth: 5 },
         },
         {
-          content: suratJalan.nopolDriver,
+          content: data.namaKurir.toUpperCase(),
           styles: { fontStyle: "bold" },
         },
       ],
     ],
   });
 
-  // // asal dan tujuan
+  // Detail Delivery
   doc.autoTable({
     theme: "grid",
     startY: doc.lastAutoTable.finalY + 5,
     margin: { top: 2, right: 10, left: 10, bottom: 2 },
-    tableWidth: "190",
-    headStyles: {
-      cellPadding: 2,
-      fontSize: 10,
-      halign: "center",
-      valign: "top",
-      fillColor: "708090",
-    },
-    styles: {
-      cellPadding: 2,
-      fontSize: 14,
-      halign: "center",
-      valign: "top",
-    },
-    head: [["Pemberangkatan", "Tujuan", "Total Barang", "Total Paket"]],
-    body: [
-      [
-        {
-          content: suratJalan.cabangAsal.toUpperCase(),
-          styles: { fontStyle: "bold" },
-        },
-        {
-          content: suratJalan.cabangTujuan.toUpperCase(),
-          styles: { fontStyle: "bold" },
-        },
-        {
-          content: suratJalan.konsolidasi + " Koli",
-          styles: { fontStyle: "bold" },
-        },
-        {
-          content: suratJalan.beratBarang + " Kg",
-          styles: { fontStyle: "bold" },
-        },
-      ],
-    ],
-  });
-
-  // Detail Manifest
-  doc.autoTable({
-    theme: "grid",
-    startY: doc.lastAutoTable.finalY + 5,
-    margin: { top: 2, right: 10, left: 10, bottom: 2 },
-    tableWidth: "190",
+    tableWidth: "auto",
     headStyles: {
       cellPadding: 2,
       cellWidth: "wrap",
       fontSize: 10,
+      textColor: "#fff",
       fontStyle: "bold",
       halign: "center",
       valign: "top",
       fillColor: "708090",
     },
     styles: {
-      cellPadding: 2,
-      fontSize: 10,
+      cellPadding: 0,
+      lineWidth: 0.2,
+      fontSize: 8,
+      textColor: "#000",
       halign: "center",
       valign: "top",
     },
-    head: [["No", "No Manifest", "Asal", "Tujuan", "Jumlah", "Berat", "Detail Nomor Resi"]],
-    body: suratJalan.dataManifest.map((d, i) => [
-      { content: i + 1, styles: { cellWidth: "wrap" } },
-      { content: d.noManifest, styles: { cellWidth: "wrap" } },
-      { content: d.cabangAsal.toUpperCase(), styles: { cellWidth: "wrap" } },
-      { content: d.cabangTujuan.toUpperCase(), styles: { cellWidth: "wrap" } },
-      { content: d.konsolidasi + " Koli", styles: { cellWidth: "wrap" } },
-      { content: d.beratBarang + " Kg", styles: { cellWidth: "wrap" } },
-      {
-        content: manifest
-          .filter((val) => val.noManifest === d.noManifest)
-          .map((d) => d.dataResi.map((d) => d.noResi + " [ " + d.jumlahBarang + " ]").join(", ")),
-        styles: { fontSize: 10, overflow: "linebreak", halign: "left", valign: "top" },
-      },
-    ]),
+    head: [["No", "No Resi", "Pengirim", "Penerima", "Keterangan", "Pembayaran "]],
+    body: [].concat.apply([], bodyContent),
   });
 
   // footer

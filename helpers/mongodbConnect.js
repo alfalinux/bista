@@ -283,3 +283,9 @@ export const findDeliveryOnProses = async (client, collection, cabang) => {
 
   return result;
 };
+
+export const findDelivery = async (client, collection, noDelivery) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).findOne({ noDelivery: noDelivery });
+  return result;
+};
