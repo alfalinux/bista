@@ -6,6 +6,8 @@ import Check from "../public/icons/check";
 import Button from "./ui/Button";
 import generateNoSuratJalan from "../helpers/generateNoSuratJalan";
 import LoadingPage from "./ui/LoadingPage";
+import Swal from "sweetalert2";
+import suratjalanPdf from "../helpers/suratjalanPdf";
 
 const CreateSuratJalan = () => {
   const { data, status } = useSession();
@@ -110,6 +112,7 @@ const CreateSuratJalan = () => {
     const konsolidasi = listManifest.reduce((total, obj) => Number(obj.konsolidasi) + total, 0);
     const petugasInput = data.nama;
 
+    const dataManifest = fetchDataManifest;
     const dataSuratJalan = {
       noSuratJalan: noSuratJalan,
       tglSuratJalan: tgl,
@@ -149,10 +152,26 @@ const CreateSuratJalan = () => {
         setFetchDataManifestTransit([]);
         setListManifest([]);
         setIsLoadingPage(false);
-        alert("Berhasil Create Surat Jalan \n" + noSuratJalan);
+        Swal.fire({
+          title: "Berhasil Create Surat Jalan",
+          text: noSuratJalan,
+          icon: "success",
+          showCloseButton: true,
+          showConfirmButton: true,
+          confirmButtonText: "Print Surat Jalan",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            suratjalanPdf(dataSuratJalan, dataManifest);
+          }
+        });
       } else {
         setIsLoadingPage(false);
-        alert("Surat Jalan Tidak Berhasil di Create \nCek Kembali Inputan Anda!");
+        Swal.fire({
+          title: "Surat Jalan Tidak Berhasil di Create",
+          text: "Silahkan Refresh Halaman dan Coba Input Kembali",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
     });
   };

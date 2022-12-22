@@ -1,6 +1,8 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import generateNoManifest from "../helpers/generateNoManifest";
+import Swal from "sweetalert2";
+import manifestPdf from "../helpers/manifestPdf";
 
 import LoadingPage from "../components-app/ui/LoadingPage";
 import styles from "./CreateManifest.module.css";
@@ -77,6 +79,22 @@ const CreateManifest = () => {
     });
     const listNoResi = listResi.map((d) => d.noResi);
 
+    const submitManifest = {
+      noManifest: noManifest,
+      tglManifest: tgl,
+      cabangAsal: cabangAsal,
+      cabangAsalTlc: tlc.asal,
+      cabangTujuan: cabangTujuan,
+      cabangTujuanTlc: tlc.tujuan,
+      coveranArea: coveranArea,
+      coveranAreaTlc: tlc.coveran,
+      jumlahBerat: listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
+      jumlahBarang: listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0),
+      konsolidasi: konsolidasi,
+      petugasInput: data.nama,
+      dataResi: listResi,
+    };
+
     // update dataResi
     fetch("/api/data-resi/update-many-resi", {
       method: "PATCH",
@@ -89,21 +107,7 @@ const CreateManifest = () => {
       if (response.status === 201) {
         fetch("/api/data-manifest/post-manifest", {
           method: "POST",
-          body: JSON.stringify({
-            noManifest: noManifest,
-            tglManifest: tgl,
-            cabangAsal: cabangAsal,
-            cabangAsalTlc: tlc.asal,
-            cabangTujuan: cabangTujuan,
-            cabangTujuanTlc: tlc.tujuan,
-            coveranArea: coveranArea,
-            coveranAreaTlc: tlc.coveran,
-            jumlahBerat: listResi.reduce((total, obj) => Number(obj.beratBarang) + total, 0),
-            jumlahBarang: listResi.reduce((total, obj) => Number(obj.jumlahBarang) + total, 0),
-            konsolidasi: konsolidasi,
-            petugasInput: data.nama,
-            dataResi: listResi,
-          }),
+          body: JSON.stringify(submitManifest),
           headers: { "Content-Type": "application/json" },
         }).then((response) => {
           if (response.status === 201) {
@@ -117,15 +121,35 @@ const CreateManifest = () => {
             setListResi([]);
             setKonsolidasi("");
             setIsLoadingPage(false);
-            alert("Berhasil Create Manifest");
+            Swal.fire({
+              title: "Berhasil Create Manifest",
+              icon: "success",
+              showCloseButton: true,
+              showConfirmButton: true,
+              confirmButtonText: "Print Manifest",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                manifestPdf(submitManifest);
+              }
+            });
           } else {
             setIsLoadingPage(false);
-            alert("Terjadi Kesalahan, silahkan ulangi proses");
+            Swal.fire({
+              title: "Gagal Create Manifest",
+              text: "Silahkan Refresh Halaman dan Coba Input Kembali",
+              icon: "error",
+              showCloseButton: true,
+            });
           }
         });
       } else {
         setIsLoadingPage(false);
-        alert("Gagal Update Data Resi");
+        Swal.fire({
+          title: "Gagal Update Data Resi",
+          text: "Silahkan Refresh Halaman dan Coba Input Kembali",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
     });
   };
