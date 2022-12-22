@@ -7,6 +7,8 @@ import LoadingSpinner from "../public/icons/loading-spinner";
 import Button from "../components-app/ui/Button";
 import Check from "../public/icons/check";
 import generateNoDelivery from "../helpers/generateNoDelivery";
+import Swal from "sweetalert2";
+import deliveryPdf from "../helpers/deliveryPdf";
 
 const CreateDelivery = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
@@ -155,19 +157,40 @@ const CreateDelivery = () => {
             setListCheckedResi([]);
             setCabangTujuan(cabang);
             setNamaKurir(kurir);
-            alert("Berhasil assign delivery dengan nomor " + noDelivery);
+            Swal.fire({
+              title: "Berhasil",
+              text: "Delivery Berhasil di Asign ke " + kurir.toLocaleUpperCase(),
+              icon: "success",
+              showCloseButton: true,
+              showConfirmButton: true,
+              confirmButtonText: "Print Delivery",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deliveryPdf(dataDelivery);
+              }
+            });
           } else {
             setIsLoadingPage(false);
-            alert("Terjadi kesalahan, silahkan refresh halaman dan coba kembali");
+            Swal.fire({
+              title: "Gagal",
+              text: "Asign Delivery Tidak Berhasil",
+              icon: "error",
+              showCloseButton: true,
+            });
           }
         });
       } else {
-        alert("Gagal Create Delivery");
+        setIsLoadingPage(false);
+        Swal.fire({
+          title: "Gagal",
+          text: "Terjadi Kesalahan Pada Saat Create Delivery",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
     });
   };
 
-  console.log();
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}

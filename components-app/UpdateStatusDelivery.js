@@ -11,6 +11,7 @@ import Stack from "../public/icons/stack";
 import Refresh from "../public/icons/refresh";
 import ModalUpdateDelivery from "../components-app/ui/ModalUpdateDelivery";
 import ModalStatusDelivery from "../components-app/ui/ModalStatusDelivery";
+import Swal from "sweetalert2";
 
 const CreateDelivery = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
@@ -155,16 +156,31 @@ const CreateDelivery = () => {
           if (response.status === 201) {
             setInput(cabang, kurir);
             setIsLoadingPage(false);
-            alert("Delivery berhasil di close");
+            Swal.fire({
+              title: "Berhasil",
+              text: "Delivery Berhasil di Closed",
+              icon: "success",
+              showCloseButton: true,
+            });
           } else {
             setInput(cabang, kurir);
             setIsLoadingPage(false);
-            alert("Gagal Close Delivery");
+            Swal.fire({
+              title: "Gagal",
+              text: "Tidak Berhasil Closed Delivery",
+              icon: "error",
+              showCloseButton: true,
+            });
           }
         });
       } else {
-        alert("Gagal Update Status Resi");
         setIsLoadingPage(false);
+        Swal.fire({
+          title: "Gagal",
+          text: "Terjadi Kesalahan Saat Update Status Resi",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
     });
   };

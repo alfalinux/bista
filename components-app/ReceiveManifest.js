@@ -7,6 +7,7 @@ import Button from "./ui/Button";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
 import LoadingPage from "./ui/LoadingPage";
+import Swal from "sweetalert2";
 
 const ReceiveManifest = () => {
   const { data, status } = useSession();
@@ -92,29 +93,45 @@ const ReceiveManifest = () => {
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       if (response.status === 201) {
+        setCabangTujuan("");
         fetch("/api/data-manifest/update-receive-manifest", {
           method: "PATCH",
           body: JSON.stringify({ filter: filter, update: update }),
           headers: { "Content-Type": "application/json" },
         }).then((response) => {
           if (response.status === 201) {
-            setCabangTujuan("");
+            setCabangTujuan(update.receivedIn);
             setManifestChecked([]);
             setIsLoadingPage(false);
-            return alert("Manifest Berhasil di Recieve \n di cabang " + cabangTujuan);
+            Swal.fire({
+              title: "Berhasil",
+              text: "Manifest Berhasil di Recieve",
+              icon: "success",
+              showCloseButton: true,
+            });
           } else {
             setManifestChecked([]);
             setIsLoadingPage(false);
-            return alert("Receiving Manifest Tidak Berhasil \n Cek kembali inputan Anda");
+            Swal.fire({
+              title: "Gagal",
+              text: "Receiving Manifest Tidak Berhasil",
+              icon: "error",
+              showCloseButton: true,
+            });
           }
         });
       } else {
-        alert("Gagal Update Resi");
+        setIsLoadingPage(false);
+        Swal.fire({
+          title: "Gagal",
+          text: "Update Data Resi Tidak Berhasil",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
     });
   };
 
-  console.log();
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}

@@ -7,6 +7,7 @@ import Button from "./ui/Button";
 import LoadingPage from "../components-app/ui/LoadingPage";
 import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
+import Swal from "sweetalert2";
 
 const ReceiveSuratJalan = () => {
   const { data, status } = useSession();
@@ -54,6 +55,7 @@ const ReceiveSuratJalan = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+
     setIsLoadingPage(true);
     const tgl = getDate();
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
@@ -71,27 +73,45 @@ const ReceiveSuratJalan = () => {
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       if (response.status == 201) {
-        alert("Berhasil Receiving Data Surat Jalan \n");
-      } else {
-        alert("Surat Jalan Tidak Berhasil di Receive \nCek Kembali Inputan Anda!");
-      }
-    });
-
-    fetch("/api/data-surat-jalan/update-surat-jalan", {
-      method: "PATCH",
-      body: JSON.stringify({ filter: filter, update: update }),
-      headers: { "Content-Type": "application/json" },
-    }).then((response) => {
-      if (response.status === 201) {
         setCabangTujuan("");
-        setFetchDataSuratJalan([]);
-        setSuratJalanChecked({});
+        fetch("/api/data-surat-jalan/update-surat-jalan", {
+          method: "PATCH",
+          body: JSON.stringify({ filter: filter, update: update }),
+          headers: { "Content-Type": "application/json" },
+        }).then((response) => {
+          if (response.status === 201) {
+            setCabangTujuan(update.receivedIn);
+            setFetchDataSuratJalan([]);
+            setSuratJalanChecked({});
+            setIsLoadingPage(false);
+            Swal.fire({
+              title: "Berhasil",
+              text: "Surat Jalan Berhasil di Receive",
+              icon: "success",
+              showCloseButton: true,
+            });
+          } else {
+            setIsLoadingPage(false);
+            Swal.fire({
+              title: "Gagal",
+              text: "Update Surat Jalan Tidak Berhasil",
+              icon: "error",
+              showCloseButton: true,
+            });
+          }
+        });
+      } else {
         setIsLoadingPage(false);
+        Swal.fire({
+          title: "Gagal",
+          text: "Terjadi Kesalahan Saat Update Data Manifest",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
-      setIsLoadingPage(false);
     });
   };
-  console.log();
+
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}

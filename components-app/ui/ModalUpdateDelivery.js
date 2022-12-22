@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 import Refresh from "../../public/icons/refresh";
 import Button from "./Button";
 import LoadingPage from "./LoadingPage";
@@ -69,15 +70,30 @@ const ModalUpdateDelivery = (props) => {
             props.onCloseModal();
             props.onSet(props.cabang, props.kurir);
             setIsLoadingPage(false);
-            alert("Status Delivery Resi Berhasil di Update");
+            Swal.fire({
+              title: "Berhasil",
+              text: "Status Delivery Berhasil di Update",
+              icon: "success",
+              showCloseButton: true,
+            });
           } else {
             setIsLoadingPage(false);
-            alert("Gagal Update Data Delivery");
+            Swal.fire({
+              title: "Gagal",
+              text: "Status Delivery Tidak Berhasil di Update",
+              icon: "error",
+              showCloseButton: true,
+            });
           }
         });
       } else {
         setIsLoadingPage(false);
-        alert("Gagal Update Data Resi");
+        Swal.fire({
+          title: "Gagal",
+          text: "Terjadi Kesalahan Pada Saat Update Data Resi",
+          icon: "error",
+          showCloseButton: true,
+        });
       }
     });
   };
