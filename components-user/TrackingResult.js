@@ -61,7 +61,7 @@ const TrackingResult = (props) => {
           ))}
 
       {/* Receive Manifest */}
-      {props.dataResi.noManifest === "" ? null : (
+      {!props.dataResi.receivedManifestIn ? null : (
         <div className={styles["content"]}>
           <div className={styles["content__icon"]}>
             <Check />
