@@ -3,20 +3,20 @@ import styles from "./DashboardNav.module.css";
 const DashboardNav = (props) => {
   return (
     <header className={styles["head-nav"]}>
-      <div className={props.resiAktifSelected ? styles["menu-nav-active"] : styles["menu-nav"]} onClick={props.onResi}>
+      <div className={props.resiActiveSelected ? styles["menu-nav-active"] : styles["menu-nav"]} onClick={props.onResi}>
         Resi Aktif
       </div>
       <div
-        className={props.resiBelumManifestSelected ? styles["menu-nav-active"] : styles["menu-nav"]}
+        className={props.manifestActiveSelected ? styles["menu-nav-active"] : styles["menu-nav"]}
         onClick={props.onManifest}
       >
-        Resi Belum Manifest
+        Manifest Aktif
       </div>
       <div
-        className={props.resiBelumSuratJalanSelected ? styles["menu-nav-active"] : styles["menu-nav"]}
+        className={props.suratJalanActiveSelected ? styles["menu-nav-active"] : styles["menu-nav"]}
         onClick={props.onSuratJalan}
       >
-        Resi Belum Surat Jalan
+        Surat Jalan Aktif
       </div>
     </header>
   );

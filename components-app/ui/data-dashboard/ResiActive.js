@@ -37,20 +37,19 @@ const ResiActive = (props) => {
             <td>No Resi</td>
             <td>Pengirim</td>
             <td>Penerima</td>
-            <td>Isi Paket</td>
             <td>Jlh Paket</td>
             <td>Berat Paket</td>
             <td>Layanan</td>
             <td>Pembayaran</td>
+            <td>SLA</td>
             <td>Status</td>
+            <td>Tracking</td>
           </tr>
         </thead>
         <tbody className="table-body">
-          {!props.dataResi ? null : props.isLoading ? (
+          {props.dataResi.length === 0 ? (
             <tr>
-              <td colSpan={10}>
-                <LoadingSpinner />
-              </td>
+              <td colSpan="11">Tidak Ada Data...</td>
             </tr>
           ) : (
             props.dataResi.map((d, i) => (
@@ -65,7 +64,6 @@ const ResiActive = (props) => {
                 <td>
                   <div className={styles["table-penerima"]}>
                     <span className={styles["table-penerima__nama"]}>{d.namaPengirim}</span>
-                    {/* <span className={styles["table-penerima__nohp"]}>{d.nohpPengirim}</span> */}
                     <span className={styles["table-penerima__alamat"]}>{d.cabangAsal.toUpperCase()}</span>
                   </div>
                 </td>
@@ -77,7 +75,6 @@ const ResiActive = (props) => {
                     </span>
                   </div>
                 </td>
-                <td className={styles["table-penerima__keterangan"]}>{d.keteranganBarang}</td>
                 <td>{d.jumlahBarang} Koli</td>
                 <td>{d.beratBarang} Kg</td>
                 <td>{d.layanan.toUpperCase()}</td>
@@ -86,6 +83,24 @@ const ResiActive = (props) => {
                     <span className={styles["table-pembayaran__option"]}>{d.pembayaran.toUpperCase()}</span>
                     <span className={styles["table-pembayaran__total"]}>
                       Rp. {Number(d.grandTotal).toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {d.layanan === "cargo"
+                    ? Number(d.dataOngkir.slaCargo) - 1 + "-" + d.dataOngkir.slaCargo + " Hari"
+                    : ""}
+                </td>
+                <td style={{ whiteSpace: "nowrap" }}>
+                  <div className={styles["table-status"]}>
+                    {(new Date().setHours(0, 0, 0, 1) - new Date(d.tglTransaksi).setHours(0, 0, 0, 1)) / 86400000 >=
+                      0 && <span className={styles["table-status__settle"]}>On Schedule</span>}
+                    {(new Date().setHours(0, 0, 0, 1) - new Date(d.tglTransaksi).setHours(0, 0, 0, 1)) / 86400000 <
+                      0 && <span className={styles["table-status__overdue"]}>Overdue</span>}
+
+                    <span className={styles["table-status__date"]}>
+                      {(new Date().setHours(0, 0, 0, 1) - new Date(d.tglTransaksi).setHours(0, 0, 0, 1)) / 86400000}{" "}
+                      Hari
                     </span>
                   </div>
                 </td>

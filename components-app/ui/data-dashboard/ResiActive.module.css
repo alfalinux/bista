@@ -70,3 +70,29 @@
   -webkit-box-align: stretch;
   overflow: hidden;
 }
+
+.table-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+
+.table-status__settle {
+  font-size: 12px;
+  font-weight: 800;
+  color: limegreen;
+  padding: 0;
+}
+
+.table-status__overdue {
+  font-size: 12px;
+  font-weight: 800;
+  color: darkred;
+  padding: 0;
+}
+.table-status__date {
+  font-size: 12px;
+  padding: 0;
+}
