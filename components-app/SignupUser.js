@@ -71,6 +71,7 @@ const SignupUser = () => {
       setShowLoading(false);
     }
   };
+
   return (
     <form onSubmit={signupHandler} className={styles["container"]}>
       <div className={styles["field"]}>

@@ -8,12 +8,14 @@ import TruckIcon from "../public/icons/TruckIcon";
 import RocketIcon from "../public/icons/RocketIcon";
 import ReportIcon from "../public/icons/ReportIcon";
 import PlaneIcon from "../public/icons/plane-icon";
+import Setting from "../public/icons/setting";
 
 const Sidemenu = (props) => {
   const [outgoingSubmenu, setOutgoingSubmenu] = useState(false);
   const [incomingSubmenu, setIncomingSubmenu] = useState(false);
   const [reprintSubmenu, setReprintSubmenu] = useState(false);
   const [deliverySubmenu, setDeliverySubmenu] = useState(false);
+  const [profileSubmenu, setProfileSubmenu] = useState(false);
 
   const showMobileMenu = props.style;
   const router = useRouter();
@@ -34,10 +36,15 @@ const Sidemenu = (props) => {
     setDeliverySubmenu(deliverySubmenu ? false : true);
   };
 
+  const profileMenuHandler = (e) => {
+    setProfileSubmenu(profileSubmenu ? false : true);
+  };
+
   const outgoingSubmenuIsValid = outgoingSubmenu || router.pathname.startsWith("/app/outgoing");
   const incomingSubmenuIsValid = incomingSubmenu || router.pathname.startsWith("/app/incoming");
   const deliverySubmenuIsValid = deliverySubmenu || router.pathname.startsWith("/app/delivery");
   const reprintSubmenuIsValid = reprintSubmenu || router.pathname.startsWith("/app/reprint");
+  const profileSubmenuIsValid = profileSubmenu || router.pathname.startsWith("/app/profile");
 
   return (
     <nav className={showMobileMenu ? styles["mobile-side-menu"] : styles["container"]}>
@@ -205,6 +212,39 @@ const Sidemenu = (props) => {
                   }
                 >
                   Reprint Delivery
+                </li>
+              </Link>
+            </ul>
+          ) : null}
+        </div>
+
+        {/* --- Profile Menu --- */}
+        <div
+          className={router.pathname.startsWith("/app/profile") ? styles["menu-active"] : styles["menu-btn"]}
+          onClick={profileMenuHandler}
+        >
+          <div className={styles["menu-title"]}>
+            <Setting />
+            <p className={styles["text-icon"]}>Profile</p>
+          </div>
+          {profileSubmenuIsValid ? (
+            <ul className={styles["menu-list"]}>
+              <Link href="/app/profile/change-password">
+                <li
+                  className={
+                    router.pathname === "/app/profile/change-password" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Ganti Password
+                </li>
+              </Link>
+              <Link href="/app/profile/registrasi-user">
+                <li
+                  className={
+                    router.pathname === "/app/profile/registrasi-user" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Registrasi User
                 </li>
               </Link>
             </ul>

@@ -17,6 +17,12 @@
 .full {
   width: 100%;
 }
+.half {
+  width: 50%;
+}
+.quarter {
+  width: 25%;
+}
 
 .btn h4 {
   padding: 0;
