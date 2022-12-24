@@ -257,11 +257,28 @@ export const findSuratJalanBelumReceive = async (client, collection, cabangTujua
   return result;
 };
 
+export const findSuratJalanBelumReceiveAsal = async (client, collection, cabangAsal) => {
+  const db = client.db("bista");
+  const result = await db.collection(collection).find({ cabangAsal: cabangAsal, receivedIn: null }).toArray();
+
+  return result;
+};
+
 export const findManifestBelumReceive = async (client, collection, cabangTujuan) => {
   const db = client.db("bista");
   const result = await db
     .collection(collection)
     .find({ coveranArea: cabangTujuan, receivedIn: null, suratJalan: { $ne: null } })
+    .toArray();
+
+  return result;
+};
+
+export const findManifestBelumReceiveAsal = async (client, collection, cabangAsal) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ cabangAsal: cabangAsal, receivedIn: null, suratJalan: { $ne: null } })
     .toArray();
 
   return result;

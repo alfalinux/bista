@@ -64,7 +64,7 @@ const Dashboard = () => {
       });
 
     // find manifest Active
-    fetch("/api/data-manifest/belum-receive/" + selectedCabang)
+    fetch("/api/data-manifest/belum-receive-asal/" + selectedCabang)
       .then((response) => response.json())
       .then((data) => {
         !data
@@ -78,7 +78,7 @@ const Dashboard = () => {
       });
 
     // find Surat Jalan Active
-    fetch("/api/data-surat-jalan/belum-receive/" + selectedCabang)
+    fetch("/api/data-surat-jalan/belum-receive-asal/" + selectedCabang)
       .then((response) => response.json())
       .then((data) => {
         !data
