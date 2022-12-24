@@ -14,7 +14,7 @@
   transition: transform 0.3s ease-in;
 }
 
-.menu-icon {
+/* .menu-icon {
   background-color: #000;
   color: #fff;
   padding: 20px;
@@ -58,7 +58,7 @@
 
 .menu-icon__btn button {
   padding: 0;
-}
+} */
 
 .user-detail {
   display: flex;

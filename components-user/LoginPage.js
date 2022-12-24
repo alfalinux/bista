@@ -5,6 +5,7 @@ import styles from "./LoginPage.module.css";
 import LoginIcon from "../public/icons/login-icon";
 import { useRouter } from "next/router";
 import LoadingSpinner from "../public/icons/loading-spinner";
+import Button from "../components-app/ui/Button";
 
 const LoginPage = () => {
   const [loginStatus, setLoginStatus] = useState("");
@@ -55,10 +56,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="error-txt">{isLoading ? <LoadingSpinner /> : loginStatus}</div>
-        <button className={styles["btn"]}>
-          <p>Login</p>
-          <LoginIcon />
-        </button>
+        <Button label="Login" icon={<LoginIcon />} color="red" disabled={isLoading} />
       </form>
     </div>
   );

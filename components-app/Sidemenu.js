@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+import { signOut } from "next-auth/react";
 
 import styles from "./Sidemenu.module.css";
 import HomeIcon from "../public/icons/HomeIcon";
@@ -19,6 +21,30 @@ const Sidemenu = (props) => {
 
   const showMobileMenu = props.style;
   const router = useRouter();
+
+  const onLogoutHandler = () => {
+    Swal.fire({
+      title: "Logout",
+      text: "Apakah Anda mau keluar dari aplikasi?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "limegreen",
+      confirmButtonText: "Ya, keluar",
+      cancelButtonColor: "crimson",
+      cancelButtonText: "Tidak jadi",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        signOut();
+        Swal.fire({
+          title: "Berhasil",
+          text: "Anda sudah keluar dari aplikasi",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    });
+  };
 
   const outgoingMenuHandler = () => {
     setOutgoingSubmenu(outgoingSubmenu ? false : true);
@@ -247,6 +273,12 @@ const Sidemenu = (props) => {
                   Registrasi User
                 </li>
               </Link>
+              <li
+                className={router.pathname === "/app/profile/registrasi-user" ? styles["list-active"] : styles["list"]}
+                onClick={onLogoutHandler}
+              >
+                Logout
+              </li>
             </ul>
           ) : null}
         </div>
