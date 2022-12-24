@@ -92,6 +92,14 @@
   color: darkred;
   padding: 0;
 }
+
+.table-status__warning {
+  font-size: 12px;
+  font-weight: 800;
+  color: darkorange;
+  padding: 0;
+}
+
 .table-status__date {
   font-size: 12px;
   padding: 0;

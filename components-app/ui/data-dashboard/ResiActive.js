@@ -28,6 +28,10 @@ const ResiActive = (props) => {
     setDataResi({});
   };
 
+  const countDayLeft = (sla, tglTransaksi) => {
+    return sla - (new Date().setHours(0, 0, 0, 1) - new Date(tglTransaksi).setHours(0, 0, 0, 1)) / 86400000;
+  };
+
   return (
     <>
       <table className="table-container">
@@ -93,14 +97,18 @@ const ResiActive = (props) => {
                 </td>
                 <td style={{ whiteSpace: "nowrap" }}>
                   <div className={styles["table-status"]}>
-                    {(new Date().setHours(0, 0, 0, 1) - new Date(d.tglTransaksi).setHours(0, 0, 0, 1)) / 86400000 >=
-                      0 && <span className={styles["table-status__settle"]}>On Schedule</span>}
-                    {(new Date().setHours(0, 0, 0, 1) - new Date(d.tglTransaksi).setHours(0, 0, 0, 1)) / 86400000 <
-                      0 && <span className={styles["table-status__overdue"]}>Overdue</span>}
+                    {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) > 1 && (
+                      <span className={styles["table-status__settle"]}>On Schedule</span>
+                    )}
+                    {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) < 0 && (
+                      <span className={styles["table-status__overdue"]}>Overdue</span>
+                    )}
+                    {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) <= 1 && (
+                      <span className={styles["table-status__warning"]}>Warning</span>
+                    )}
 
                     <span className={styles["table-status__date"]}>
-                      {(new Date().setHours(0, 0, 0, 1) - new Date(d.tglTransaksi).setHours(0, 0, 0, 1)) / 86400000}{" "}
-                      Hari
+                      {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) * -1} Hari
                     </span>
                   </div>
                 </td>
