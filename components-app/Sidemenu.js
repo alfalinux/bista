@@ -273,10 +273,12 @@ const Sidemenu = (props) => {
                   Registrasi User
                 </li>
               </Link>
-              <li
-                className={router.pathname === "/app/profile/registrasi-user" ? styles["list-active"] : styles["list"]}
-                onClick={onLogoutHandler}
-              >
+              <Link href="/app/profile/list-user">
+                <li className={router.pathname === "/app/profile/list-user" ? styles["list-active"] : styles["list"]}>
+                  List User
+                </li>
+              </Link>
+              <li className={styles["list"]} onClick={onLogoutHandler}>
                 Logout
               </li>
             </ul>

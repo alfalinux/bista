@@ -147,6 +147,21 @@ export const updateResiByDelivery = async (client, collection, filter, update) =
 
 // ---- GET DATA ----
 
+export const findUser = async (client, collection) => {
+  const db = client.db("bista");
+  const getData = await db.collection(collection).find().toArray();
+  const result = getData.map((d) => ({
+    nama: d.nama,
+    id: d.id,
+    posisi: d.posisi,
+    posisiDesc: d.posisiDesc,
+    cabang: d.cabang,
+    cabangDesc: d.cabangDesc,
+    email: d.email,
+  }));
+  return result;
+};
+
 export const findUserCabang = async (client, collection, cabang) => {
   const db = client.db("bista");
   const getData = await db.collection(collection).find({ cabang: cabang }).toArray();

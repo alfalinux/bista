@@ -103,7 +103,10 @@ const ResiActive = (props) => {
                     {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) < 0 && (
                       <span className={styles["table-status__overdue"]}>Overdue</span>
                     )}
-                    {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) <= 1 && (
+                    {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) === 1 && (
+                      <span className={styles["table-status__warning"]}>Warning</span>
+                    )}
+                    {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) === 0 && (
                       <span className={styles["table-status__warning"]}>Warning</span>
                     )}
 

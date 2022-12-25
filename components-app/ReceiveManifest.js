@@ -4,8 +4,8 @@ import getDate from "../helpers/getDate";
 
 import styles from "./ReceiveManifest.module.css";
 import Button from "./ui/Button";
-import LoadingSpinner from "../public/icons/loading-spinner";
 import Check from "../public/icons/check";
+import LoadingSpinner from "../public/icons/loading-spinner";
 import LoadingPage from "./ui/LoadingPage";
 import Swal from "sweetalert2";
 
