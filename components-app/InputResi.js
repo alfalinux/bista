@@ -482,7 +482,11 @@ const InputResi = (props) => {
           />
           <span></span>
           {inputIsValid.cabangTujuan ? (
-            <span></span>
+            dataOngkir ? (
+              <p className={styles["success-note"]}>Cabang Coveran: {dataOngkir.cov.toUpperCase()}</p>
+            ) : (
+              <span></span>
+            )
           ) : (
             <p className={styles["error-note"]}>Wajib diisi, tidak boleh kosong</p>
           )}

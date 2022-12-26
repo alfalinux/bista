@@ -72,10 +72,16 @@
   cursor: not-allowed;
 }
 
+.success-note {
+  margin-top: -10px;
+  color: limegreen;
+  font-size: 10px;
+}
+
 .error-note {
   margin-top: -10px;
   color: red;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .error-field {

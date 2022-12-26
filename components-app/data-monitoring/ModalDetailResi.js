@@ -1,4 +1,4 @@
-import TrackingResult from "../../../components-user/TrackingResult";
+import TrackingResult from "../../components-user/TrackingResult";
 import styles from "./ModalDetailResi.module.css";
 
 const ModalDetailResi = (props) => {

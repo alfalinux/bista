@@ -5,12 +5,13 @@ import Swal from "sweetalert2";
 import { signOut } from "next-auth/react";
 
 import styles from "./Sidemenu.module.css";
-import HomeIcon from "../public/icons/HomeIcon";
-import TruckIcon from "../public/icons/TruckIcon";
-import RocketIcon from "../public/icons/RocketIcon";
-import ReportIcon from "../public/icons/ReportIcon";
-import PlaneIcon from "../public/icons/plane-icon";
-import Setting from "../public/icons/setting";
+import HomeIcon from "../../public/icons/HomeIcon";
+import TruckIcon from "../../public/icons/TruckIcon";
+import RocketIcon from "../../public/icons/RocketIcon";
+import ReportIcon from "../../public/icons/ReportIcon";
+import PlaneIcon from "../../public/icons/plane-icon";
+import Setting from "../../public/icons/setting";
+import Printer from "../../public/icons/printer";
 
 const Sidemenu = (props) => {
   const [outgoingSubmenu, setOutgoingSubmenu] = useState(false);
@@ -199,7 +200,7 @@ const Sidemenu = (props) => {
           onClick={reprintMenuHandler}
         >
           <div className={styles["menu-title"]}>
-            <ReportIcon />
+            <Printer />
             <p className={styles["text-icon"]}>Reprint</p>
           </div>
           {reprintSubmenuIsValid ? (

@@ -1,3 +1,24 @@
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.cabang-option {
+  width: auto;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.cabang-option label {
+  font-size: 14px;
+}
+
+.cabang-option select {
+  margin: 0 10px;
+  padding: 5px;
+}
+
 .table-penerima {
   display: flex;
   flex-direction: column;
@@ -103,4 +124,23 @@
 .table-status__date {
   font-size: 12px;
   padding: 0;
+}
+
+.table-driver {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+
+.table-driver__nama {
+  font-size: 12px;
+  padding: 0;
+}
+
+.table-driver__nopol {
+  font-size: 12px;
+  padding: 0;
+  color: #555;
 }

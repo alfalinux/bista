@@ -1,16 +1,53 @@
-import { useState } from "react";
-import styles from "./ResiActive.module.css";
-import LoadingSpinner from "../../../public/icons/loading-spinner";
-import LoadingPage from "../LoadingPage";
-import Button from "../Button";
-import Search from "../../../public/icons/search";
+import { useState, useEffect } from "react";
+import styles from "./active.module.css";
+import LoadingSpinner from "../../public/icons/loading-spinner";
+import LoadingPage from "../ui/LoadingPage";
+import Button from "../ui/Button";
+import Search from "../../public/icons/search";
 import ModalDetailResi from "./ModalDetailResi";
+import { useSession } from "next-auth/react";
 
 const ResiActive = (props) => {
+  const { data, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [showModalDetailResi, setShowModalDetailResi] = useState(false);
 
+  const [listCabang, setListCabang] = useState([]);
+  const [selectedCabang, setSelectedCabang] = useState("");
+  const [resiActive, setResiActive] = useState([]);
   const [dataResi, setDataResi] = useState({});
+
+  useEffect(() => {
+    // Find All Cabang
+    fetch("/api/cabang")
+      .then((response) => response.json())
+      .then((data) => {
+        setListCabang(data);
+      });
+  }, [status]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    // find resi Active
+    fetch("/api/data-resi/find-resi-aktif/" + selectedCabang)
+      .then((response) => response.json())
+      .then((data) => {
+        !data
+          ? null
+          : setResiActive(
+              data.sort((a, b) => {
+                a.tglTransaksi - b.tglTransaksi;
+                return -1;
+              })
+            );
+        setIsLoading(false);
+      });
+  }, [selectedCabang]);
+
+  const selectCabangHandler = (e) => {
+    setSelectedCabang(e.target.value);
+  };
 
   const detailClickHandler = (noResi) => {
     setIsLoadingPage(true);
@@ -33,7 +70,24 @@ const ResiActive = (props) => {
   };
 
   return (
-    <>
+    <div className={styles["container"]}>
+      <div className={styles["cabang-option"]}>
+        <label htmlFor="cabang">Cabang</label>
+        <select name="cabang" id="cabang" value={selectedCabang} onChange={selectCabangHandler}>
+          <option value="" disabled={true}>
+            --Pilih Cabang--
+          </option>
+          {!data ? null : data.posisi === "GEN" ? (
+            listCabang.map((d, i) => (
+              <option key={i} value={d.cab}>
+                {d.cab.toUpperCase()}
+              </option>
+            ))
+          ) : (
+            <option value={data.cabangDesc}>{data.cabangDesc.toUpperCase()}</option>
+          )}
+        </select>
+      </div>
       <table className="table-container">
         <thead className="table-head">
           <tr>
@@ -51,12 +105,18 @@ const ResiActive = (props) => {
           </tr>
         </thead>
         <tbody className="table-body">
-          {props.dataResi.length === 0 ? (
+          {isLoading ? (
+            <tr>
+              <td colSpan="11">
+                <LoadingSpinner />
+              </td>
+            </tr>
+          ) : resiActive.length === 0 ? (
             <tr>
               <td colSpan="11">Tidak Ada Data...</td>
             </tr>
           ) : (
-            props.dataResi.map((d, i) => (
+            resiActive.map((d, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td>
@@ -98,7 +158,7 @@ const ResiActive = (props) => {
                 <td style={{ whiteSpace: "nowrap" }}>
                   <div className={styles["table-status"]}>
                     {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) > 1 && (
-                      <span className={styles["table-status__settle"]}>On Schedule</span>
+                      <span className={styles["table-status__settle"]}>Settle</span>
                     )}
                     {countDayLeft(d.dataOngkir.slaCargo, d.tglTransaksi) < 0 && (
                       <span className={styles["table-status__overdue"]}>Overdue</span>
@@ -130,7 +190,7 @@ const ResiActive = (props) => {
       </table>
       {isLoadingPage ? <LoadingPage /> : null}
       {showModalDetailResi ? <ModalDetailResi dataResi={dataResi} onClose={closeModalDetailResi} /> : null}
-    </>
+    </div>
   );
 };
 

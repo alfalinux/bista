@@ -1,6 +1,8 @@
 import styles from "../../styles/Layouts.module.css";
 
-import Sidemenu from "../../components-app/Sidemenu";
+import SidemenuGeneral from "../../components-app/sidemenu/SidemenuGeneral";
+import SidemenuKurir from "../../components-app/sidemenu/SidemenuKurir";
+import SidemenuAdmin from "../../components-app/sidemenu/SidemenuAdmin";
 import Topbar from "../../components-app/Topbar";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
@@ -19,7 +21,6 @@ const Layouts = (props) => {
 
   useEffect(() => {
     getSession().then((session) => {
-      // console.log(session);
       if (!session) {
         router.replace("/auth");
       } else {
@@ -28,12 +29,15 @@ const Layouts = (props) => {
       }
     });
   }, [router]);
-
-  // console.log(status);
-
   return (
     <div className={styles["container"]}>
-      <Sidemenu style={showSideMenu} />
+      {profile.posisi === "GEN" ? <SidemenuGeneral style={showSideMenu} /> : null}
+      {profile.posisi === "KUR" ? <SidemenuKurir style={showSideMenu} /> : null}
+      {profile.posisi === "ADM" ? <SidemenuAdmin style={showSideMenu} /> : null}
+      {profile.posisi === "SPV" ? <SidemenuAdmin style={showSideMenu} /> : null}
+      {profile.posisi === "MGR" ? <SidemenuAdmin style={showSideMenu} /> : null}
+      {profile.posisi === "CSO" ? <SidemenuAdmin style={showSideMenu} /> : null}
+
       <div className={styles["main-side"]}>
         <Topbar onToggle={showSideMenuHandler} onShow={showSideMenu} user={profile} />
         {loadingPage ? <LoadingComponent /> : props.children}
