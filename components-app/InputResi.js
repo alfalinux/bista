@@ -446,16 +446,15 @@ const InputResi = (props) => {
           />
           <span></span>
           {inputIsValid.tujuan ? (
-            <span></span>
+            inputKecamatan !== "" && !inputValue.dataOngkir ? (
+              <p className={styles["error-note"]}>Kecamatan tersebut belum tercover</p>
+            ) : (
+              <span></span>
+            )
           ) : (
             <p className={styles["error-note"]}>Wajib diisi, tidak boleh kosong</p>
           )}
-          <span></span>
-          {touchedField.tujuan && inputValue.dataOngkir[inputValue.layanan] === "" ? (
-            <p className={styles["error-note"]}>Kecamatan tersebut belum tercover</p>
-          ) : (
-            <span></span>
-          )}
+
           <span></span>
           <span className={styles["dropdown-container"]}>
             {inputKecamatan === "" ? null : (

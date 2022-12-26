@@ -145,6 +145,7 @@ const CreateSuratJalan = () => {
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       if (response.status == 201) {
+        setCabangAsal("");
         setCabangTujuan("");
         setNamaDriver("");
         setNopolDriver("");
@@ -161,6 +162,7 @@ const CreateSuratJalan = () => {
           confirmButtonText: "Print Surat Jalan",
         }).then((result) => {
           if (result.isConfirmed) {
+            setCabangAsal(dataSuratJalan.cabangAsal);
             suratjalanPdf(dataSuratJalan, dataManifest);
           }
         });

@@ -12,6 +12,7 @@ import Refresh from "../public/icons/refresh";
 import ModalUpdateDelivery from "../components-app/ui/ModalUpdateDelivery";
 import ModalStatusDelivery from "../components-app/ui/ModalStatusDelivery";
 import Swal from "sweetalert2";
+import UpdateStatusDeliveryKurirView from "./UpdateStatusDeliveryKurirView";
 
 const CreateDelivery = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
@@ -92,6 +93,15 @@ const CreateDelivery = () => {
       setIsLoading(false);
     }
   }, [cabangTujuan]);
+
+  useEffect(() => {
+    if (data) {
+      if (data.posisi === "KUR") {
+        setCabangTujuan(data.cabangDesc);
+        setNamaKurir(data.namaKurir);
+      }
+    }
+  }, [status]);
 
   const cabangTujuanChangeHandler = (e) => {
     setCabangTujuan(e.target.value);
@@ -186,193 +196,203 @@ const CreateDelivery = () => {
   };
 
   return (
-    <div className={styles["container"]}>
-      {isLoadingPage ? <LoadingPage /> : null}
-      {/* -- Display Form Selection -- */}
+    <>
       {status === "authenticated" ? (
-        <form className={styles["form-wrapper"]}>
-          <div className={styles["field"]}>
-            <label className={styles["label"]} htmlFor="cabang">
-              Cabang
-            </label>
-            <select name="cabang" id="cabang" defaultValue={""} onChange={cabangTujuanChangeHandler}>
-              <option value="" disabled={true}>
-                -- Pilih Cabang --
-              </option>
-              {data.posisi === "GEN"
-                ? listCabang.map((d, i) => (
-                    <option key={i} value={d.cab}>
-                      {d.cab.toUpperCase()}
+        data.posisi !== "KUR" ? (
+          <div className={styles["container"]}>
+            {isLoadingPage ? <LoadingPage /> : null}
+            {/* -- Display Form Selection -- */}
+            {status === "authenticated" ? (
+              <form className={styles["form-wrapper"]}>
+                <div className={styles["field"]}>
+                  <label className={styles["label"]} htmlFor="cabang">
+                    Cabang
+                  </label>
+                  <select name="cabang" id="cabang" defaultValue={""} onChange={cabangTujuanChangeHandler}>
+                    <option value="" disabled={true}>
+                      -- Pilih Cabang --
                     </option>
-                  ))
-                : listCabang
-                    .filter((d) => d.tlc === data.cabang)
-                    .map((d, i) => (
-                      <option key={i} value={d.cab}>
-                        {d.cab.toUpperCase()}
-                      </option>
-                    ))}
-            </select>
-          </div>
+                    {data.posisi === "GEN"
+                      ? listCabang.map((d, i) => (
+                          <option key={i} value={d.cab}>
+                            {d.cab.toUpperCase()}
+                          </option>
+                        ))
+                      : listCabang
+                          .filter((d) => d.tlc === data.cabang)
+                          .map((d, i) => (
+                            <option key={i} value={d.cab}>
+                              {d.cab.toUpperCase()}
+                            </option>
+                          ))}
+                  </select>
+                </div>
 
-          <div className={styles["field"]}>
-            <label className={styles["label"]} htmlFor="kurir">
-              Kurir
-            </label>
-            <select name="kurir" id="kurir" value={namaKurir} onChange={kurirChangeHandler}>
-              <option value="" disabled={true}>
-                -- Pilih Kurir --
-              </option>
-              {listKurir.length > 0
-                ? listKurir.map((d, i) => (
-                    <option key={i} value={d}>
-                      {d.toUpperCase()}
+                <div className={styles["field"]}>
+                  <label className={styles["label"]} htmlFor="kurir">
+                    Kurir
+                  </label>
+                  <select name="kurir" id="kurir" value={namaKurir} onChange={kurirChangeHandler}>
+                    <option value="" disabled={true}>
+                      -- Pilih Kurir --
                     </option>
-                  ))
-                : null}
-            </select>
-          </div>
-        </form>
-      ) : (
-        <LoadingPage />
-      )}
+                    {listKurir.length > 0
+                      ? listKurir.map((d, i) => (
+                          <option key={i} value={d}>
+                            {d.toUpperCase()}
+                          </option>
+                        ))
+                      : null}
+                  </select>
+                </div>
+              </form>
+            ) : (
+              <LoadingPage />
+            )}
 
-      {/* --Display Tabel Options -- */}
-      {isLoading ? (
-        <div className="center-loading">
-          <LoadingSpinner />
-        </div>
-      ) : listDelivery.length > 0 ? (
-        listDelivery
-          .filter((d) => (namaKurir ? d.namaKurir === namaKurir : d.namaKurir))
-          .map((d, i) => (
-            <div key={i}>
-              <div className={styles["table-title"]}>
-                <span className={styles["table-title__icon"]}>
-                  <Stack />
-                </span>
-                <span className={styles["table-title__text"]}>{d.noDelivery}</span>
-                <span className={styles["table-title__date"]}>{d.tglDelivery}</span>
+            {/* --Display Tabel Options -- */}
+            {isLoading ? (
+              <div className="center-loading">
+                <LoadingSpinner />
               </div>
-              <table className="table-container">
-                <thead className="table-head">
-                  <tr>
-                    <td>No</td>
-                    <td>No Resi</td>
-                    <td>Penerima</td>
-                    <td>Isi Paket</td>
-                    <td>Jlh Paket</td>
-                    <td>Berat Paket</td>
-                    <td style={{ width: "160px" }}>Status</td>
-                  </tr>
-                </thead>
-                <tbody className="table-body">
-                  {d.dataResi.map((val, idx) => (
-                    <tr key={idx}>
-                      <td>{idx + 1}</td>
-                      <td>{val.noResi}</td>
-                      <td>
-                        <div className={styles["table-penerima"]}>
-                          <span className={styles["table-penerima__nama"]}>{val.namaPenerima}</span>
-                          <span className={styles["table-penerima__nohp"]}>{val.nohpPenerima}</span>
-                          <span className={styles["table-penerima__alamat"]}>{val.alamatPenerima}</span>
-                        </div>
-                      </td>
-                      <td>{val.keteranganBarang}</td>
-                      <td>{val.jumlahBarang} Koli</td>
-                      <td>{val.beratBarang} Kg</td>
-                      <td>
-                        {val.statusDelivery === "proses" && (
-                          <Button
-                            type="submit"
-                            label="Pengantaran"
-                            color="orange"
-                            width="full"
-                            icon={<Refresh />}
-                            clickHandler={() => showUpdateHandler(val.noResi, d.noDelivery)}
-                          />
-                        )}
-                        {val.statusDelivery === "diterima" && (
-                          <Button
-                            type="submit"
-                            label="Diterima"
-                            color="cornflowerblue"
-                            width="full"
-                            icon={<Check />}
-                            clickHandler={() => showStatusHandler(val)}
-                          />
-                        )}
-                        {val.statusDelivery === "gagal" && (
-                          <Button
-                            type="submit"
-                            label="Gagal"
-                            color="red"
-                            width="full"
-                            icon={<CloseCircle />}
-                            clickHandler={() => showStatusHandler(val)}
-                          />
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot className="table-foot">
-                  <tr>
-                    <td colSpan="7" style={{ textAlign: "center", fontWeight: "800" }}>
-                      <div>
-                        <span>
-                          Paket Diterima : {d.dataResi.filter((val) => val.statusDelivery === "diterima").length} resi
-                        </span>
-                        <span> || </span>
-                        <span>
-                          Gagal Kirim : {d.dataResi.filter((val) => val.statusDelivery === "gagal").length} resi
-                        </span>
-                        <span> || </span>
-                        <span>
-                          Proses Pengiriman : {d.dataResi.filter((val) => val.statusDelivery === "proses").length} resi{" "}
-                        </span>
-                        <div className="center-element">
-                          <Button
-                            label="Selesaikan Delivery"
-                            color="greenoutlined"
-                            icon={<Check />}
-                            clickHandler={() => closeDelivery(d.noDelivery)}
-                            disabled={d.dataResi.filter((val) => val.statusDelivery === "proses").length > 0}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-              {showModalUpdate ? (
-                <ModalUpdateDelivery
-                  onCloseModal={closeUpdateHandler}
-                  noResi={noResiClicked}
-                  noDelivery={noDeliveryClicked}
-                  cabang={cabangTujuan}
-                  kurir={namaKurir}
-                  onReset={resetInput}
-                  onSet={setInput}
-                />
-              ) : null}
-              {showStatusDelivery ? (
-                <ModalStatusDelivery onCloseModal={closeStatusHandler} getValue={valueStatusDelivery} />
-              ) : null}
-            </div>
-          ))
-      ) : (
-        <div className="center-element" style={{ marginTop: "20px", color: "red" }}>
-          {!cabangTujuan
-            ? "Nama Cabang belum dipilih"
-            : listDelivery.length === 0
-            ? "Tidak ada data Delivery"
-            : !namaKurir
-            ? "Nama Kurir belum dipilih"
-            : null}
-        </div>
-      )}
-    </div>
+            ) : listDelivery.length > 0 ? (
+              listDelivery
+                .filter((d) => (namaKurir ? d.namaKurir === namaKurir : d.namaKurir))
+                .map((d, i) => (
+                  <div key={i}>
+                    <div className={styles["table-title"]}>
+                      <span className={styles["table-title__icon"]}>
+                        <Stack />
+                      </span>
+                      <span className={styles["table-title__text"]}>{d.noDelivery}</span>
+                      <span className={styles["table-title__date"]}>{d.tglDelivery}</span>
+                    </div>
+                    <table className="table-container">
+                      <thead className="table-head">
+                        <tr>
+                          <td>No</td>
+                          <td>No Resi</td>
+                          <td>Penerima</td>
+                          <td>Isi Paket</td>
+                          <td>Jlh Paket</td>
+                          <td>Berat Paket</td>
+                          <td style={{ width: "160px" }}>Status</td>
+                        </tr>
+                      </thead>
+                      <tbody className="table-body">
+                        {d.dataResi.map((val, idx) => (
+                          <tr key={idx}>
+                            <td>{idx + 1}</td>
+                            <td>{val.noResi}</td>
+                            <td>
+                              <div className={styles["table-penerima"]}>
+                                <span className={styles["table-penerima__nama"]}>{val.namaPenerima}</span>
+                                <span className={styles["table-penerima__nohp"]}>{val.nohpPenerima}</span>
+                                <span className={styles["table-penerima__alamat"]}>{val.alamatPenerima}</span>
+                              </div>
+                            </td>
+                            <td>{val.keteranganBarang}</td>
+                            <td>{val.jumlahBarang} Koli</td>
+                            <td>{val.beratBarang} Kg</td>
+                            <td>
+                              {val.statusDelivery === "proses" && (
+                                <Button
+                                  type="submit"
+                                  label="Pengantaran"
+                                  color="orange"
+                                  width="full"
+                                  icon={<Refresh />}
+                                  clickHandler={() => showUpdateHandler(val.noResi, d.noDelivery)}
+                                />
+                              )}
+                              {val.statusDelivery === "diterima" && (
+                                <Button
+                                  type="submit"
+                                  label="Diterima"
+                                  color="cornflowerblue"
+                                  width="full"
+                                  icon={<Check />}
+                                  clickHandler={() => showStatusHandler(val)}
+                                />
+                              )}
+                              {val.statusDelivery === "gagal" && (
+                                <Button
+                                  type="submit"
+                                  label="Gagal"
+                                  color="red"
+                                  width="full"
+                                  icon={<CloseCircle />}
+                                  clickHandler={() => showStatusHandler(val)}
+                                />
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot className="table-foot">
+                        <tr>
+                          <td colSpan="7" style={{ textAlign: "center", fontWeight: "800" }}>
+                            <div>
+                              <span>
+                                Paket Diterima : {d.dataResi.filter((val) => val.statusDelivery === "diterima").length}{" "}
+                                resi
+                              </span>
+                              <span> || </span>
+                              <span>
+                                Gagal Kirim : {d.dataResi.filter((val) => val.statusDelivery === "gagal").length} resi
+                              </span>
+                              <span> || </span>
+                              <span>
+                                Proses Pengiriman : {d.dataResi.filter((val) => val.statusDelivery === "proses").length}{" "}
+                                resi{" "}
+                              </span>
+                              <div className="center-element">
+                                <Button
+                                  label="Selesaikan Delivery"
+                                  color="greenoutlined"
+                                  icon={<Check />}
+                                  clickHandler={() => closeDelivery(d.noDelivery)}
+                                  disabled={d.dataResi.filter((val) => val.statusDelivery === "proses").length > 0}
+                                />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    {showModalUpdate ? (
+                      <ModalUpdateDelivery
+                        onCloseModal={closeUpdateHandler}
+                        noResi={noResiClicked}
+                        noDelivery={noDeliveryClicked}
+                        cabang={cabangTujuan}
+                        kurir={namaKurir}
+                        onReset={resetInput}
+                        onSet={setInput}
+                      />
+                    ) : null}
+                    {showStatusDelivery ? (
+                      <ModalStatusDelivery onCloseModal={closeStatusHandler} getValue={valueStatusDelivery} />
+                    ) : null}
+                  </div>
+                ))
+            ) : (
+              <div className="center-element" style={{ marginTop: "20px", color: "red" }}>
+                {!cabangTujuan
+                  ? "Nama Cabang belum dipilih"
+                  : listDelivery.length === 0
+                  ? "Tidak ada data Delivery"
+                  : !namaKurir
+                  ? "Nama Kurir belum dipilih"
+                  : null}
+              </div>
+            )}
+          </div>
+        ) : (
+          <UpdateStatusDeliveryKurirView dataDelivery={listDelivery} />
+        )
+      ) : null}
+    </>
   );
 };
 

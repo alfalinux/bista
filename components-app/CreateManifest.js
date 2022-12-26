@@ -129,6 +129,7 @@ const CreateManifest = () => {
               confirmButtonText: "Print Manifest",
             }).then((result) => {
               if (result.isConfirmed) {
+                setCabangAsal(submitManifest.cabangAsal);
                 manifestPdf(submitManifest);
               }
             });

@@ -235,7 +235,10 @@ export const findResiBelumDelivery = async (client, collection, cabangTujuan) =>
 
 export const findResiBelumManifest = async (client, collection, cabangAsal) => {
   const db = client.db("bista");
-  const result = await db.collection(collection).find({ cabangAsal: cabangAsal, noManifest: null }).toArray();
+  const result = await db
+    .collection(collection)
+    .find({ cabangAsal: cabangAsal, "dataOngkir.cov": { $ne: cabangAsal }, noManifest: null })
+    .toArray();
   return result;
 };
 
@@ -291,10 +294,7 @@ export const findManifestBelumReceive = async (client, collection, cabangTujuan)
 
 export const findManifestBelumReceiveAsal = async (client, collection, cabangAsal) => {
   const db = client.db("bista");
-  const result = await db
-    .collection(collection)
-    .find({ cabangAsal: cabangAsal, receivedIn: null, suratJalan: { $ne: null } })
-    .toArray();
+  const result = await db.collection(collection).find({ cabangAsal: cabangAsal, receivedIn: null }).toArray();
 
   return result;
 };
