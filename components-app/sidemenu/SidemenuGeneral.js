@@ -14,6 +14,7 @@ import Setting from "../../public/icons/setting";
 import Printer from "../../public/icons/printer";
 
 const Sidemenu = (props) => {
+  const [monitoringSubmenu, setMonitoringSubmenu] = useState(false);
   const [outgoingSubmenu, setOutgoingSubmenu] = useState(false);
   const [incomingSubmenu, setIncomingSubmenu] = useState(false);
   const [reprintSubmenu, setReprintSubmenu] = useState(false);
@@ -47,6 +48,10 @@ const Sidemenu = (props) => {
     });
   };
 
+  const monitoringMenuHandler = () => {
+    setMonitoringSubmenu(monitoringSubmenu ? false : true);
+  };
+
   const outgoingMenuHandler = () => {
     setOutgoingSubmenu(outgoingSubmenu ? false : true);
   };
@@ -67,6 +72,7 @@ const Sidemenu = (props) => {
     setProfileSubmenu(profileSubmenu ? false : true);
   };
 
+  const monitoringSubmenuIsValid = monitoringSubmenu || router.pathname.startsWith("/app/monitoring");
   const outgoingSubmenuIsValid = outgoingSubmenu || router.pathname.startsWith("/app/outgoing");
   const incomingSubmenuIsValid = incomingSubmenu || router.pathname.startsWith("/app/incoming");
   const deliverySubmenuIsValid = deliverySubmenu || router.pathname.startsWith("/app/delivery");
@@ -87,6 +93,46 @@ const Sidemenu = (props) => {
             </div>
           </div>
         </Link>
+
+        {/* --- Monitoring Menu */}
+        <div
+          className={router.pathname.startsWith("/app/monitoring") ? styles["menu-active"] : styles["menu-btn"]}
+          onClick={monitoringMenuHandler}
+        >
+          <div className={styles["menu-title"]}>
+            <ReportIcon />
+            <p className={styles["text-icon"]}>Monitoring</p>
+          </div>
+          {monitoringSubmenuIsValid && (
+            <ul className={styles["menu-list"]}>
+              <Link href="/app/monitoring/resi-active">
+                <li
+                  className={router.pathname === "/app/monitoring/resi-active" ? styles["list-active"] : styles["list"]}
+                >
+                  Resi Aktif
+                </li>
+              </Link>
+              <Link href="/app/monitoring/manifest-active">
+                <li
+                  className={
+                    router.pathname === "/app/monitoring/manifest-active" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Manifest Aktif
+                </li>
+              </Link>
+              <Link href="/app/monitoring/surat-jalan-active">
+                <li
+                  className={
+                    router.pathname === "/app/monitoring/surat-jalan-active" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Surat Jalan Aktif
+                </li>
+              </Link>
+            </ul>
+          )}
+        </div>
 
         {/* --- Outgoing Menu */}
         <div
