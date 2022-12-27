@@ -389,7 +389,7 @@ const CreateDelivery = () => {
             )}
           </div>
         ) : (
-          <UpdateStatusDeliveryKurirView dataDelivery={listDelivery} />
+          <UpdateStatusDeliveryKurirView dataDelivery={listDelivery} setInput={setInput} resetInput={resetInput} />
         )
       ) : null}
     </>
