@@ -20,6 +20,7 @@ const Layouts = (props) => {
   };
 
   useEffect(() => {
+    setLoadingPage(true);
     getSession().then((session) => {
       if (!session) {
         router.replace("/auth");

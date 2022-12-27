@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ModalUpdateDelivery from "../components-app/ui/ModalUpdateDelivery";
+import ModalStatusDelivery from "../components-app/ui/ModalStatusDelivery";
 import Button from "./ui/Button";
 import styles from "./UpdateStatusDeliveryKurirView.module.css";
 import ChevronDown from "../public/icons/ChevronDown";
@@ -7,13 +8,19 @@ import GiftBox from "../public/icons/GiftBox";
 import Scale from "../public/icons/Scale";
 import Money from "../public/icons/money";
 import Check from "../public/icons/check";
+import ThumbUp from "../public/icons/ThumbUp";
+import ThumbDown from "../public/icons/ThumbDown";
 
 const UpdateStatusDeliveryKurirView = (props) => {
-  const [showDetailSuratJalan, setShowDetailSuratJalan] = useState(false);
+  const [showDetailSuratJalan, setShowDetailSuratJalan] = useState(true);
   const [detailResiClicked, setDetailResiClicked] = useState([]);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
+  const [showModalStatusDelivery, setShowModalStatusDelivery] = useState(false);
+  const [valueStatusDelivery, setValueStatusDelivery] = useState({});
   const [noResiClicked, setNoResiClicked] = useState("");
   const [noDeliveryClicked, setNoDeliveryClicked] = useState("");
+  const [cabangClicked, setCabangClicked] = useState("");
+  const [namaKurirClicked, setNamaKurirClicked] = useState("");
 
   const suratJalanIconHandler = (e) => {
     setShowDetailSuratJalan(!showDetailSuratJalan);
@@ -28,7 +35,6 @@ const UpdateStatusDeliveryKurirView = (props) => {
       document.getElementById(noResi).style.display = "block";
       setDetailResiClicked((prevDetailResiClicked) => [...prevDetailResiClicked, noResi]);
     }
-    console.log(document.getElementById(noResi).style.display);
   };
 
   const cardColor = (status) => {
@@ -41,12 +47,30 @@ const UpdateStatusDeliveryKurirView = (props) => {
     }
   };
 
-  const updateClickHandler = (noResi, noRelivery) => {
+  const updateClickHandler = (noResi, noDelivery, cabang, kurir) => {
     setShowModalUpdate(true);
+    setNoResiClicked(noResi);
+    setNoDeliveryClicked(noDelivery);
+    setCabangClicked(cabang);
+    setNamaKurirClicked(kurir);
   };
 
   const closeUpdateHandler = () => {
     setShowModalUpdate(false);
+    setNoResiClicked("");
+    setNoDeliveryClicked("");
+    setCabangClicked("");
+    setNamaKurirClicked("");
+  };
+
+  const statusClickHandler = (val) => {
+    setShowModalStatusDelivery(true);
+    setValueStatusDelivery(val);
+  };
+
+  const closeStatusHandler = () => {
+    setShowModalStatusDelivery(false);
+    setValueStatusDelivery({});
   };
 
   return (
@@ -65,39 +89,78 @@ const UpdateStatusDeliveryKurirView = (props) => {
               </div>
               {showDetailSuratJalan ? (
                 <main className={styles["content"]}>
-                  {deliv.dataResi.map((resi, index) => (
-                    <div className={cardColor(resi.statusDelivery)} key={index}>
-                      <section className={styles["resi-icon"]} onClick={() => resiIconHandler(resi.noResi)}>
-                        {detailResiClicked.indexOf(resi.noResi) >= 0 ? "-" : "+"}
-                      </section>
-                      <div className={styles["card-title"]}>{resi.namaPenerima}</div>
-                      <div>{resi.nohpPenerima}</div>
-                      <div>{resi.alamatPenerima}</div>
-                      <div id={resi.noResi} className={styles["card-expand"]}>
-                        <div>No Resi : {resi.noResi}</div>
-                        <div>Isi Paket : {resi.keteranganBarang}</div>
-                        <div className={styles["detail-paket"]}>
-                          <span className={styles["jumlah-paket"]}>
-                            <GiftBox /> {resi.jumlahBarang} Koli
-                          </span>
-                          <span className={styles["berat-paket"]}>
-                            <Scale /> {resi.beratBarang} Kg
-                          </span>
-                          <span className={styles["ongkir-paket"]}>
-                            <Money /> Rp {Number(resi.grandTotal).toLocaleString("id-ID")} - {resi.pembayaran}
-                          </span>
-                        </div>
-                        <div className={styles["btn-update"]}>
-                          <Button
-                            label="Update Status"
-                            color="black"
-                            icon={<Check />}
-                            clickHandler={() => updateClickHandler(resi.noresi, deliv.noDelivery)}
-                          />
+                  {deliv.dataResi
+                    .sort((a, b) =>
+                      a.deliveredAt === undefined
+                        ? -1
+                        : b.deliveredAt === undefined
+                        ? 1
+                        : new Date(a.deliveredAt) > new Date(b.deliveredAt)
+                        ? 1
+                        : new Date(b.deliveredAt) > new Date(a.deliveredAt)
+                        ? -1
+                        : 0
+                    )
+                    .map((resi, index) => (
+                      <div className={cardColor(resi.statusDelivery)} key={index}>
+                        <section
+                          className={
+                            detailResiClicked.indexOf(resi.noResi) >= 0
+                              ? styles["resi-icon-down"]
+                              : styles["resi-icon-up"]
+                          }
+                          onClick={() => resiIconHandler(resi.noResi)}
+                        >
+                          {detailResiClicked.indexOf(resi.noResi) >= 0 ? "-" : "+"}
+                        </section>
+                        <div className={styles["card-title"]}>{resi.namaPenerima}</div>
+                        <div>{resi.nohpPenerima}</div>
+                        <div>{resi.alamatPenerima}</div>
+                        <div id={resi.noResi} className={styles["card-expand"]}>
+                          <div>No Resi : {resi.noResi}</div>
+                          <div>Isi Paket : {resi.keteranganBarang}</div>
+                          <div className={styles["detail-paket"]}>
+                            <span className={styles["jumlah-paket"]}>
+                              <GiftBox /> {resi.jumlahBarang} Koli
+                            </span>
+                            <span className={styles["berat-paket"]}>
+                              <Scale /> {resi.beratBarang} Kg
+                            </span>
+                            <span className={styles["ongkir-paket"]}>
+                              <Money /> Rp {Number(resi.grandTotal).toLocaleString("id-ID")} - {resi.pembayaran}
+                            </span>
+                          </div>
+                          <div className={styles["btn-update"]}>
+                            {resi.statusDelivery === "proses" ? (
+                              <Button
+                                label="Update Status"
+                                color="black"
+                                icon={<Check />}
+                                clickHandler={() =>
+                                  updateClickHandler(resi.noResi, deliv.noDelivery, deliv.cabang, deliv.namaKurir)
+                                }
+                              />
+                            ) : null}
+                            {resi.statusDelivery === "diterima" ? (
+                              <Button
+                                label="Terkirim"
+                                color="black"
+                                icon={<ThumbUp />}
+                                clickHandler={() => statusClickHandler(resi)}
+                              />
+                            ) : null}
+                            {resi.statusDelivery === "gagal" ? (
+                              <Button
+                                label="Gagal Kirim"
+                                color="black"
+                                icon={<ThumbDown />}
+                                clickHandler={() => statusClickHandler(resi)}
+                              />
+                            ) : null}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </main>
               ) : null}
             </div>
@@ -107,11 +170,14 @@ const UpdateStatusDeliveryKurirView = (props) => {
           onCloseModal={closeUpdateHandler}
           noResi={noResiClicked}
           noDelivery={noDeliveryClicked}
-          // cabang={cabangTujuan}
-          // kurir={namaKurir}
-          // onReset={resetInput}
-          // onSet={setInput}
+          cabang={cabangClicked}
+          kurir={namaKurirClicked}
+          onReset={props.resetInput}
+          onSet={props.setInput}
         />
+      ) : null}
+      {showModalStatusDelivery ? (
+        <ModalStatusDelivery onCloseModal={closeStatusHandler} getValue={valueStatusDelivery} />
       ) : null}
     </div>
   );

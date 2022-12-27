@@ -43,7 +43,7 @@
   padding: 10px;
 }
 
-.resi-icon {
+/* .resi-icon {
   width: 20px;
   height: 20px;
   position: absolute;
@@ -54,17 +54,59 @@
   align-items: center;
   font-size: 13px;
   color: lightgray;
-  box-shadow: inset -1px 1px 4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: inset -1px 1px 4px 0 rgba(0, 0, 0, 0.5), inset 1px -1px 0px 0 rgba(255, 187, 0, 0.63);
   border-radius: 50%;
   font-weight: 700;
   background: linear-gradient(45deg, rgb(53, 53, 53) 0%, rgb(163, 163, 163) 100%);
+  
+} */
+
+.resi-icon-up {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px;
+  color: #fff;
+  text-align: center;
+  background: #333;
+  -webkit-transition: box-shadow 0.15s;
+  -moz-transition: box-shadow 0.15s;
+  -ms-transition: box-shadow 0.15s;
+  transition: box-shadow 0.15s;
+  box-shadow: inset -1px 1px 1px rgba(150, 150, 150, 0.5), inset 1px -1px 1px rgba(0, 0, 0, 0.5),
+    -1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.resi-icon-down {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px;
+  color: #fff;
+  text-align: center;
+  background: #333;
+  -webkit-transition: box-shadow 0.15s;
+  -moz-transition: box-shadow 0.15s;
+  -ms-transition: box-shadow 0.15s;
+  transition: box-shadow 0.15s;
+  box-shadow: inset -1px 1px 1px rgba(0, 0, 0, 0.5), inset 1px -1px 1px rgba(150, 150, 150, 0.5);
 }
 
 .card-proses {
   width: 100%;
   position: relative;
   border-radius: 4px;
-  background: linear-gradient(45deg, rgba(255, 69, 0, 1) 0%, rgba(255, 140, 0, 1) 100%);
+  background: linear-gradient(45deg, orangered 0%, orange 100%);
   padding: 10px;
   box-shadow: -2px 2px 8px 0 rgba(0, 0, 0, 0.5);
 }
@@ -73,7 +115,7 @@
   width: 100%;
   position: relative;
   border-radius: 4px;
-  background: linear-gradient(45deg, rgba(47, 20, 212, 1) 0%, rgba(100, 149, 237, 1) 100%);
+  background: linear-gradient(45deg, darkblue 0%, darkcyan 100%);
   padding: 10px;
   box-shadow: -2px 2px 8px 0 rgba(0, 0, 0, 0.5);
 }
@@ -82,7 +124,7 @@
   width: 100%;
   position: relative;
   border-radius: 4px;
-  background: linear-gradient(45deg, rgb(165, 0, 0) 0%, rgb(225, 0, 0) 100%);
+  background: linear-gradient(45deg, darkred 0%, red 100%);
   padding: 10px;
   box-shadow: -2px 2px 8px 0 rgba(0, 0, 0, 0.5);
 }
