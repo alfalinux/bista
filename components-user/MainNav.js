@@ -32,31 +32,38 @@ const MainNav = () => {
             <img className={styles["img-logo"]} src="/images/bista-header.png" alt="Bista Cargo Logo" />
           </Link>
         </div>
-        <ul className={showMenu ? styles["list-menu-mobile"] : styles["list-menu"]}>
-          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
-            <Link href="/">Beranda</Link>
-          </li>
-          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
-            <Link href="/#about">Tentang</Link>
-          </li>
-          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
-            <Link href="/#layanan">Layanan</Link>
-          </li>
-          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
-            <Link href="/#lokasi">Lokasi</Link>
-          </li>
-          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
-            <Link href="/#kontak">Kontak</Link>
-          </li>
-          <li className={styles["list-item"]} onClick={showMenu ? showMenuHandler : null}>
-            {status === "authenticated" ? <Link href="/app">Member Area</Link> : <Link href="/auth">Login</Link>}
-          </li>
+        <ul className={styles["list-menu"]}>
+          <Link href="/">
+            <li className={styles["list-item"]}>Beranda</li>
+          </Link>
+          <Link href="/#about">
+            <li className={styles["list-item"]}>Tentang</li>
+          </Link>
+          <Link href="/#layanan">
+            <li className={styles["list-item"]}>Layanan</li>
+          </Link>
+          <Link href="/#lokasi">
+            <li className={styles["list-item"]}>Lokasi</li>
+          </Link>
+          <Link href="/#kontak">
+            <li className={styles["list-item"]}>Kontak</li>
+          </Link>
+
+          {status === "authenticated" ? (
+            <Link href="/app">
+              <li className={styles["list-item"]}>Member Area</li>
+            </Link>
+          ) : (
+            <Link href="/auth">
+              <li className={styles["list-item"]}>Login</li>
+            </Link>
+          )}
         </ul>
         <div className={styles["ham-menu-icon"]} onClick={showMenuHandler}>
           {showMenu ? <Close /> : <Bars />}
         </div>
       </nav>
-      {showMenu ? <MenuModal onClick={showMenuHandler} /> : null}
+      {showMenu ? <MenuModal onClick={showMenuHandler} status={status} /> : null}
     </>
   );
 };

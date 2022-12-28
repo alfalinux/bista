@@ -35,11 +35,14 @@
 .list-item {
   padding: 5px 10px;
 }
-.list-item a {
+.list-menu a {
   color: #fff;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
-.list-item a:visited {
+.list-menu a:visited {
   text-decoration: none;
   color: inherit;
 }
@@ -70,37 +73,6 @@
 @media screen and (max-width: 760px) {
   .list-menu {
     display: none;
-  }
-
-  .list-menu-mobile {
-    position: absolute;
-    min-width: 200px;
-    background-color: red;
-    top: 60px;
-    right: 130px;
-    margin: 0;
-    padding: 2px;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    z-index: 33;
-    list-style: none;
-    overflow: hidden;
-    animation: toleft 0.5s ease-out forwards;
-  }
-
-  @keyframes toleft {
-    100% {
-      transform: translateX(60%);
-    }
-  }
-
-  .list-menu-mobile li {
-    background-color: #000;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 900;
-    box-shadow: 2px 2p x 6px 0 rgba(0, 0, 0, 0.5);
   }
 
   .ham-menu-icon {
