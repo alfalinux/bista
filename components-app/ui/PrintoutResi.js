@@ -3,7 +3,7 @@ import qrCode from "../../helpers/qrCode";
 import styles from "./PrintoutResi.module.css";
 
 const PrintoutResi = ({ data }) => {
-  const barcodeLink = "https://bistacargo.com/cek/paket/";
+  const barcodeLink = "https://bistacargo.com/cek-paket/";
   return (
     <div className={styles["container"]}>
       <div className={styles["header"]}>

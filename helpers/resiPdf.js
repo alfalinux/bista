@@ -16,7 +16,7 @@ const generateBase64 = (img) => {
 
 const resiPdf = (data) => {
   let imglogo = base64logo();
-  let base64qrcode = generateBase64("https://bistacargo.com/cek/paket/" + data.noResi);
+  let base64qrcode = generateBase64("https://bistacargo.com/cek-paket/" + data.noResi);
   const doc = new jsPDF("p", "mm", "A4"); // A4 => [210, 297]
 
   // header hal-1

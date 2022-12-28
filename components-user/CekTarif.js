@@ -226,73 +226,76 @@ const CekTarif = () => {
             </div>
           </div>
           {/* Card List Ongkir Express */}
-          <div className={styles["list-ongkir__card"]}>
-            <div className={styles["card__header"]}>
-              <div className={styles["card__header-left"]}>
-                <div>Ongkir Express</div>
-                <div className={styles["card__icon"]}>
-                  <PlaneIcon />
+          {dataOngkir.express ? (
+            <div className={styles["list-ongkir__card"]}>
+              <div className={styles["card__header"]}>
+                <div className={styles["card__header-left"]}>
+                  <div>Ongkir Express</div>
+                  <div className={styles["card__icon"]}>
+                    <PlaneIcon />
+                  </div>
+                </div>
+              </div>
+              <div className={styles["card__content"]}>
+                {dataOngkir.express ? (
+                  <table className={styles["content__table"]}>
+                    <tbody>
+                      <tr>
+                        <td>Kota Asal</td>
+                        <td>:</td>
+                        <td>{initValue.asal.toUpperCase()}</td>
+                      </tr>
+                      <tr>
+                        <td>Kecamatan Tujuan</td>
+                        <td>:</td>
+                        <td>{dataOngkir.kec}</td>
+                      </tr>
+                      <tr>
+                        <td>Kota Tujuan</td>
+                        <td>:</td>
+                        <td>{dataOngkir.ibukota}</td>
+                      </tr>
+                      <tr>
+                        <td>Provinsi Tujuan</td>
+                        <td>:</td>
+                        <td>{dataOngkir.prov}</td>
+                      </tr>
+                      <tr>
+                        <td>Ongkir per-Kg</td>
+                        <td>:</td>
+                        <td>Rp. {Number(dataOngkir.express).toLocaleString("id-ID")}</td>
+                      </tr>
+                      <tr>
+                        <td>Estimasi</td>
+                        <td>:</td>
+                        <td>
+                          {Number(dataOngkir.slaExpress) - 1}-{dataOngkir.slaExpress} hari
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Minimum Charges</td>
+                        <td>:</td>
+                        <td>{dataOngkir.minExpress} Kg</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ) : null}
+                <div className={styles["content__desc"]}>
+                  {dataOngkir.express
+                    ? initValue.berat === ""
+                      ? null
+                      : `Tarif / ongkir untuk berat barang ${initValue.berat} Kg, adalah Rp. ${(Number(
+                          initValue.berat
+                        ) >= Number(dataOngkir.minExpress)
+                          ? Number(initValue.berat) * Number(dataOngkir.express)
+                          : Number(dataOngkir.minExpress) * Number(dataOngkir.express)
+                        ).toLocaleString("id-ID")}
+              `
+                    : "Mohon maaf untuk tujuan ini belum tercover oleh layanan Express"}
                 </div>
               </div>
             </div>
-            <div className={styles["card__content"]}>
-              {dataOngkir.express ? (
-                <table className={styles["content__table"]}>
-                  <tbody>
-                    <tr>
-                      <td>Kota Asal</td>
-                      <td>:</td>
-                      <td>{initValue.asal.toUpperCase()}</td>
-                    </tr>
-                    <tr>
-                      <td>Kecamatan Tujuan</td>
-                      <td>:</td>
-                      <td>{dataOngkir.kec}</td>
-                    </tr>
-                    <tr>
-                      <td>Kota Tujuan</td>
-                      <td>:</td>
-                      <td>{dataOngkir.ibukota}</td>
-                    </tr>
-                    <tr>
-                      <td>Provinsi Tujuan</td>
-                      <td>:</td>
-                      <td>{dataOngkir.prov}</td>
-                    </tr>
-                    <tr>
-                      <td>Ongkir per-Kg</td>
-                      <td>:</td>
-                      <td>Rp. {Number(dataOngkir.express).toLocaleString("id-ID")}</td>
-                    </tr>
-                    <tr>
-                      <td>Estimasi</td>
-                      <td>:</td>
-                      <td>
-                        {Number(dataOngkir.slaExpress) - 1}-{dataOngkir.slaExpress} hari
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Minimum Charges</td>
-                      <td>:</td>
-                      <td>{dataOngkir.minExpress} Kg</td>
-                    </tr>
-                  </tbody>
-                </table>
-              ) : null}
-              <div className={styles["content__desc"]}>
-                {dataOngkir.express
-                  ? initValue.berat === ""
-                    ? null
-                    : `Tarif / ongkir untuk berat barang ${initValue.berat} Kg, adalah Rp. ${(Number(initValue.berat) >=
-                      Number(dataOngkir.minExpress)
-                        ? Number(initValue.berat) * Number(dataOngkir.express)
-                        : Number(dataOngkir.minExpress) * Number(dataOngkir.express)
-                      ).toLocaleString("id-ID")}
-              `
-                  : "Mohon maaf untuk tujuan ini belum tercover oleh layanan Express"}
-              </div>
-            </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </>

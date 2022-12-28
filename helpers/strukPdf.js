@@ -16,7 +16,7 @@ const generateBase64 = (img) => {
 
 const strukPdf = (data) => {
   let imglogo = base64logo();
-  let base64qrcode = generateBase64("https://bistacargo.com/cek/paket/" + data.noResi);
+  let base64qrcode = generateBase64("https://bistacargo.com/cek-paket/" + data.noResi);
   const doc = new jsPDF("p", "mm", [80, 100]);
 
   doc.addImage(imglogo, "PNG", 2, 2, 38.4, 7.36);
