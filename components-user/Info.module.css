@@ -50,10 +50,28 @@
   row-gap: 10px;
 }
 
+.link-icon {
+  width: 20px;
+  height: 20px;
+  transform: rotate(90deg);
+}
+
 .link ul {
   list-style: none;
   padding: 0 0 0 10px;
   margin: 0;
+}
+
+.link ul li {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.link ul li a,
+.link ul li a:visited {
+  text-decoration: none;
+  color: #fff;
 }
 
 .link h3,

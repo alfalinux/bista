@@ -2,6 +2,7 @@ import styles from "./Info.module.css";
 import Phone from "../public/icons/phone";
 import Email from "../public/icons/email";
 import Chat from "../public/icons/chat";
+import Link from "next/link";
 
 const Info = () => {
   return (
@@ -46,22 +47,28 @@ const Info = () => {
         <div className={styles["link"]}>
           <h3>Informasi</h3>
           <ul>
-            <li>Syarat & Ketentuan</li>
-            <li>Kebijakan Privasi</li>
-            <li>Lacak Pengiriman</li>
-            <li>Cek Ongkir</li>
+            <li>
+              <Link href="/syarat-ketentuan-pengiriman">Syarat & Ketentuan</Link>
+            </li>
+
+            <li>
+              <Link href="/cek-paket">Lacak Pengiriman</Link>
+            </li>
+            <li>
+              <Link href="/cek-tarif">Cek Ongkir</Link>
+            </li>
             <li>Pusat Bantuan</li>
           </ul>
         </div>
         <div className={styles["social"]}>
           <h3>Social Media</h3>
           <div className={styles["social-detail"]}>
-            <img className={styles["socmed-icon"]} src="icons/facebook.svg" alt="facebook logo" />
-            <img className={styles["socmed-icon"]} src="icons/instagram.svg" alt="instagram logo" />
-            <img className={styles["socmed-icon"]} src="icons/twitter.svg" alt="twitter logo" />
-            <img className={styles["socmed-icon"]} src="icons/tiktok.svg" alt="tiktok logo" />
-            <img className={styles["socmed-icon"]} src="icons/linkedin.svg" alt="linkedin logo" />
-            <img className={styles["socmed-icon"]} src="icons/whatsapp.svg" alt="whatsapp logo" />
+            <img className={styles["socmed-icon"]} src="/icons/facebook.svg" alt="facebook logo" />
+            <img className={styles["socmed-icon"]} src="/icons/instagram.svg" alt="instagram logo" />
+            <img className={styles["socmed-icon"]} src="/icons/twitter.svg" alt="twitter logo" />
+            <img className={styles["socmed-icon"]} src="/icons/tiktok.svg" alt="tiktok logo" />
+            <img className={styles["socmed-icon"]} src="/icons/linkedin.svg" alt="linkedin logo" />
+            <img className={styles["socmed-icon"]} src="/icons/whatsapp.svg" alt="whatsapp logo" />
           </div>
         </div>
       </div>

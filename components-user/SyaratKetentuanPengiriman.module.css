@@ -1,0 +1,22 @@
+.container {
+  width: 100%;
+  margin: -20px auto;
+  background-color: #000;
+  color: #fff;
+}
+
+.title {
+  text-align: center;
+  padding-top: 50px;
+}
+
+.content {
+  width: 75%;
+  margin: 0 auto;
+  padding: 10px;
+  text-align: justify;
+}
+
+.content ol li {
+  margin-bottom: 10px;
+}
