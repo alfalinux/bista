@@ -56,7 +56,9 @@ const CekPaketResultPage = (props) => {
 export default CekPaketResultPage;
 
 export async function getServerSideProps(context) {
-  const response = await fetch("http://localhost:3000/api/data-resi/cek-resi/" + context.params.noResi);
+  const response = await fetch(
+    "http://" + context.req.headers.host + "/api/data-resi/cek-resi/" + context.params.noResi
+  );
   const data = await response.json();
 
   return {
