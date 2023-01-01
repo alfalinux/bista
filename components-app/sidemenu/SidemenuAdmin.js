@@ -36,7 +36,7 @@ const Sidemenu = (props) => {
       cancelButtonText: "Tidak jadi",
     }).then((result) => {
       if (result.isConfirmed) {
-        signOut();
+        signOut({ callbackUrl: "/auth" });
         Swal.fire({
           title: "Berhasil",
           text: "Anda sudah keluar dari aplikasi",

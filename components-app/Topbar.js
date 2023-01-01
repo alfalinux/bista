@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { signOut } from "next-auth/react";
 import styles from "./Topbar.module.css";
 import UserIcon from "../public/icons/UserIcon";
@@ -19,7 +18,7 @@ const Topbar = (props) => {
       cancelButtonText: "Tidak jadi",
     }).then((result) => {
       if (result.isConfirmed) {
-        signOut();
+        signOut({ callbackUrl: "/auth" });
         Swal.fire({
           title: "Berhasil",
           text: "Anda sudah keluar dari aplikasi",
