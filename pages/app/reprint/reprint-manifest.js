@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Head from "next/head";
 
 import Layouts from "../_layouts";
 
@@ -45,66 +46,71 @@ const ReprintManifestPage = () => {
   };
 
   return (
-    <Layouts>
-      <div id="bungkus" className={styles["bungkus"]}>
-        <div className={styles["container"]}>
-          <form className={styles["wrapper"]} onSubmit={submitHandler}>
-            <label htmlFor="reprintManifest">
-              <h2>Reprint Manifest</h2>
-            </label>
-            <div className={styles["action"]}>
-              <input
-                type="text"
-                id="reprintManifest"
-                name="reprintManifest"
-                placeholder="Masukkan Nomor Manifest"
-                onChange={changeHandler}
-                autoComplete="off"
-                required
-              />
-              {!isLoading ? (
-                <Button type="submit" label="Cari Manifest" color="red" icon={<Search />} />
-              ) : (
-                <div>
-                  <LoadingSpinner />
-                  <LoadingSpinner />
-                </div>
-              )}
-            </div>
-          </form>
-          {dataNotFound ? <p>{dataNotFound}</p> : null}
-          {getDataManifest ? (
-            <table className={styles["container"]}>
-              <tbody>
-                <tr>
-                  <th>Nomor Manifest</th>
-                  <th>Tanggal</th>
-                  <th>Asal</th>
-                  <th>Tujuan</th>
-                  <th>Coveran</th>
-                  <th>Actions</th>
-                </tr>
-                <tr>
-                  <td>{getDataManifest.noManifest}</td>
-                  <td>{getDataManifest.tglManifest}</td>
-                  <td>{getDataManifest.cabangAsal.toUpperCase()}</td>
-                  <td>{getDataManifest.cabangTujuan.toUpperCase()}</td>
-                  <td>{getDataManifest.coveranArea.toUpperCase()}</td>
-                  <td className={styles["btn-table"]}>
-                    <Button
-                      clickHandler={() => manifestPdf(getDataManifest)}
-                      label="Cetak Manifest"
-                      color="red"
-                      icon={<Printer />}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          ) : null}
+    <>
+      <Head>
+        <title>Reprint Manifest</title>
+      </Head>
+      <Layouts>
+        <div id="bungkus" className={styles["bungkus"]}>
+          <div className={styles["container"]}>
+            <form className={styles["wrapper"]} onSubmit={submitHandler}>
+              <label htmlFor="reprintManifest">
+                <h2>Reprint Manifest</h2>
+              </label>
+              <div className={styles["action"]}>
+                <input
+                  type="text"
+                  id="reprintManifest"
+                  name="reprintManifest"
+                  placeholder="Masukkan Nomor Manifest"
+                  onChange={changeHandler}
+                  autoComplete="off"
+                  required
+                />
+                {!isLoading ? (
+                  <Button type="submit" label="Cari Manifest" color="red" icon={<Search />} />
+                ) : (
+                  <div>
+                    <LoadingSpinner />
+                    <LoadingSpinner />
+                  </div>
+                )}
+              </div>
+            </form>
+            {dataNotFound ? <p>{dataNotFound}</p> : null}
+            {getDataManifest ? (
+              <table className={styles["container"]}>
+                <tbody>
+                  <tr>
+                    <th>Nomor Manifest</th>
+                    <th>Tanggal</th>
+                    <th>Asal</th>
+                    <th>Tujuan</th>
+                    <th>Coveran</th>
+                    <th>Actions</th>
+                  </tr>
+                  <tr>
+                    <td>{getDataManifest.noManifest}</td>
+                    <td>{getDataManifest.tglManifest}</td>
+                    <td>{getDataManifest.cabangAsal.toUpperCase()}</td>
+                    <td>{getDataManifest.cabangTujuan.toUpperCase()}</td>
+                    <td>{getDataManifest.coveranArea.toUpperCase()}</td>
+                    <td className={styles["btn-table"]}>
+                      <Button
+                        clickHandler={() => manifestPdf(getDataManifest)}
+                        label="Cetak Manifest"
+                        color="red"
+                        icon={<Printer />}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </Layouts>
+      </Layouts>
+    </>
   );
 };
 

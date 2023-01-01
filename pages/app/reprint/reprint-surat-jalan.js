@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import Head from "next/head";
 import Layouts from "../_layouts";
 
 import Button from "../../../components-app/ui/Button";
@@ -54,64 +54,69 @@ const ReprintSuratJalanPage = () => {
   }, [getDataSuratJalan]);
 
   return (
-    <Layouts>
-      <div id="bungkus" className={styles["bungkus"]}>
-        <div className={styles["container"]}>
-          <form className={styles["wrapper"]} onSubmit={submitHandler}>
-            <label htmlFor="reprintSuratJalan">
-              <h2>Reprint Surat Jalan</h2>
-            </label>
-            <div className={styles["action"]}>
-              <input
-                type="text"
-                id="reprintSuratJalan"
-                name="reprintSuratJalan"
-                placeholder="Masukkan Nomor Surat Jalan"
-                onChange={changeHandler}
-                autoComplete="off"
-                required
-              />
-              {!isLoading ? (
-                <Button type="submit" label="Cari Surat Jalan" color="red" icon={<Search />} />
-              ) : (
-                <div>
-                  <LoadingSpinner />
-                  <LoadingSpinner />
-                </div>
-              )}
-            </div>
-          </form>
-          {dataNotFound ? <p>{dataNotFound}</p> : null}
-          {getDataSuratJalan ? (
-            <table className={styles["container"]}>
-              <tbody>
-                <tr>
-                  <th>Nomor Surat Jalan</th>
-                  <th>Tanggal</th>
-                  <th>Cabang Asal</th>
-                  <th>Cabang Tujuan</th>
-                  <th>Actions</th>
-                </tr>
-                <tr>
-                  <td>{getDataSuratJalan.noSuratJalan}</td>
-                  <td>{getDataSuratJalan.tglSuratJalan}</td>
-                  <td>{getDataSuratJalan.cabangAsal.toUpperCase()}</td>
-                  <td>{getDataSuratJalan.cabangTujuan.toUpperCase()}</td>
-                  <td className={styles["btn-table"]}>
-                    <Button
-                      clickHandler={() => suratjalanPdf(getDataSuratJalan, getDataManifest)}
-                      label="Cetak Surat Jalan"
-                      color="red"
-                      icon={<Printer />}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          ) : null}
+    <>
+      <Head>
+        <title>Reprint Surat Jalan</title>
+      </Head>
+      <Layouts>
+        <div id="bungkus" className={styles["bungkus"]}>
+          <div className={styles["container"]}>
+            <form className={styles["wrapper"]} onSubmit={submitHandler}>
+              <label htmlFor="reprintSuratJalan">
+                <h2>Reprint Surat Jalan</h2>
+              </label>
+              <div className={styles["action"]}>
+                <input
+                  type="text"
+                  id="reprintSuratJalan"
+                  name="reprintSuratJalan"
+                  placeholder="Masukkan Nomor Surat Jalan"
+                  onChange={changeHandler}
+                  autoComplete="off"
+                  required
+                />
+                {!isLoading ? (
+                  <Button type="submit" label="Cari Surat Jalan" color="red" icon={<Search />} />
+                ) : (
+                  <div>
+                    <LoadingSpinner />
+                    <LoadingSpinner />
+                  </div>
+                )}
+              </div>
+            </form>
+            {dataNotFound ? <p>{dataNotFound}</p> : null}
+            {getDataSuratJalan ? (
+              <table className={styles["container"]}>
+                <tbody>
+                  <tr>
+                    <th>Nomor Surat Jalan</th>
+                    <th>Tanggal</th>
+                    <th>Cabang Asal</th>
+                    <th>Cabang Tujuan</th>
+                    <th>Actions</th>
+                  </tr>
+                  <tr>
+                    <td>{getDataSuratJalan.noSuratJalan}</td>
+                    <td>{getDataSuratJalan.tglSuratJalan}</td>
+                    <td>{getDataSuratJalan.cabangAsal.toUpperCase()}</td>
+                    <td>{getDataSuratJalan.cabangTujuan.toUpperCase()}</td>
+                    <td className={styles["btn-table"]}>
+                      <Button
+                        clickHandler={() => suratjalanPdf(getDataSuratJalan, getDataManifest)}
+                        label="Cetak Surat Jalan"
+                        color="red"
+                        icon={<Printer />}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </Layouts>
+      </Layouts>
+    </>
   );
 };
 

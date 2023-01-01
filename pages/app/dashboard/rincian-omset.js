@@ -1,9 +1,13 @@
+import Head from "next/head";
 import RincianOmsetCabang from "../../../components-app/RincianOmsetCabang";
 import Layouts from "../_layouts";
 
 const RincianOmsetPage = () => {
   return (
     <div>
+      <Head>
+        <title>Dashboard</title>
+      </Head>
       <Layouts>
         <h2 className="main-content-title">Create Delivery</h2>
         <RincianOmsetCabang />

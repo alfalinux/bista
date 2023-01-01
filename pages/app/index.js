@@ -1,12 +1,18 @@
 import React from "react";
+import Head from "next/head";
 import Dashboard from "../../components-app/Dashboard";
 import Layouts from "./_layouts";
 
 const index = () => {
   return (
-    <Layouts>
-      <Dashboard />
-    </Layouts>
+    <>
+      <Head>
+        <title>Bista Management System</title>
+      </Head>
+      <Layouts>
+        <Dashboard />
+      </Layouts>
+    </>
   );
 };
 

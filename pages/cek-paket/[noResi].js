@@ -1,3 +1,4 @@
+import Head from "next/head";
 import MainNav from "../../components-user/MainNav";
 import Info from "../../components-user/Info";
 import Footer from "../../components-user/Footer";
@@ -7,6 +8,14 @@ import CloseCircle from "../../public/icons/close-circle";
 const CekPaketResultPage = (props) => {
   return (
     <div>
+      <Head>
+        <title>Cek Paket Bista Cargo</title>
+        <meta name="description" content="Cek Paket Bista Cargo Jasa Ekspedisi Kargo Termurah" />
+        <meta
+          name="keywords"
+          content="Kargo Murah, Cargo Murah, Jasa Cargo Murah, Jasa Kargo Murah, Ongkir Termurah, Kargo Surabaya, Angkutan Murah Surabaya, Jasa Kargo Murah Jakarta, Jakarta Cargo, Angkutan Barang Termurah, Angkutan Pindah Rumah, Bista Cargo Pasti Bisa, Tarif Jasa Ekspedisi Termurah Cargo"
+        />
+      </Head>
       <MainNav />
 
       <div style={{ width: "100%", backgroundColor: "#000", color: "#fff", display: "flex" }}>
@@ -18,8 +27,6 @@ const CekPaketResultPage = (props) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            border: "1px solid red",
-            borderRadius: "8px",
           }}
         >
           <h2 style={{ margin: "0" }}>Cek Posisi Paket</h2>
@@ -47,7 +54,7 @@ const CekPaketResultPage = (props) => {
           )}
         </div>
       </div>
-      <Info />
+      <Info color="#000" />
       <Footer />
     </div>
   );

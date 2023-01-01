@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Head from "next/head";
 
 import Layouts from "../_layouts";
 import UseQrcode from "../../../helpers/qrCode";
@@ -49,81 +50,86 @@ const ReprintResiPage = () => {
   };
 
   return (
-    <Layouts>
-      <div id="bungkus" className={styles["bungkus"]}>
-        <div className={styles["container"]}>
-          <form className={styles["wrapper"]} onSubmit={submitHandler}>
-            <label htmlFor="reprintResi">
-              <h2>Reprint Resi</h2>
-            </label>
-            <div className={styles["action"]}>
-              <input
-                type="text"
-                id="reprintResi"
-                name="reprintResi"
-                placeholder="Masukkan Nomor Resi"
-                onChange={changeHandler}
-              />
-              {!isLoading ? (
-                <Button type="submit" label="Cari Resi" color="red" icon={<Search />} />
-              ) : (
-                <div>
-                  <LoadingSpinner />
-                  <LoadingSpinner />
-                </div>
-              )}
-            </div>
-          </form>
-          {dataNotFound ? <p>{dataNotFound}</p> : null}
-          {getDataResi ? (
-            <table className={styles["container"]}>
-              <tbody>
-                <tr>
-                  <th>Nomor Resi</th>
-                  <th>Tgl Transaksi</th>
-                  <th>Nama Pengirim</th>
-                  <th>Nama Penerima</th>
-                  <th>Tujuan</th>
-                  <th>Actions</th>
-                </tr>
-                <tr>
-                  <td>{getDataResi.noResi}</td>
-                  <td>{getDataResi.tglTransaksi}</td>
-                  <td>{getDataResi.namaPengirim}</td>
-                  <td>{getDataResi.namaPenerima}</td>
-                  <td>
-                    {getDataResi.tujuan.kec} - {getDataResi.tujuan.ibukota}
-                  </td>
-                  <td className={styles["btn-table"]}>
-                    <Button
-                      clickHandler={() => resiPdf(getDataResi, base64qrcode)}
-                      label="Cetak Resi"
-                      color="red"
-                      width="full"
-                      icon={<Printer />}
-                    />
-                    <Button
-                      clickHandler={() => labelPdf(getDataResi)}
-                      label="Cetak Label"
-                      color="blue"
-                      width="full"
-                      icon={<Printer />}
-                    />
-                    <Button
-                      clickHandler={() => strukPdf(getDataResi, base64qrcode)}
-                      label="Cetak Struk"
-                      color="orange"
-                      width="full"
-                      icon={<Printer />}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          ) : null}
+    <>
+      <Head>
+        <title>Reprint Resi</title>
+      </Head>
+      <Layouts>
+        <div id="bungkus" className={styles["bungkus"]}>
+          <div className={styles["container"]}>
+            <form className={styles["wrapper"]} onSubmit={submitHandler}>
+              <label htmlFor="reprintResi">
+                <h2>Reprint Resi</h2>
+              </label>
+              <div className={styles["action"]}>
+                <input
+                  type="text"
+                  id="reprintResi"
+                  name="reprintResi"
+                  placeholder="Masukkan Nomor Resi"
+                  onChange={changeHandler}
+                />
+                {!isLoading ? (
+                  <Button type="submit" label="Cari Resi" color="red" icon={<Search />} />
+                ) : (
+                  <div>
+                    <LoadingSpinner />
+                    <LoadingSpinner />
+                  </div>
+                )}
+              </div>
+            </form>
+            {dataNotFound ? <p>{dataNotFound}</p> : null}
+            {getDataResi ? (
+              <table className={styles["container"]}>
+                <tbody>
+                  <tr>
+                    <th>Nomor Resi</th>
+                    <th>Tgl Transaksi</th>
+                    <th>Nama Pengirim</th>
+                    <th>Nama Penerima</th>
+                    <th>Tujuan</th>
+                    <th>Actions</th>
+                  </tr>
+                  <tr>
+                    <td>{getDataResi.noResi}</td>
+                    <td>{getDataResi.tglTransaksi}</td>
+                    <td>{getDataResi.namaPengirim}</td>
+                    <td>{getDataResi.namaPenerima}</td>
+                    <td>
+                      {getDataResi.tujuan.kec} - {getDataResi.tujuan.ibukota}
+                    </td>
+                    <td className={styles["btn-table"]}>
+                      <Button
+                        clickHandler={() => resiPdf(getDataResi, base64qrcode)}
+                        label="Cetak Resi"
+                        color="red"
+                        width="full"
+                        icon={<Printer />}
+                      />
+                      <Button
+                        clickHandler={() => labelPdf(getDataResi)}
+                        label="Cetak Label"
+                        color="blue"
+                        width="full"
+                        icon={<Printer />}
+                      />
+                      <Button
+                        clickHandler={() => strukPdf(getDataResi, base64qrcode)}
+                        label="Cetak Struk"
+                        color="orange"
+                        width="full"
+                        icon={<Printer />}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </Layouts>
+      </Layouts>
+    </>
   );
 };
 
