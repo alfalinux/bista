@@ -4,8 +4,10 @@ import UserIcon from "../public/icons/UserIcon";
 import Bars from "../public/icons/bars";
 import CloseCircle from "../public/icons/close-circle";
 import Swal from "sweetalert2";
+import { useRouter } from "next/router";
 
 const Topbar = (props) => {
+  const router = useRouter();
   const onLogoutHandler = () => {
     Swal.fire({
       title: "Logout",
@@ -18,13 +20,17 @@ const Topbar = (props) => {
       cancelButtonText: "Tidak jadi",
     }).then((result) => {
       if (result.isConfirmed) {
-        signOut({ callbackUrl: "/auth" });
+        signOut({ redirect: false });
         Swal.fire({
           title: "Berhasil",
           text: "Anda sudah keluar dari aplikasi",
           icon: "success",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
+        }).then((result) => {
+          if (result.isDismissed) {
+            router.replace("/auth");
+          }
         });
       }
     });

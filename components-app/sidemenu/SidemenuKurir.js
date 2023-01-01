@@ -35,13 +35,17 @@ const Sidemenu = (props) => {
       cancelButtonText: "Tidak jadi",
     }).then((result) => {
       if (result.isConfirmed) {
-        signOut({ callbackUrl: "/auth" });
+        signOut({ redirect: false });
         Swal.fire({
           title: "Berhasil",
           text: "Anda sudah keluar dari aplikasi",
           icon: "success",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
+        }).then((result) => {
+          if (result.isDismissed) {
+            router.replace("/auth");
+          }
         });
       }
     });
