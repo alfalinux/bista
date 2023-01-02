@@ -41,11 +41,10 @@ const Sidemenu = (props) => {
           title: "Berhasil",
           text: "Anda sudah keluar dari aplikasi",
           icon: "success",
-          showConfirmButton: false,
-          timer: 2000,
+          showConfirmButton: true,
         }).then((result) => {
-          if (result.isDismissed) {
-            router.replace("/auth");
+          if (result.isConfirmed || result.isDismissed) {
+            window.location.reload();
           }
         });
       }

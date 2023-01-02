@@ -4,10 +4,8 @@ import UserIcon from "../public/icons/UserIcon";
 import Bars from "../public/icons/bars";
 import CloseCircle from "../public/icons/close-circle";
 import Swal from "sweetalert2";
-import { useRouter } from "next/router";
 
 const Topbar = (props) => {
-  const router = useRouter();
   const onLogoutHandler = () => {
     Swal.fire({
       title: "Logout",
@@ -25,11 +23,10 @@ const Topbar = (props) => {
           title: "Berhasil",
           text: "Anda sudah keluar dari aplikasi",
           icon: "success",
-          showConfirmButton: false,
-          timer: 2000,
+          showConfirmButton: true,
         }).then((result) => {
-          if (result.isDismissed) {
-            router.replace("/auth");
+          if (result.isConfirmed || result.isDismissed) {
+            window.location.reload();
           }
         });
       }
