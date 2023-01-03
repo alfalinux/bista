@@ -12,6 +12,7 @@ import ReportIcon from "../../public/icons/ReportIcon";
 import PlaneIcon from "../../public/icons/plane-icon";
 import Setting from "../../public/icons/setting";
 import Printer from "../../public/icons/printer";
+import DocumentIcon from "../../public/icons/DocumentIcon";
 
 const Sidemenu = (props) => {
   const [monitoringSubmenu, setMonitoringSubmenu] = useState(false);
@@ -19,6 +20,7 @@ const Sidemenu = (props) => {
   const [incomingSubmenu, setIncomingSubmenu] = useState(false);
   const [reprintSubmenu, setReprintSubmenu] = useState(false);
   const [deliverySubmenu, setDeliverySubmenu] = useState(false);
+  const [reportSubmenu, setReportSubmenu] = useState(false);
   const [profileSubmenu, setProfileSubmenu] = useState(false);
 
   const showMobileMenu = props.style;
@@ -71,6 +73,10 @@ const Sidemenu = (props) => {
     setDeliverySubmenu(deliverySubmenu ? false : true);
   };
 
+  const reportMenuHandler = (e) => {
+    setReportSubmenu(reportSubmenu ? false : true);
+  };
+
   const profileMenuHandler = (e) => {
     setProfileSubmenu(profileSubmenu ? false : true);
   };
@@ -80,6 +86,7 @@ const Sidemenu = (props) => {
   const incomingSubmenuIsValid = incomingSubmenu || router.pathname.startsWith("/app/incoming");
   const deliverySubmenuIsValid = deliverySubmenu || router.pathname.startsWith("/app/delivery");
   const reprintSubmenuIsValid = reprintSubmenu || router.pathname.startsWith("/app/reprint");
+  const reportSubmenuIsValid = reportSubmenu || router.pathname.startsWith("/app/report");
   const profileSubmenuIsValid = profileSubmenu || router.pathname.startsWith("/app/profile");
 
   return (
@@ -288,6 +295,30 @@ const Sidemenu = (props) => {
                   }
                 >
                   Reprint Delivery
+                </li>
+              </Link>
+            </ul>
+          ) : null}
+        </div>
+
+        {/* --- Report Menu --- */}
+        <div
+          className={router.pathname.startsWith("/app/report") ? styles["menu-active"] : styles["menu-btn"]}
+          onClick={reportMenuHandler}
+        >
+          <div className={styles["menu-title"]}>
+            <DocumentIcon />
+            <p className={styles["text-icon"]}>Report</p>
+          </div>
+          {reportSubmenuIsValid ? (
+            <ul className={styles["menu-list"]}>
+              <Link href="/app/report/rincian-transaksi-cabang">
+                <li
+                  className={
+                    router.pathname === "/app/report/rincian-transaksi-cabang" ? styles["list-active"] : styles["list"]
+                  }
+                >
+                  Rincian Transaksi Cabang
                 </li>
               </Link>
             </ul>

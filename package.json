@@ -1,6 +1,6 @@
 {
-  "name": "bista-user",
-  "version": "0.1.0",
+  "name": "bista-management-system",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,12 +18,13 @@
     "next-auth": "^4.17.0",
     "qrcode": "^1.5.1",
     "react": "18.2.0",
+    "react-csv": "^2.2.2",
     "react-dom": "18.2.0",
     "react-select": "^5.7.0",
-    "sweetalert2": "^11.6.16"
+    "sweetalert2": "^11.4.8"
   },
   "devDependencies": {
     "eslint": "8.26.0",
-    "eslint-config-next": "13.0.1"
+    "eslint-config-next": "^12.0.4"
   }
 }

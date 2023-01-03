@@ -16,6 +16,16 @@ export const getAllDatabase = async (client, collection, sort) => {
   return result;
 };
 
+export const getDataResiByDate = async (client, collection, filter) => {
+  const db = client.db("bista");
+  const result = await db
+    .collection(collection)
+    .find({ cabangAsal: filter.cabang, tglTransaksi: { $gte: filter.tglAwal, $lte: filter.tglAkhir } })
+    .toArray();
+
+  return result;
+};
+
 export const insertDocument = async (client, collection, document) => {
   const db = client.db("bista");
   const result = await db.collection(collection).insertOne(document);
