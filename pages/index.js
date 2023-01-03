@@ -19,7 +19,7 @@ export default function Home() {
         />
         <meta property="og:title" content="Bista Cargo" />
         <meta property="og:description" content="Jasa Ekspedisi Kargo Termurah" />
-        <meta property="og:image" content="/favicon.ico" />
+        <meta property="og:image" content="/images/bista-logo-300.png" />
         <meta property="og:url" content="https://www.bistacargo.com" />
       </Head>
       <MainNav />
