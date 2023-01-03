@@ -32,13 +32,7 @@ const ModalUpdateDelivery = (props) => {
       hubunganPenerima === "" ? keteranganDelivery : keteranganDelivery + " [" + hubunganPenerima + "]";
 
     props.onReset();
-    const tgl = new Date().toLocaleString("en-UK", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const tgl = new Date().toISOString();
 
     const filter = {
       noResi: props.noResi,

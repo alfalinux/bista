@@ -38,7 +38,6 @@ const RincianOmsetCabang = () => {
     setTglAkhir(e.target.value);
   };
 
-  console.log(new Date(tglAwal));
   const downloadClickHandler = (e) => {
     e.preventDefault();
 

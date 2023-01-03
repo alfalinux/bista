@@ -70,13 +70,7 @@ const CreateManifest = () => {
       tujuan: dataResi.filter((d) => d.dataOngkir.ibukota === cabangTujuan)[0].dataOngkir.tlc,
     };
     const noManifest = generateNoManifest(tlc.asal, tlc.tujuan);
-    const tgl = new Date().toLocaleString("en-UK", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const tgl = new Date().toISOString();
     const listNoResi = listResi.map((d) => d.noResi);
 
     const submitManifest = {

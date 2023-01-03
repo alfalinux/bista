@@ -108,13 +108,7 @@ const CreateDelivery = () => {
     setIsLoadingPage(true);
     const listNoResi = listCheckedResi.map((d) => d.noResi);
     const noDelivery = generateNoDelivery(namaKurir.split("-")[1].trim());
-    const tgl = new Date().toLocaleString("en-UK", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const tgl = new Date().toISOString();
 
     const dataDelivery = {
       noDelivery: noDelivery,

@@ -57,7 +57,7 @@ const ReceiveSuratJalan = () => {
     e.preventDefault();
 
     setIsLoadingPage(true);
-    const tgl = getDate();
+    const tgl = new Date().toISOString();
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
     const filter = {
       noSuratJalan: suratJalanChecked.noSuratJalan,

@@ -101,13 +101,7 @@ const CreateSuratJalan = () => {
     const cabangAsalTlc = listCabang.filter((d) => d.cab === cabangAsal)[0].tlc;
     const cabangTujuanTlc = listCabang.filter((d) => d.cab === cabangTujuan)[0].tlc;
     const noSuratJalan = generateNoSuratJalan(cabangAsalTlc, cabangTujuanTlc);
-    const tgl = new Date().toLocaleString("en-UK", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const tgl = new Date().toISOString();
     const beratBarang = listManifest.reduce((total, obj) => Number(obj.beratBarang) + total, 0);
     const konsolidasi = listManifest.reduce((total, obj) => Number(obj.konsolidasi) + total, 0);
     const petugasInput = data.nama;

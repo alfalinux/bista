@@ -78,7 +78,7 @@ const ReceiveManifest = () => {
   const submitHandler = (e) => {
     setIsLoadingPage(true);
     e.preventDefault();
-    const tgl = getDate();
+    const tgl = new Date().toISOString();
     const filter = manifestChecked.map((d) => d.noManifest);
     const update = { receivedIn: cabangTujuan, receivedAt: tgl, receivedBy: data.nama };
     const filterResi = manifestChecked

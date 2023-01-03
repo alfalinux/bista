@@ -206,13 +206,6 @@ const InputResi = (props) => {
     }
     const noResi = generateNoResi(data.cabang, data.posisi, data.id);
     const tgl = new Date().toISOString();
-    // .toLocaleString("en-UK", {
-    //   day: "numeric",
-    //   month: "short",
-    //   year: "numeric",
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    // });
 
     if (dataOngkir) {
       setInputValue((prevInputValue) => ({

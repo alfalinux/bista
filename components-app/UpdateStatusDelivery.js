@@ -141,13 +141,7 @@ const CreateDelivery = () => {
     const noResi = noResiClicked;
 
     resetInput();
-    const tgl = new Date().toLocaleString("en-UK", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const tgl = new Date().toISOString();
     const update = { closedAt: tgl, closedBy: data.nama };
     const filter = noDelivery;
     const filterResi = { noResi: noResi, noDelivery: noDelivery };

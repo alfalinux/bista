@@ -95,9 +95,9 @@ const UpdateStatusDeliveryKurirView = (props) => {
                         ? -1
                         : b.deliveredAt === undefined
                         ? 1
-                        : new Date(a.deliveredAt) > new Date(b.deliveredAt)
+                        : a.deliveredAt > b.deliveredAt
                         ? 1
-                        : new Date(b.deliveredAt) > new Date(a.deliveredAt)
+                        : b.deliveredAt > a.deliveredAt
                         ? -1
                         : 0
                     )
