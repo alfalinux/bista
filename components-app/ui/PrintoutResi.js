@@ -1,4 +1,5 @@
 import React from "react";
+import getDate from "../../helpers/getDate";
 import qrCode from "../../helpers/qrCode";
 import styles from "./PrintoutResi.module.css";
 
@@ -21,7 +22,7 @@ const PrintoutResi = ({ data }) => {
       </div>
       <div>
         <h4>Tanggal</h4>
-        <p>{data.tglTransaksi}</p>
+        <p>{getDate(data.tglTransaksi)}</p>
       </div>
       <div>
         <h4>Cabang Asal</h4>

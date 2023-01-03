@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import Search from "../../public/icons/search";
 import ModalDetailResi from "./ModalDetailResi";
 import { useSession } from "next-auth/react";
+import getDate from "../../helpers/getDate";
 
 const ResiActive = (props) => {
   const { data, status } = useSession();
@@ -122,7 +123,7 @@ const ResiActive = (props) => {
                 <td>
                   <div className={styles["table-resi"]}>
                     <span className={styles["table-resi__noResi"]}>{d.noResi}</span>
-                    <span className={styles["table-resi__tgl"]}>{d.tglTransaksi}</span>
+                    <span className={styles["table-resi__tgl"]}>{getDate(d.tglTransaksi)}</span>
                   </div>
                 </td>
                 <td>

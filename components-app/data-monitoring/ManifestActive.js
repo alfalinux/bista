@@ -5,6 +5,7 @@ import LoadingSpinner from "../../public/icons/loading-spinner";
 import Button from "../../components-app/ui/Button";
 import Search from "../../public/icons/search";
 import manifestPdf from "../../helpers/manifestPdf";
+import getDate from "../../helpers/getDate";
 
 const ManifestActive = (props) => {
   const { data, status } = useSession();
@@ -95,7 +96,7 @@ const ManifestActive = (props) => {
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td style={{ whiteSpace: "nowrap" }}>{d.noManifest}</td>
-                <td style={{ whiteSpace: "nowrap" }}>{d.tglManifest}</td>
+                <td style={{ whiteSpace: "nowrap" }}>{getDate(d.tglManifest)}</td>
                 <td>{d.cabangAsal.toUpperCase()}</td>
                 <td>{d.cabangTujuan.toUpperCase()}</td>
                 <td>{d.coveranArea.toUpperCase()}</td>

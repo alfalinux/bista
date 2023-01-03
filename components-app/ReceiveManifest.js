@@ -192,7 +192,7 @@ const ReceiveManifest = () => {
                           <div>
                             Received in <b>{sj.receivedIn.toUpperCase()}</b>
                           </div>
-                          <div>Tgl {sj.receivedAt}</div>
+                          <div>Tgl {getDate(sj.receivedAt)}</div>
                         </div>
                       );
                     } else {
@@ -204,7 +204,7 @@ const ReceiveManifest = () => {
                               {sj.cabangAsal.toUpperCase()} - {sj.cabangTujuan.toUpperCase()}
                             </b>
                           </div>
-                          <div>Tgl {sj.tglSuratJalan}</div>
+                          <div>Tgl {getDate(sj.tglSuratJalan)}</div>
                         </div>
                       );
                     }

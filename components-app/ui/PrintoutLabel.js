@@ -1,3 +1,4 @@
+import getDate from "../../helpers/getDate";
 import qrCode from "../../helpers/qrCode";
 import styles from "./PrintoutLabel.module.css";
 
@@ -52,7 +53,7 @@ const PrintoutLabel = ({ data }) => {
             <tr>
               <td className={styles["no-wrap"]}>Tgl Transaksi</td>
               <td>:</td>
-              <td>{data.tglTransaksi}</td>
+              <td>{getDate(data.tglTransaksi)}</td>
             </tr>
             <tr>
               <td>Layanan</td>

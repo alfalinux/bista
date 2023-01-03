@@ -1,5 +1,5 @@
-const getDate = () => {
-  const tgl = new Date().toLocaleString("id-ID", {
+const getDate = (date) => {
+  const tgl = new Date(date).toLocaleString("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",

@@ -162,7 +162,7 @@ const ReceiveSuratJalan = () => {
                 <td>{d.noSuratJalan}</td>
                 <td>{d.cabangAsal.toUpperCase()}</td>
                 <td>{d.cabangTujuan.toUpperCase()}</td>
-                <td>{d.tglSuratJalan.toUpperCase()}</td>
+                <td>{getDate(d.tglSuratJalan).toUpperCase()}</td>
                 <td>{d.namaDriver.toUpperCase()}</td>
                 <td>{d.nopolDriver.toUpperCase()}</td>
                 <td className="center-element">

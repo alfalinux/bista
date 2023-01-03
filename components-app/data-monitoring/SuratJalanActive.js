@@ -5,6 +5,7 @@ import LoadingSpinner from "../../public/icons/loading-spinner";
 import Button from "../../components-app/ui/Button";
 import Search from "../../public/icons/search";
 import suratjalanPdf from "../../helpers/suratjalanPdf";
+import getDate from "../../helpers/getDate";
 
 const SuratJalanActive = (props) => {
   const { data, status } = useSession();
@@ -111,7 +112,7 @@ const SuratJalanActive = (props) => {
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td style={{ whiteSpace: "nowrap" }}>{d.noSuratJalan}</td>
-                <td style={{ whiteSpace: "nowrap" }}>{d.tglSuratJalan}</td>
+                <td style={{ whiteSpace: "nowrap" }}>{getDate(d.tglSuratJalan)}</td>
                 <td style={{ whiteSpace: "nowrap" }}>
                   <div className={styles["table-driver"]}>
                     <span className={styles["table-driver__nama"]}>{d.namaDriver}</span>

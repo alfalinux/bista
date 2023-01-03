@@ -1,4 +1,5 @@
 import React from "react";
+import getDate from "../../helpers/getDate";
 import qrCode from "../../helpers/qrCode";
 import styles from "./PrintoutStruk.module.css";
 
@@ -43,7 +44,7 @@ const PrintoutStruk = ({ data }) => {
           <tr>
             <td>Tgl Transaksi</td>
             <td>:</td>
-            <td>{data.tglTransaksi}</td>
+            <td>{getDate(data.tglTransaksi)}</td>
           </tr>
           <tr>
             <td>Layanan</td>

@@ -13,6 +13,7 @@ import ModalUpdateDelivery from "../components-app/ui/ModalUpdateDelivery";
 import ModalStatusDelivery from "../components-app/ui/ModalStatusDelivery";
 import Swal from "sweetalert2";
 import UpdateStatusDeliveryKurirView from "./UpdateStatusDeliveryKurirView";
+import getDate from "../helpers/getDate";
 
 const CreateDelivery = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
@@ -259,7 +260,7 @@ const CreateDelivery = () => {
                         <Stack />
                       </span>
                       <span className={styles["table-title__text"]}>{d.noDelivery}</span>
-                      <span className={styles["table-title__date"]}>{d.tglDelivery}</span>
+                      <span className={styles["table-title__date"]}>{getDate(d.tglDelivery)}</span>
                     </div>
                     <table className="table-container">
                       <thead className="table-head">

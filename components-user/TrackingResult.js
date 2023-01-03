@@ -1,5 +1,6 @@
 import styles from "./TrackingResult.module.css";
 import Check from "../public/icons/check";
+import getDate from "../helpers/getDate";
 
 const TrackingResult = (props) => {
   return (
@@ -13,7 +14,7 @@ const TrackingResult = (props) => {
           <div className={styles["content__title"]}>
             Transaksi Pengiriman [Cabang {props.dataResi.resiCreatedIn.toUpperCase()}]
           </div>
-          <div className={styles["content__date"]}>{props.dataResi.tglResi}</div>
+          <div className={styles["content__date"]}>{getDate(props.dataResi.tglResi)}</div>
         </div>
       </div>
 
@@ -27,7 +28,7 @@ const TrackingResult = (props) => {
             <div className={styles["content__title"]}>
               Proses Pemberangkatan [Gateway {props.dataResi.manifestCreatedIn.toUpperCase()}]
             </div>
-            <div className={styles["content__date"]}>{props.dataResi.tglManifest}</div>
+            <div className={styles["content__date"]}>{getDate(props.dataResi.tglManifest)}</div>
           </div>
         </div>
       )}
@@ -43,7 +44,7 @@ const TrackingResult = (props) => {
                 </div>
                 <div className={styles["content__detail"]}>
                   <div className={styles["content__title"]}>Paket Berangkat Menuju {d.cabangTujuan.toUpperCase()}</div>
-                  <div className={styles["content__date"]}>{d.tglSuratJalan}</div>
+                  <div className={styles["content__date"]}>{getDate(d.tglSuratJalan)}</div>
                 </div>
               </div>
               {d.receivedAt ? (
@@ -84,7 +85,7 @@ const TrackingResult = (props) => {
             </div>
             <div className={styles["content__detail"]}>
               <div className={styles["content__title"]}>Paket Sedang Diantar [{d.namaKurir}]</div>
-              <div className={styles["content__date"]}>{d.tglDelivery}</div>
+              <div className={styles["content__date"]}>{getDate(d.tglDelivery)}</div>
             </div>
           </div>
           {d.deliveredAt ? (
