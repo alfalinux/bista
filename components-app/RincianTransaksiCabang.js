@@ -2,16 +2,14 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import styles from "./RincianTransaksiCabang.module.css";
 import LoadingPage from "./ui/LoadingPage";
-import LoadingSpinner from "../public/icons/loading-spinner";
 import Button from "../components-app/ui/Button";
-import Check from "../public/icons/check";
 import FolderDownloadIcon from "../public/icons/FolderDownloadIcon";
 import { CSVDownload } from "react-csv";
 import Swal from "sweetalert2";
+import generateRincianTransaksi from "../helpers/generateRincianTransaksi";
 
 const RincianOmsetCabang = () => {
   const [isLoadingPage, setIsLoadingPage] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { data, status } = useSession();
   const [listCabang, setListCabang] = useState([]);
 
@@ -28,43 +26,34 @@ const RincianOmsetCabang = () => {
 
   const cabangSelectedHandler = (e) => {
     setCabangSelected(e.target.value);
+    setResponseResult([]);
   };
 
   const tglAwalHandler = (e) => {
     setTglAwal(e.target.value);
+    setResponseResult([]);
   };
 
   const tglAkhirHandler = (e) => {
     setTglAkhir(e.target.value);
+    setResponseResult([]);
   };
 
   const downloadClickHandler = (e) => {
     e.preventDefault();
+    setIsLoadingPage(true);
 
     const filter = {
       cabang: cabangSelected,
-      tglAwal: new Date(new Date(tglAwal).setHours(0, 0, 0, 1)).toLocaleString("en-UK", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      tglAkhir: new Date(new Date(tglAkhir).setHours(23, 59, 59, 59)).toLocaleString("en-UK", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      tglAwal: new Date(tglAwal).toISOString(),
+      tglAkhir: new Date(new Date(tglAkhir).setHours(23, 59, 59, 59)).toISOString(),
     };
-
-    console.log(filter);
 
     fetch("/api/data-resi/rincian-transaksi/" + filter.cabang + "/" + filter.tglAwal + "/" + filter.tglAkhir)
       .then((response) => response.json())
       .then((data) => {
         if (data.message !== "sukses") {
+          setIsLoadingPage(false);
           Swal.fire({
             icon: "warning",
             title: "Warning!",
@@ -73,22 +62,29 @@ const RincianOmsetCabang = () => {
             confirmButtonColor: "red",
           });
         } else {
+          setIsLoadingPage(false);
           Swal.fire({
             icon: "success",
             title: "Berhasil",
             text: "Data Rincian Transaksi Berhasil di Generate",
             showConfirmButton: true,
             confirmButtonText: "Download",
+            confirmButtonColor: "cornflowerblue",
+            showCancelButton: true,
+            cancelButtonText: "Batal",
+            cancelButtonColor: "crimson",
           }).then((result) => {
             if (result.isConfirmed) {
               setResponseResult(data.result);
+              setCabangSelected("");
+              setTglAwal("");
+              setTglAkhir("");
             }
           });
         }
       });
   };
 
-  // console.log(responseResult);
   return (
     <div className={styles["container"]}>
       {isLoadingPage ? <LoadingPage /> : null}
@@ -131,11 +127,19 @@ const RincianOmsetCabang = () => {
             </div>
           </div>
           <div className={styles["download-btn"]}>
-            <Button label="Download" color="red" icon={<FolderDownloadIcon />} clickHandler={downloadClickHandler} />
+            <Button
+              label="Generate"
+              color="red"
+              icon={<FolderDownloadIcon />}
+              clickHandler={downloadClickHandler}
+              disabled={cabangSelected === "" || tglAwal === "" || tglAkhir === ""}
+            />
           </div>
         </form>
       )}
-      {/* {responseResult.length === 0 ? null : <CSVDownload data={responseResult} />} */}
+      {responseResult.length === 0 ? null : (
+        <CSVDownload data={generateRincianTransaksi(responseResult)} target="_self" />
+      )}
     </div>
   );
 };
