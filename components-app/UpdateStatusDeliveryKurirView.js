@@ -109,6 +109,8 @@ const UpdateStatusDeliveryKurirView = (props) => {
                       if (b.deliveredAt === undefined) return 1;
                       if (a.deliveredAt < b.deliveredAt) return -1;
                       if (a.deliveredAt > b.deliveredAt) return 1;
+                      if (a.noResi < b.noResi) return -1;
+                      if (a.noResi > b.noResi) return 1;
                     })
                     .map((resi, index) => (
                       <div className={cardColor(resi.statusDelivery)} key={index}>
