@@ -154,3 +154,23 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.delivery-select {
+  position: absolute;
+  right: 20px;
+}
+
+.delivery-select select {
+  padding: 5px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #fff;
+  outline-style: none;
+}
+
+.delivery-select option {
+  color: #fff;
+  background-color: #000;
+  outline-style: none;
+}
