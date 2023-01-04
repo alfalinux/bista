@@ -43,24 +43,6 @@
   padding: 10px;
 }
 
-/* .resi-icon {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 13px;
-  color: lightgray;
-  box-shadow: inset -1px 1px 4px 0 rgba(0, 0, 0, 0.5), inset 1px -1px 0px 0 rgba(255, 187, 0, 0.63);
-  border-radius: 50%;
-  font-weight: 700;
-  background: linear-gradient(45deg, rgb(53, 53, 53) 0%, rgb(163, 163, 163) 100%);
-  
-} */
-
 .resi-icon-up {
   width: 20px;
   height: 20px;

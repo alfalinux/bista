@@ -73,20 +73,6 @@ const UpdateStatusDeliveryKurirView = (props) => {
     setValueStatusDelivery({});
   };
 
-  // console.log(
-  //   props.dataDelivery.length > 0
-  //     ? props.dataDelivery.map((d) =>
-  //         d.dataResi
-  //           .sort((a, b) => {
-  //             if (a.deliveredAt === undefined) return -1;
-  //             if (b.deliveredAt === undefined) return 1;
-  //             if (a.deliveredAt < b.deliveredAt) return -1;
-  //             if (a.deliveredAt > b.deliveredAt) return 1;
-  //           })
-  //           .map((d) => [d.noResi, d.deliveredAt])
-  //       )
-  //     : null
-  // );
   return (
     <div className={styles["container"]}>
       {!props.dataDelivery
@@ -103,75 +89,66 @@ const UpdateStatusDeliveryKurirView = (props) => {
               </div>
               {showDetailSuratJalan ? (
                 <main className={styles["content"]}>
-                  {deliv.dataResi
-                    .sort((a, b) => {
-                      if (a.deliveredAt === undefined) return -1;
-                      if (b.deliveredAt === undefined) return 1;
-                      if (a.deliveredAt < b.deliveredAt) return -1;
-                      if (a.deliveredAt > b.deliveredAt) return 1;
-                      if (a.noResi < b.noResi) return -1;
-                      if (a.noResi > b.noResi) return 1;
-                    })
-                    .map((resi, index) => (
-                      <div className={cardColor(resi.statusDelivery)} key={index}>
-                        <section
-                          className={
-                            detailResiClicked.indexOf(resi.noResi) >= 0
-                              ? styles["resi-icon-down"]
-                              : styles["resi-icon-up"]
-                          }
-                          onClick={() => resiIconHandler(resi.noResi)}
-                        >
-                          {detailResiClicked.indexOf(resi.noResi) >= 0 ? "-" : "+"}
-                        </section>
-                        <div className={styles["card-title"]}>{resi.namaPenerima}</div>
-                        <div>{resi.nohpPenerima}</div>
-                        <div>{resi.alamatPenerima}</div>
-                        <div id={resi.noResi} className={styles["card-expand"]}>
-                          <div>No Resi : {resi.noResi}</div>
-                          <div>Isi Paket : {resi.keteranganBarang}</div>
-                          <div className={styles["detail-paket"]}>
-                            <span className={styles["jumlah-paket"]}>
-                              <GiftBox /> {resi.jumlahBarang} Koli
-                            </span>
-                            <span className={styles["berat-paket"]}>
-                              <Scale /> {resi.beratBarang} Kg
-                            </span>
-                            <span className={styles["ongkir-paket"]}>
-                              <Money /> Rp {Number(resi.grandTotal).toLocaleString("id-ID")} - {resi.pembayaran}
-                            </span>
-                          </div>
-                          <div className={styles["btn-update"]}>
-                            {resi.statusDelivery === "proses" ? (
-                              <Button
-                                label="Update Status"
-                                color="black"
-                                icon={<Check />}
-                                clickHandler={() =>
-                                  updateClickHandler(resi.noResi, deliv.noDelivery, deliv.cabang, deliv.namaKurir)
-                                }
-                              />
-                            ) : null}
-                            {resi.statusDelivery === "diterima" ? (
-                              <Button
-                                label="Terkirim"
-                                color="black"
-                                icon={<ThumbUp />}
-                                clickHandler={() => statusClickHandler(resi)}
-                              />
-                            ) : null}
-                            {resi.statusDelivery === "gagal" ? (
-                              <Button
-                                label="Gagal Kirim"
-                                color="black"
-                                icon={<ThumbDown />}
-                                clickHandler={() => statusClickHandler(resi)}
-                              />
-                            ) : null}
-                          </div>
+                  {deliv.dataResi.map((resi, index) => (
+                    <div className={cardColor(resi.statusDelivery)} key={index}>
+                      <section
+                        className={
+                          detailResiClicked.indexOf(resi.noResi) >= 0
+                            ? styles["resi-icon-down"]
+                            : styles["resi-icon-up"]
+                        }
+                        onClick={() => resiIconHandler(resi.noResi)}
+                      >
+                        {detailResiClicked.indexOf(resi.noResi) >= 0 ? "-" : "+"}
+                      </section>
+                      <div className={styles["card-title"]}>{resi.namaPenerima}</div>
+                      <div>{resi.nohpPenerima}</div>
+                      <div>{resi.alamatPenerima}</div>
+                      <div id={resi.noResi} className={styles["card-expand"]}>
+                        <div>No Resi : {resi.noResi}</div>
+                        <div>Isi Paket : {resi.keteranganBarang}</div>
+                        <div className={styles["detail-paket"]}>
+                          <span className={styles["jumlah-paket"]}>
+                            <GiftBox /> {resi.jumlahBarang} Koli
+                          </span>
+                          <span className={styles["berat-paket"]}>
+                            <Scale /> {resi.beratBarang} Kg
+                          </span>
+                          <span className={styles["ongkir-paket"]}>
+                            <Money /> Rp {Number(resi.grandTotal).toLocaleString("id-ID")} - {resi.pembayaran}
+                          </span>
+                        </div>
+                        <div className={styles["btn-update"]}>
+                          {resi.statusDelivery === "proses" ? (
+                            <Button
+                              label="Update Status"
+                              color="black"
+                              icon={<Check />}
+                              clickHandler={() =>
+                                updateClickHandler(resi.noResi, deliv.noDelivery, deliv.cabang, deliv.namaKurir)
+                              }
+                            />
+                          ) : null}
+                          {resi.statusDelivery === "diterima" ? (
+                            <Button
+                              label="Terkirim"
+                              color="black"
+                              icon={<ThumbUp />}
+                              clickHandler={() => statusClickHandler(resi)}
+                            />
+                          ) : null}
+                          {resi.statusDelivery === "gagal" ? (
+                            <Button
+                              label="Gagal Kirim"
+                              color="black"
+                              icon={<ThumbDown />}
+                              clickHandler={() => statusClickHandler(resi)}
+                            />
+                          ) : null}
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
                 </main>
               ) : null}
             </div>
