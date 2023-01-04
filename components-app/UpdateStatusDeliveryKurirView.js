@@ -92,9 +92,7 @@ const UpdateStatusDeliveryKurirView = (props) => {
                 <span className={styles["noSJ-icon"]}>
                   <Stack />
                 </span>
-                <span className={styles["noSJ"]}>
-                  {deliv.noDelivery} || {deliv.dataResi.length} Resi
-                </span>
+                <span className={styles["noSJ"]}>{deliv.noDelivery}</span>
                 <span className={styles["noSJ-icon"]} onClick={suratJalanIconHandler}>
                   <ChevronDown />
                 </span>
@@ -105,10 +103,16 @@ const UpdateStatusDeliveryKurirView = (props) => {
                     value={deliveryProsesSelect}
                     onChange={deliveryProsesSelectChange}
                   >
-                    <option value="semua">Semua</option>
-                    <option value="proses">Proses</option>
-                    <option value="diterima">Diterima</option>
-                    <option value="gagal">Gagal</option>
+                    <option value="semua">Semua ({deliv.dataResi.length})</option>
+                    <option value="proses">
+                      Proses ({deliv.dataResi.filter((d) => d.statusDelivery === "proses").length})
+                    </option>
+                    <option value="diterima">
+                      Diterima ({deliv.dataResi.filter((d) => d.statusDelivery === "diterima").length})
+                    </option>
+                    <option value="gagal">
+                      Gagal ({deliv.dataResi.filter((d) => d.statusDelivery === "gagal").length})
+                    </option>
                   </select>
                 </span>
               </div>
