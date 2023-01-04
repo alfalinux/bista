@@ -74,7 +74,9 @@ const UpdateStatusDeliveryKurirView = (props) => {
   };
 
   console.log(
-    props.dataDelivery.length > 0 ? props.dataDelivery.map((d) => d.dataResi.map((d) => d.deliveredAt)) : null
+    props.dataDelivery.length > 0
+      ? props.dataDelivery.map((d) => d.dataResi.map((d) => [d.noResi, d.deliveredAt]))
+      : null
   );
   return (
     <div className={styles["container"]}>
