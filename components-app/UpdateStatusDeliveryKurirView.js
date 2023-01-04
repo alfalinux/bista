@@ -73,11 +73,20 @@ const UpdateStatusDeliveryKurirView = (props) => {
     setValueStatusDelivery({});
   };
 
-  console.log(
-    props.dataDelivery.length > 0
-      ? props.dataDelivery.map((d) => d.dataResi.map((d) => [d.noResi, d.deliveredAt]))
-      : null
-  );
+  // console.log(
+  //   props.dataDelivery.length > 0
+  //     ? props.dataDelivery.map((d) =>
+  //         d.dataResi
+  //           .sort((a, b) => {
+  //             if (a.deliveredAt === undefined) return -1;
+  //             if (b.deliveredAt === undefined) return 1;
+  //             if (a.deliveredAt < b.deliveredAt) return -1;
+  //             if (a.deliveredAt > b.deliveredAt) return 1;
+  //           })
+  //           .map((d) => [d.noResi, d.deliveredAt])
+  //       )
+  //     : null
+  // );
   return (
     <div className={styles["container"]}>
       {!props.dataDelivery
@@ -95,17 +104,12 @@ const UpdateStatusDeliveryKurirView = (props) => {
               {showDetailSuratJalan ? (
                 <main className={styles["content"]}>
                   {deliv.dataResi
-                    .sort((a, b) =>
-                      a.deliveredAt === undefined
-                        ? -1
-                        : b.deliveredAt === undefined
-                        ? 1
-                        : a.deliveredAt > b.deliveredAt
-                        ? 1
-                        : b.deliveredAt > a.deliveredAt
-                        ? -1
-                        : 0
-                    )
+                    .sort((a, b) => {
+                      if (a.deliveredAt === undefined) return -1;
+                      if (b.deliveredAt === undefined) return 1;
+                      if (a.deliveredAt < b.deliveredAt) return -1;
+                      if (a.deliveredAt > b.deliveredAt) return 1;
+                    })
                     .map((resi, index) => (
                       <div className={cardColor(resi.statusDelivery)} key={index}>
                         <section
