@@ -17,8 +17,8 @@ export default function Home() {
           name="keywords"
           content="Kargo Murah, Cargo Murah, Jasa Cargo Murah, Jasa Kargo Murah, Ongkir Termurah, Kargo Surabaya, Angkutan Murah Surabaya, Jasa Kargo Murah Jakarta, Jakarta Cargo, Angkutan Barang Termurah, Angkutan Pindah Rumah, Bista Cargo Pasti Bisa, Tarif Jasa Ekspedisi Termurah Cargo"
         />
-        <meta property="og:title" content="Bista Cargo" />
-        <meta property="og:description" content="Jasa Angkutan Profesional, Solusi Logistik Terbaik" />
+        <meta property="og:title" content="Bista Cargo - Jasa Angkutan Profesional" />
+        <meta property="og:description" content="Solusi Logistik Terbaik Untuk Bisnis Anda" />
         <meta property="og:image" content="https://bistacargo.com/images/bista-logo-300.png" />
         <meta property="og:url" content="https://www.bistacargo.com" />
       </Head>

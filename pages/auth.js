@@ -19,22 +19,22 @@ const UserLoginPage = () => {
       router.push("/app");
     }
     setIsLoading(false);
-  }, [status, router]);
+  }, [router, status]);
 
   return (
     <>
-      <Head>
-        <title>Halaman Login</title>
-      </Head>
-      {isLoading ? <LoadingPage /> : null}
-      {status !== "authenticated" ? (
+      {status === "authenticated" ? null : (
         <>
+          <Head>
+            <title>Halaman Login</title>
+          </Head>
+          {isLoading ? <LoadingPage /> : null}
           <MainNav />
           <LoginPage />
           <Info color="#fff" />
           <Footer />
         </>
-      ) : null}
+      )}
     </>
   );
 };
