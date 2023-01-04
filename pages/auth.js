@@ -19,7 +19,7 @@ const UserLoginPage = () => {
       router.push("/app");
     }
     setIsLoading(false);
-  }, [status]);
+  }, [status, router]);
 
   return (
     <>
