@@ -29,35 +29,39 @@ const LoginPage = () => {
       router.replace("/app");
     }
   };
-
   return (
     <div className={styles["wrapper"]}>
-      <form onSubmit={loginHandler} className={styles["container"]}>
-        <div className={styles["field"]}>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="email"
-            id="username"
-            name="username"
-            ref={emailRef}
-            placeholder="masukkan username..."
-            autoComplete="off"
-          />
-        </div>
-        <div className={styles["field"]}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            ref={passwordRef}
-            placeholder="masukkan password..."
-            autoComplete="off"
-          />
-        </div>
-        <div className="error-txt">{isLoading ? <LoadingSpinner /> : loginStatus}</div>
-        <Button label="Login" icon={<LoginIcon />} color="red" disabled={isLoading} />
-      </form>
+      <div className={styles["welcome-side"]}></div>
+      <div>
+        <form onSubmit={loginHandler} className={styles["container"]}>
+          <div className={styles["field"]}>
+            <label htmlFor="username">Username:</label>
+            <input
+              type="email"
+              id="username"
+              name="username"
+              ref={emailRef}
+              placeholder="masukkan username..."
+              autoComplete="off"
+            />
+          </div>
+          <div className={styles["field"]}>
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              ref={passwordRef}
+              placeholder="masukkan password..."
+              autoComplete="off"
+            />
+          </div>
+          <div className="error-txt">{isLoading ? <LoadingSpinner /> : loginStatus}</div>
+          <div className={styles["btn"]}>
+            <Button label="Login" icon={<LoginIcon />} color="red" disabled={isLoading} />
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
