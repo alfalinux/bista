@@ -11,7 +11,11 @@ const Kontak = () => {
           <span className={styles["btn-icon"]}>
             <Chat />
           </span>
-          <p className={styles["btn-txt"]}>Hubungi kami</p>
+          <p className={styles["btn-txt"]}>
+            <a href="http://wa.me/6287846214666" target="_blank">
+              Hubungi kami
+            </a>
+          </p>
         </button>
       </div>
       <img className={styles["indomap"]} src="images/indonesia-map.png" />

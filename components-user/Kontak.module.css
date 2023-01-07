@@ -41,6 +41,11 @@
   animation: flare 1s ease-in infinite;
 }
 
+.btn-txt a {
+  text-decoration: none;
+  color: inherit;
+}
+
 @keyframes flare {
   0% {
     background-color: red;

@@ -22,7 +22,7 @@ const Info = (props) => {
             </span>
             <div className={styles["text"]} id="kontak">
               <p>Call Center</p>
-              <h5>0123-4567-8910</h5>
+              <h5>0878-4621-4666</h5>
             </div>
           </div>
           <div className={styles["detail-kontak"]}>
@@ -31,7 +31,7 @@ const Info = (props) => {
             </span>
             <div className={styles["text"]}>
               <p>Email</p>
-              <h5>marketing@bistacargo.com</h5>
+              <h5>cs.bistacargo@gmail.com</h5>
             </div>
           </div>
           <div className={styles["detail-kontak"]}>

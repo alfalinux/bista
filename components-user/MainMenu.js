@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./MainMenu.module.css";
 import Search from "../public/icons/search";
-import Home from "../public/icons/home";
 import Money from "../public/icons/money";
 import { useRouter } from "next/router";
+import CallCenter from "../public/icons/CallCenter";
 const MainMenu = () => {
   const router = useRouter();
 
@@ -35,15 +35,15 @@ const MainMenu = () => {
           <p>Lihat tarif Bista Cargo</p>
         </div>
       </div>
-      <div className={`${styles["card"]} ${styles["black"]}`}>
+      <a href="http://wa.me/6287846214666" target="_blank" className={`${styles["card"]} ${styles["black"]}`}>
         <div className={styles["icon"]}>
-          <Home />
+          <CallCenter color="#fff" />
         </div>
         <div className={styles["text"]}>
-          <h1>Cabang</h1>
-          <p>Lihat lokasi cabang terdekat</p>
+          <h1>Call Center</h1>
+          <p>Silahkan hubungi kami</p>
         </div>
-      </div>
+      </a>
     </section>
   );
 };
