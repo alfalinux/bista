@@ -57,11 +57,11 @@ const Info = (props) => {
             <li>
               <Link href="/cek-tarif">Cek Ongkir</Link>
             </li>
-            <li>Pusat Bantuan</li>
+            {/* <li>Pusat Bantuan</li> */}
           </ul>
         </div>
         <div className={styles["social"]}>
-          <h3>Social Media</h3>
+          {/* <h3>Social Media</h3>
           <div className={styles["social-detail"]}>
             <img className={styles["socmed-icon"]} src="/icons/facebook.svg" alt="facebook logo" />
             <img className={styles["socmed-icon"]} src="/icons/instagram.svg" alt="instagram logo" />
@@ -69,7 +69,7 @@ const Info = (props) => {
             <img className={styles["socmed-icon"]} src="/icons/tiktok.svg" alt="tiktok logo" />
             <img className={styles["socmed-icon"]} src="/icons/linkedin.svg" alt="linkedin logo" />
             <img className={styles["socmed-icon"]} src="/icons/whatsapp.svg" alt="whatsapp logo" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
