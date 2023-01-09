@@ -1,18 +1,29 @@
 const EditHargaPage = () => {
-  const harga = {
-    jakarta: [
-      { id: "one", cab: "jakarta" },
-      { id: "two", cab: "bandung" },
-      { id: "three", cab: "solo" },
-    ],
-  };
+  //   const surabaya = [
+  //     {
+  //       id: "1901",
+  //       prov: "Daerah Khusus Ibukota Jakarta",
+  //       tlc: "KSU",
+  //       kabkot: "Kepulauan Seribu",
+  //       ibukota: "Kepulauan Seribu Utara",
+  //       kec: "Kepulauan Seribu Selatan",
+  //       cov: "jakarta",
+  //       covTlc: "JKT",
+  //       cargo: "3000",
+  //       minCargo: "30",
+  //       slaCargo: "3",
+  //       express: "",
+  //       minExpress: "",
+  //       slaExpress: "",
+  //     },
+  //   ];
 
   const submitPricingHandler = (e) => {
     e.preventDefault();
-    fetch("/api/pricing/insert-pricing", {
-      method: "POST",
-      body: JSON.parse(),
-    });
+    // fetch("/api/pricing/insert-pricing", {
+    //   method: "POST",
+    //   body: JSON.stringify(surabaya),
+    // });
   };
 
   return (
