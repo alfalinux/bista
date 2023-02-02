@@ -6,6 +6,7 @@ import Jumbotron from "../components-user/Jumbotron";
 import Kontak from "../components-user/Kontak";
 import MainMenu from "../components-user/MainMenu";
 import MainNav from "../components-user/MainNav";
+import Member from "../components-user/Member";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <Jumbotron />
       <MainMenu />
       <About />
+      <Member />
       <Kontak />
       <Info color="#000" />
       <Footer />
