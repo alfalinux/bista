@@ -2,8 +2,8 @@ import { MongoClient } from "mongodb";
 
 export const connectDatabase = async () => {
   const client = await MongoClient.connect(
-    // "mongodb://admin:4dmin@ac-uyzhd6y-shard-00-00.qsklzwd.mongodb.net:27017,ac-uyzhd6y-shard-00-01.qsklzwd.mongodb.net:27017,ac-uyzhd6y-shard-00-02.qsklzwd.mongodb.net:27017/?ssl=true&replicaSet=atlas-yzfdd6-shard-0&authSource=admin&retryWrites=true&w=majority"
-    "mongodb://admin:4dmin@127.0.0.1:27017"
+    "mongodb://admin:4dmin@ac-uyzhd6y-shard-00-00.qsklzwd.mongodb.net:27017,ac-uyzhd6y-shard-00-01.qsklzwd.mongodb.net:27017,ac-uyzhd6y-shard-00-02.qsklzwd.mongodb.net:27017/?ssl=true&replicaSet=atlas-yzfdd6-shard-0&authSource=admin&retryWrites=true&w=majority"
+    // "mongodb://admin:4dmin@127.0.0.1:27017"
   );
 
   return client;
@@ -84,18 +84,16 @@ export const updateManyManifest = async (client, collection, filter, update) => 
 
 export const updateReceiveManifest = async (client, collection, filter, update) => {
   const db = client.db("bista");
-  const result = await db
-    .collection(collection)
-    .updateMany(
-      { noManifest: { $in: filter } },
-      {
-        $set: {
-          receivedIn: update.receivedIn,
-          receivedAt: update.receivedAt,
-          receivedBy: update.receivedBy,
-        },
-      }
-    );
+  const result = await db.collection(collection).updateMany(
+    { noManifest: { $in: filter } },
+    {
+      $set: {
+        receivedIn: update.receivedIn,
+        receivedAt: update.receivedAt,
+        receivedBy: update.receivedBy,
+      },
+    }
+  );
 
   return result;
 };

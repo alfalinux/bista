@@ -62,12 +62,20 @@ const InputResi = (props) => {
   };
 
   const inputIsValid = {
-    nohpPengirim: (notBlank.nohpPengirim && inputValue.nohpPengirim.length < 16) || !touchedField.nohpPengirim,
-    namaPengirim: (notBlank.namaPengirim && inputValue.namaPengirim.length < 41) || !touchedField.namaPengirim,
-    alamatPengirim: (notBlank.alamatPengirim && inputValue.alamatPengirim.length < 121) || !touchedField.alamatPengirim,
-    nohpPenerima: (notBlank.nohpPenerima && inputValue.nohpPenerima.length < 16) || !touchedField.nohpPenerima,
-    namaPenerima: (notBlank.namaPenerima && inputValue.namaPenerima.length < 41) || !touchedField.namaPenerima,
-    alamatPenerima: (notBlank.alamatPenerima && inputValue.alamatPenerima.length < 121) || !touchedField.alamatPenerima,
+    nohpPengirim:
+      (notBlank.nohpPengirim && inputValue.nohpPengirim.length < 16) || !touchedField.nohpPengirim,
+    namaPengirim:
+      (notBlank.namaPengirim && inputValue.namaPengirim.length < 41) || !touchedField.namaPengirim,
+    alamatPengirim:
+      (notBlank.alamatPengirim && inputValue.alamatPengirim.length < 121) ||
+      !touchedField.alamatPengirim,
+    nohpPenerima:
+      (notBlank.nohpPenerima && inputValue.nohpPenerima.length < 16) || !touchedField.nohpPenerima,
+    namaPenerima:
+      (notBlank.namaPenerima && inputValue.namaPenerima.length < 41) || !touchedField.namaPenerima,
+    alamatPenerima:
+      (notBlank.alamatPenerima && inputValue.alamatPenerima.length < 121) ||
+      !touchedField.alamatPenerima,
     layanan: notBlank.layanan || !touchedField.layanan,
     cabangAsal: notBlank.cabangAsal || !touchedField.cabangAsal,
     tujuan: notBlank.tujuan || !touchedField.tujuan,
@@ -76,7 +84,8 @@ const InputResi = (props) => {
     jumlahBarang: notBlank.jumlahBarang || !touchedField.jumlahBarang,
     beratBarang: (notBlank.beratBarang || !touchedField.beratBarang) && !beratIsValid,
     keteranganBarang:
-      (notBlank.keteranganBarang && inputValue.keteranganBarang.length < 81) || !touchedField.keteranganBarang,
+      (notBlank.keteranganBarang && inputValue.keteranganBarang.length < 81) ||
+      !touchedField.keteranganBarang,
     ongkirPerkilo: notBlank.ongkirPerkilo || !touchedField.ongkirPerkilo,
     subtotalOngkir: notBlank.subtotalOngkir || !touchedField.subtotalOngkir,
     diskon: notBlank.diskon || !touchedField.diskon,
@@ -94,7 +103,9 @@ const InputResi = (props) => {
   const kecamatanChangeHandler = (val) => {
     setInputKecamatan(val);
     if (val.length > 2) {
-      setFilteredKecamatan(() => getData.filter((d) => d.kec.toLowerCase().includes(val.toLowerCase())));
+      setFilteredKecamatan(() =>
+        getData.filter((d) => d.kec.toLowerCase().includes(val.toLowerCase()))
+      );
     } else {
       setFilteredKecamatan([]);
     }
@@ -134,8 +145,12 @@ const InputResi = (props) => {
 
   useEffect(() => {
     if (inputValue.layanan !== "") {
-      const minimumCharges = "min" + inputValue.layanan[0].toUpperCase() + inputValue.layanan.substring(1);
-      if (Number(inputValue.beratBarang) < Number(inputValue.dataOngkir[minimumCharges])) {
+      const minimumCharges =
+        "min" + inputValue.layanan[0].toUpperCase() + inputValue.layanan.substring(1);
+      if (
+        Number(inputValue.beratBarang) < 10
+        // Number(inputValue.dataOngkir[minimumCharges])
+      ) {
         setBeratIsValid(true);
       } else {
         setBeratIsValid(false);
@@ -237,7 +252,9 @@ const InputResi = (props) => {
 
   const onSelectKecamatan = (id) => {
     const selectedKecamatan = filteredKecamatan.filter((d) => d.id === id)[0];
-    setInputKecamatan(`${selectedKecamatan.kec} - ${selectedKecamatan.kabkot} - ${selectedKecamatan.prov}`);
+    setInputKecamatan(
+      `${selectedKecamatan.kec} - ${selectedKecamatan.kabkot} - ${selectedKecamatan.prov}`
+    );
     setInputValue((prevInputValue) => ({ ...prevInputValue, tujuan: selectedKecamatan }));
     setFilteredKecamatan([]);
   };
@@ -454,7 +471,11 @@ const InputResi = (props) => {
             {inputKecamatan === "" ? null : (
               <div className={styles["dropdown-list"]}>
                 {filteredKecamatan.map((data, idx) => (
-                  <div className={styles["dropdown-select"]} key={idx} onClick={() => onSelectKecamatan(data.id)}>
+                  <div
+                    className={styles["dropdown-select"]}
+                    key={idx}
+                    onClick={() => onSelectKecamatan(data.id)}
+                  >
                     {data.kec + " - " + data.kabkot + " - " + data.prov}
                   </div>
                 ))}
@@ -470,13 +491,17 @@ const InputResi = (props) => {
             name="cabangTujuan"
             onBlur={blurFields}
             onChange={onChange}
-            value={dataOngkir && inputValue.dataOngkir[inputValue.layanan] ? dataOngkir.ibukota : ""}
+            value={
+              dataOngkir && inputValue.dataOngkir[inputValue.layanan] ? dataOngkir.ibukota : ""
+            }
             readOnly
           />
           <span></span>
           {inputIsValid.cabangTujuan ? (
             dataOngkir ? (
-              <p className={styles["success-note"]}>Cabang Coveran: {dataOngkir.cov.toUpperCase()}</p>
+              <p className={styles["success-note"]}>
+                Cabang Coveran: {dataOngkir.cov.toUpperCase()}
+              </p>
             ) : (
               <span></span>
             )
@@ -485,11 +510,32 @@ const InputResi = (props) => {
           )}
           <label htmlFor="pembayaran">Metode Pembayaran</label>
           <section className={styles["card__radio"]}>
-            <input type="radio" name="pembayaran" id="cash" value="cash" onBlur={blurFields} onChange={onChange} />
+            <input
+              type="radio"
+              name="pembayaran"
+              id="cash"
+              value="cash"
+              onBlur={blurFields}
+              onChange={onChange}
+            />
             <label htmlFor="cash">Cash</label>
-            <input type="radio" name="pembayaran" id="cod" value="cod" onBlur={blurFields} onChange={onChange} />
+            <input
+              type="radio"
+              name="pembayaran"
+              id="cod"
+              value="cod"
+              onBlur={blurFields}
+              onChange={onChange}
+            />
             <label htmlFor="cod">COD</label>
-            <input type="radio" name="pembayaran" id="top" value="top" onBlur={blurFields} onChange={onChange} />
+            <input
+              type="radio"
+              name="pembayaran"
+              id="top"
+              value="top"
+              onBlur={blurFields}
+              onChange={onChange}
+            />
             <label htmlFor="top">TOP</label>
           </section>
           <span></span>
@@ -535,10 +581,12 @@ const InputResi = (props) => {
             <span></span>
           ) : (
             <p className={styles["error-note"]}>
-              Wajib diisi, minimal berat{" "}
-              {inputValue.layanan
-                ? inputValue.dataOngkir["min" + inputValue.layanan[0].toUpperCase() + inputValue.layanan.substring(1)]
-                : "~"}{" "}
+              Wajib diisi, minimal berat 10
+              {/* {inputValue.layanan
+                ? inputValue.dataOngkir[
+                    "min" + inputValue.layanan[0].toUpperCase() + inputValue.layanan.substring(1)
+                  ]
+                : "~"}{" "} */}
               Kg
             </p>
           )}
@@ -706,14 +754,17 @@ const InputResi = (props) => {
             className={styles["btn-order"]}
             type="submit"
             disabled={
-              !Object.values(inputValue).every((d) => d !== "") || !Object.values(inputIsValid).every((d) => d == true)
+              !Object.values(inputValue).every((d) => d !== "") ||
+              !Object.values(inputIsValid).every((d) => d == true)
             }
           >
             Create Order
           </button>
         </fieldset>
       </form>
-      {showModal ? <ModalPrintResi onEdit={hideModalHandler} data={inputValue} onPrint={resetFormHandler} /> : null}
+      {showModal ? (
+        <ModalPrintResi onEdit={hideModalHandler} data={inputValue} onPrint={resetFormHandler} />
+      ) : null}
     </>
   );
 };
