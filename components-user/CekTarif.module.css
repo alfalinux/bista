@@ -85,6 +85,10 @@
   visibility: hidden;
 }
 
+.card__content {
+  background-color: white;
+}
+
 .card__header {
   width: 100%;
   background-color: red;
@@ -136,5 +140,6 @@
     justify-content: center;
     align-items: center;
     gap: 50px;
+    margin-bottom: 50px;
   }
 }
